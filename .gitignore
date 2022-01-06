@@ -1,0 +1,74 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Folders
+_obj
+_test
+files/
+
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
+
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
+
+_testmain.go
+
+*.exe
+*.test
+*.prof
+
+# WebStorm
+*.iml
+
+# Directory-based project format:
+.idea/
+.idea/workspace.xml
+**/.idea/workspace.xml
+
+# mac hidden files
+.DS_Store
+
+#other
+node_modules/
+bower_components/
+.tmp
+.sass-cache
+builds/**/images/*
+*.ogg
+*.mp3
+*.mp4
+*.io
+TODO.txt
+
+# security / ssl
+*.pem
+*.xxjson
+
+# terraform
+*.tfstate
+*.tfstate.backup
+.terraform
+.backup
+.terraform.lock.hcl
+hashicorp/
+/terraform
+
+# ansible
+secrets.yml
+inventory/
+keys/
+temp/
+!roles/
+roles/*
+!roles/warhorse.generate/
+!roles/warhorse.terraform/
+config.yml
+deploy.yml
+destroy.yml

@@ -1,0 +1,15 @@
+#cloud-config
+# first create a user with
+# ssh key, permission, etc
+users:
+  - name: ansible
+    ssh-authorized-keys:
+      - "{{ lookup('file', '{{ ansible_ssh_public_key_file }}') }}"
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
+
+# then upgrade base image
+package_update: true
+package_upgrade: false
+package_reboot_if_required: false

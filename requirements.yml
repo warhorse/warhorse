@@ -1,0 +1,22 @@
+---
+roles:
+  - name: arillso.restic
+    version: 0.3.0
+  - name: gantsign.golang
+    version: 
+  - name: geerlingguy.docker
+    version: 
+  - name: geerlingguy.ntp
+    version: 
+  - name: geerlingguy.pip
+    version: 
+  - name: geerlingguy.security
+    version: 
+  - name: viasite-ansible.zsh
+    version: 
+
+collections:
+  # Install a collection from Ansible Galaxy.
+  - name: warhorse.warhorse_roles
+    version: 0.9.3
+    source: https://galaxy.ansible.com

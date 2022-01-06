@@ -1,0 +1,25 @@
+- name: Create SSH Keys
+  hosts: localhost
+  gather_facts: true
+  connection: local
+  vars: 
+    deploy: true
+  tasks:
+  - name: Create a keys directory 
+    ansible.builtin.file:
+      path: keys
+      state: directory
+      mode: '0755'
+  - name: Create SSH Keys
+    community.crypto.openssh_keypair:
+      path: keys/id_rsa_ansible
+      size: 2048
+
+- name: Generate Playbooks Roles & Terrafrom
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars_files:
+  - ./config.yml
+  roles:
+      - { role: warhorse.generate }

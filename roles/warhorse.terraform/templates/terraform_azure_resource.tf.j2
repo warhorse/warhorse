@@ -1,0 +1,12 @@
+{% for vm in warhorse.vm %}
+{% if loop.last %}
+{% for cdn in vm.cdn %}
+{% if vm.provider == 'azure' or cdn.provider == 'azure' and loop.last %}
+resource "azurerm_resource_group" "azure_resource_{{ op_number }}" {
+  name     = "{{ op_number }}"
+  location = "{{ vm.region|default('East US') }}"
+}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

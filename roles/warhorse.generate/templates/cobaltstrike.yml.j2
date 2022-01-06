@@ -1,0 +1,55 @@
+{% for vm in warhorse.vm %}
+{% if loop.first %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+              cs_site_hostname: 'cs'
+              cs_vpn_hostname: 'cobaltstrike'
+
+              redirect_url: "azure.microsoft.com"
+              dns_plugin: 'digitalocean'
+
+              cs_hostname: "cobaltstrike"
+              cs_container_name: "cobaltstrike"
+
+              cs_exp_date: '{% raw %}{{ ttl }}{% endraw %}'
+              cs_profile_location: "{% raw %}{{ lookup('env', 'PWD') }}/files/azure.profile.j2{% endraw %}"
+              cs_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
+              cs_dir: '/opt/docker/cobaltstrike'
+{% if vm.tailscale.enabled is true %}
+              cs_ports:
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:50050:50050{% endraw %}"
+{% for ports in vm.cobaltstrike.socks_ports %}
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:{% endraw %}{{ ports }}:{{ ports }}"
+{% endfor %}
+{% else %}
+              cs_ports:
+                - "127.0.0.1:50050:50050"
+{% for ports in vm.cobaltstrike.socks_ports %}
+                - "127.0.0.1:{{ ports }}:{{ ports }}"
+{% endfor %}
+{% endif %}
+{% if vm.http_proxy == "traefik" %}
+              cs_docker_labels:
+                traefik.docker.network: "{% raw %}{{ dockernet }}{% endraw %}"
+                traefik.enable: "true"
+                traefik.http.routers.cs.rule: "{% raw %}Host(`{{ cs_site_hostname }}.{{ op_domain_name }}`){% endraw %}"
+                traefik.http.routers.cs.middlewares: "azure-cdn@docker"
+                traefik.http.routers.cs.tls: "true"
+                traefik.http.routers.cs.tls.certresolver: "letsencrypt"
+                traefik.http.services.cs.loadbalancer.server.scheme: "https"
+                traefik.http.services.cs.loadbalancer.server.port: "443"
+                traefik.frontend.passHostHeader: "true"
+                traefik.frontend.headers.SSLHost: "{% raw %}{{ cs_site_hostname }}.{{ op_domain_name }}{% endraw %}"
+                traefik.http.middlewares.azure-cdn.ipwhitelist.sourcerange: "147.243.0.0/16"
+{% endif %}
+{% endfor %}
+  vars:
+    cs_auth_header_value: "{% raw %}{{ op_number | b64encode }}{% endraw %}"
+    cs_auth_header_name: "cdnauth"
+    cs_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"

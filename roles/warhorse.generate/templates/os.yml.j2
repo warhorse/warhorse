@@ -1,0 +1,61 @@
+{% for vm in warhorse.vm %}
+{% if loop.first %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+              hostname: '{{ vm.hostname|default(warhorse.general.op_number + '-teamserver')}}'
+{% endfor %}
+  vars:
+    op_number: '{{ warhorse.general.op_number }}'
+    op_tld: '{{ warhorse.dns.op_tld }}'
+    op_domain_name: '{{ warhorse.dns.op_domain_name }}'
+    domain_name: "{% raw %}{{ op_domain_name }}{% endraw %}"
+    user_tag: '{{ warhorse.general.user_tag }}'
+    ttl: '{{ warhorse.general.ttl }}'
+
+    extra_packages:
+    - net-tools
+
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_ssh_private_key_file: "{% raw %}{{ lookup('env', 'PWD') }}/keys/id_rsa_ansible{% endraw %}"
+    ansible_ssh_public_key_file: "{% raw %}{{ lookup('env', 'PWD') }}/keys/id_rsa_ansible.pub{% endraw %}"
+    ansible_ssh_user: 'ansible'
+{% for users in warhorse.users %}
+    # Create Users
+    users:
+      - username: {{ users.username }}
+        name: {{ users.name }}
+        authorized_keys:
+{% for keys in users.authorized_keys %}
+          - "{{ keys }}"
+{% endfor %}
+        home_create: {{ users.home_create | default ('yes') }}
+        append: {{ users.append | default ('yes') }}
+        home_mode: "{{ users.home_mode | default ('0750') }}"
+        shell: {{ users.shell | default ('/usr/bin/zsh') }} 
+    users_authorized_keys_exclusive: yes
+    security_sudoers_passwordless:
+      - {{ users.username }}
+    docker_users:
+      - {{ users.username }}
+{% endfor %}
+    # ZSH Settings
+    zsh_shared: yes
+    
+    # Docker Settings
+    dockernet: "docker"
+    docker_home_dir: '/opt/docker'
+
+    # Pip Settings
+    pip_install_packages:
+      - name: docker
+    pip_executable: pip3
+    pip_package: python3-pip
+
+    # NTP
+    ntp_timezone: '{{ warhorse.general.ntp_timezone }}'

@@ -1,0 +1,45 @@
+terraform {
+  required_version = ">= 0.12.0"
+  required_providers {
+{% for vm in warhorse.vm|selectattr("provider", "equalto", "digitalocean") %}
+{% if loop.last %}
+    digitalocean = {
+      source = "digitalocean/digitalocean"
+    }
+{% endif %}
+{% endfor %}
+    local = ">= 1.2"
+  }
+}
+{% for vm in warhorse.vm|selectattr("provider", "equalto", "digitalocean") %}
+{% if loop.last %}
+provider "digitalocean" {
+  token = var.do_token
+}
+{% endif %}
+{% endfor %}
+
+{% for vm in warhorse.vm %}
+{% if loop.last %}
+{% for cdn in vm.cdn %}
+{% if loop.last %}
+{% if vm.provider == 'azure' or cdn.provider == 'azure' %}
+provider "azurerm" {
+  features {}
+  {% if azure_subId is defined %}
+  subscription_id = "{{ azure_subId }}"
+  {% endif %}
+}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% if warhorse.terraform.state_bucket_enable is true %}
+terraform {
+  backend "s3" {
+    skip_credentials_validation = true
+    skip_metadata_api_check     = true
+  }
+}
+{% endif %}

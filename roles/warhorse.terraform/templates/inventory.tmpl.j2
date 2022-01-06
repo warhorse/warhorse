@@ -1,0 +1,6 @@
+{% for vm in warhorse.vm %}
+{% if loop.first %}
+[vm]
+{% endif %}
+{{ vm.name }} ansible_host=${% raw %}{{% endraw %}{{ vm.name }}-ip} # ${% raw %}{{% endraw %}{{ vm.name }}-id}
+{% endfor %}

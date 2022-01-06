@@ -1,0 +1,36 @@
+---
+- name: Generating os inventory
+  template:
+    mode: '0755'
+    src: templates/os.yml.j2
+    dest: "./inventory/os.yml"
+
+- name: Generating dns inventory
+  template:
+    mode: '0755'
+    src: templates/dns.yml.j2
+    dest: "./inventory/dns.yml"
+
+- name: Generating firewall inventory
+  template:
+    mode: '0755'
+    src: templates/firewall.yml.j2
+    dest: "./inventory/firewall.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.firewall.enabled
+
+- name: Generating cobaltstrike inventory
+  template:
+    mode: '0755'
+    src: templates/cobaltstrike.yml.j2
+    dest: "./inventory/cobaltstrike.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.cobaltstrike.enabled
+
+- name: Generating traefik inventory
+  template:
+    mode: '0755'
+    src: templates/traefik.yml.j2
+    dest: "./inventory/traefik.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.http_proxy == 'traefik'

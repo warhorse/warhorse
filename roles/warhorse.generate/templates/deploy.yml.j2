@@ -1,0 +1,81 @@
+---
+- name: Deploy Terraform
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars: 
+    deploy: true
+  vars_files:
+  - ./config.yml
+  roles:
+      - { role: warhorse.terraform }
+
+- name: Refresh Inventory
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+  - meta: refresh_inventory
+  - name: Wait for system to become reachable again
+    wait_for_connection:
+        delay: 10
+        timeout: 300
+
+- name: Apt Ready
+  gather_facts: yes
+  hosts: warhorse
+  connection: ssh
+  become: True
+  vars: 
+    deploy: true
+  tasks:
+  - name: Apt for sure
+    apt: update_cache=yes
+    register: apt_status
+    until: apt_status is success
+    delay: 10
+    retries: 10 
+    
+- name: Install Roles
+  gather_facts: yes
+  hosts: warhorse
+  connection: ssh
+  become: True
+  vars: 
+    deploy: true
+  roles:
+    - { role: weareinteractive.users }
+    - { role: geerlingguy.pip }
+    - { role: geerlingguy.docker }
+    - { role: warhorse.os }
+    - { role: geerlingguy.ntp }
+    - { role: geerlingguy.security }
+    - { role: viasite-ansible.zsh, zsh_shared: yes}
+
+{% for vm in warhorse.vm %}
+- name: Install Modules
+  gather_facts: True
+  hosts: {{ vm.name }}
+  connection: ssh
+  become: True
+  roles:
+{% if vm.cobaltstrike.enabled %}
+    - { role: warhorse.cobaltstrike_docker }
+{% endif %}
+{% if vm.neo4j.enabled %}
+    - { role: warhorse.neo4j_docker }
+{% endif %}
+{% if vm.syncthing.enabled %}
+    - { role: warhorse.syncthing_docker }
+{% endif %}
+{% if vm.tailscale.enabled %}
+    - { role: warhorse.tailscale }
+{% endif %}
+{% if vm.dashy.enabled %}
+    - { role: warhorse.dashy_docker }
+{% endif %}
+{% if vm.backup.enabled %}
+    - { role: warhorse.backup }
+{% endif %}
+
+{% endfor %}

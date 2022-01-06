@@ -1,0 +1,100 @@
+{% for vm in warhorse.vm %}
+{% if loop.first %}
+{% for cdn in vm.cdn %}
+{% if cdn.provider == 'azure' and loop.first %}
+resource "azurerm_cdn_profile" "cdn_profile_{{ op_number }}" {
+  name                = "{{ op_number }}"
+  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  sku                 = "Standard_Microsoft"
+}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% for cdn in vm.cdn %}
+{% if cdn.provider == 'azure' and cdn.enable_auth_header is not defined or cdn.enable_auth_header is false %}
+resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
+  name                = "{{ cdn.hostname }}"
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  origin_host_header  = "{{ vm.dns_hostname|default(vm.name) }}.{{ warhorse.dns.op_domain_name }}"
+  querystring_caching_behaviour = "BypassCaching"
+
+  origin {
+    name      = "{{ cdn.hostname }}"
+    host_name = "{{ vm.dns_hostname|default(vm.name) }}.{{ warhorse.dns.op_domain_name }}"
+  }
+
+  delivery_rule{
+    name = "nocache"
+    order = 1
+    
+    query_string_condition {
+      operator = "Any"
+    }
+
+    
+    url_path_condition {
+      operator = "Any"
+    }
+
+    cache_expiration_action {
+      behavior =  "BypassCache"
+    }
+  }
+}
+{% endif %}
+{% if cdn.provider == 'azure' and cdn.enable_auth_header is true %}
+resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
+  name                = "{{ cdn.hostname }}"
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  origin_host_header  = "{{ vm.dns_hostname|default(vm.name) }}.{{ warhorse.dns.op_domain_name }}"
+  querystring_caching_behaviour = "BypassCaching"
+
+  origin {
+    name      = "{{ cdn.hostname }}"
+    host_name = "{{ vm.dns_hostname|default(vm.name) }}.{{ warhorse.dns.op_domain_name }}"
+  }
+
+  delivery_rule{
+    name = "nocache"
+    order = 1
+    
+    query_string_condition {
+      operator = "Any"
+    }
+
+    
+    url_path_condition {
+      operator = "Any"
+    }
+
+    cache_expiration_action {
+      behavior =  "BypassCache"
+    }
+  }
+
+  delivery_rule{
+    name = "header"
+    order = 2
+{% if vm.cobaltstrike.enabled is true %}
+    request_header_condition {
+      selector = "{{ vm.cobaltstrike.auth_header_name }}"
+      operator = "Equal"
+      negate_condition = true
+      match_values = ["{{ vm.cobaltstrike.auth_header_value }}"]
+    }
+{% endif %}
+
+    url_redirect_action {
+      redirect_type = "PermanentRedirect"
+      hostname = "azure.microsoft.com"
+    }
+  }
+}
+{% endif %}
+{% endfor %}
+{% endfor %}

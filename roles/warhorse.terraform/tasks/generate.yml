@@ -1,0 +1,51 @@
+---
+- name: Create a terraform directory 
+  ansible.builtin.file:
+    path: '{{ terraform_project_path }}'
+    state: directory
+    mode: '0755'
+
+- name: Generating Terraform Variables
+  template:
+    src: templates/terraform_variables.tf.j2
+    dest: "{{ terraform_project_path }}/variables.tf"
+
+- name: Generating Terraform Providers
+  template:
+    src: templates/terraform_provider.tf.j2
+    dest: "{{ terraform_project_path }}/provider.tf"
+
+- name: Generating Terraform Digital Ocean Droplet
+  template:
+    src: templates/terraform_digitalocean_do.tf.j2
+    dest: "{{ terraform_project_path }}/digitalocean_do.tf"
+
+- name: Generating Terraform Digital Ocean DNS
+  template:
+    src: templates/terraform_digitalocean_dns.tf.j2
+    dest: "{{ terraform_project_path }}/digitalocean_dns.tf"
+
+- name: Generating Terraform Azure CDN
+  template:
+    src: templates/terraform_azure_cdn.tf.j2
+    dest: "{{ terraform_project_path }}/azure_cdn.tf"
+
+- name: Generating Terraform Azure Resource
+  template:
+    src: templates/terraform_azure_resource.tf.j2
+    dest: "{{ terraform_project_path }}/azure_resource.tf"
+
+- name: Generating Terraform Outputs
+  template:
+    src: templates/terraform_outputs.tf.j2
+    dest: "{{ terraform_project_path }}/outputs.tf"
+
+- name: Generating Terraform Outputs Template
+  template:
+    src: templates/inventory.tmpl.j2
+    dest: "{{ terraform_project_path }}/inventory.tmpl"
+
+- name: Generating Terraform CloudInit
+  template:
+    src: templates/cloud-init-do.yaml.j2
+    dest: "{{ terraform_project_path }}/cloud-init-do.yaml"

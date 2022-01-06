@@ -1,0 +1,80 @@
+{% for vm in warhorse.vm %}
+{% if loop.first %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+            # Traefik
+              dns_traefik: "{{ warhorse.dns.provider }}"
+              traefik_dir: "{{ vm.traefik.dir | default('/opt/docker/traefik') }}"
+              traefik_network: "{% raw %}{{ dockernet }}{% endraw %}"
+              traefik_hostname: "traefik"
+              traefik_vpn_hostname: "traefik"
+              traefik_acme_email: "{{ vm.traefik.acme_email }}"
+              traefik_add_volumes:
+              - "{% raw %}{{ traefik_dir }}{% endraw %}/acme:/etc/traefik/acme"
+              - "{% raw %}{{ traefik_dir }}{% endraw %}/log:/etc/traefik/log"
+              traefik_ports:
+                - '80:80'
+                - '443:443'
+              traefik_labels:
+                traefik.http.routers.traefik.tls: "true"
+                traefik.http.routers.traefik.tls.certresolver: "letsencrypt"
+                traefik.frontend.passHostHeader: "true"
+                traefik.http.middlewares.azure-cdn.ipwhitelist.sourcerange: "147.243.0.0/16"
+                traefik.http.middlewares.tailscale.ipwhitelist.sourcerange: "172.16.1.0/24"
+{% if vm.traefik.dashboard is true %}
+                traefik.http.routers.traefik.middlewares: "tailscale@docker"
+                traefik.http.routers.traefik.rule: "Host(`{% raw %}{{ traefik_vpn_hostname }}.{{ op_domain_name }}{% endraw %}`)"
+                traefik.http.routers.traefik.service: "api@internal"
+{% endif %}
+              traefik_env:
+                DO_AUTH_TOKEN: '{% raw %}{{ digitalocean_token }}{% endraw %}'
+
+              traefik_confkey_api:
+                insecure: true
+{% if vm.traefik.dashboard is true %}
+                dashboard: true
+{% endif %}
+              traefik_confkey_serversTransport:
+                insecureSkipVerify: true
+
+              traefik_confkey_log: 
+                filePath: "/etc/traefik/log/traefik.log"
+                level: "INFO"
+
+              traefik_confkey_accessLog:
+                filePath: "/etc/traefik/log/access.log"
+                bufferingSize: 100
+
+              traefik_confkey_entryPoints:
+                http:
+                  address: ':80'
+                  http:
+                    redirections:
+                      entryPoint:
+                        to: 'websecure'
+                        scheme: 'https'
+                websecure:
+                  address: ':443'
+                  http:
+                    tls:
+                      certResolver: 'letsencrypt'
+                
+              traefik_confkey_certificatesResolvers:
+                letsencrypt:
+                  acme:
+                    email: "{% raw %}{{ traefik_acme_email }}{% endraw %}"
+                    storage: "/etc/traefik/acme/acme.json"
+                    caServer: "https://acme-v02.api.letsencrypt.org/directory"
+                    dnsChallenge:
+                      provider: "{% raw %}{{ dns_traefik }}{% endraw %}"
+                      delayBeforeCheck: 0
+                      resolvers: 
+                        - "1.1.1.1:53"
+                        - "8.8.8.8:53"
+{% endfor %}

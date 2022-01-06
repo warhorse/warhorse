@@ -1,0 +1,36 @@
+---
+{% for vm in warhorse.vm %}
+{% if vm.tailscale.enabled == true %}
+- name: Cleanup Tailscale
+  gather_facts: True
+  hosts: {{ vm.name }}
+  connection: ssh
+  become: True
+  vars: 
+    deploy: false
+  roles:
+    - { role: warhorse.tailscale }
+{% endif %}
+{% endfor %}
+- name: Destroy Terraform
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars: 
+    deploy: false
+  vars_files:
+  - ./config.yml
+  roles:
+    - { role: warhorse.terraform }
+
+- name: Destroy SSH Key
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars: 
+    deploy: false
+  tasks:
+  - name: remove keys directory 
+    ansible.builtin.file:
+      path: keys
+      state: absent

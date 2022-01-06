@@ -1,0 +1,54 @@
+{% for vm in warhorse.vm %}
+{% if vm.provider == "digitalocean" and loop.first %}
+resource "digitalocean_tag" "op_number" {
+  name = "{{ op_number }}"
+}
+
+resource "digitalocean_tag" "ttl" {
+  name = "{{ ttl }}"
+}
+
+resource "digitalocean_ssh_key" "ansible_ssh_key" {
+  name       = "Ansible SSH Key"
+  public_key = "{{ lookup('file', '{{ ansible_ssh_public_key_file }}') }}"
+}
+{% endif %}
+{% if vm.provider == "digitalocean" %}
+resource "digitalocean_droplet" "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}" {
+  image = "{{ vm.img|default('ubuntu-20-04-x64') }}"
+  name = "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}"
+  region = "{{ vm.region|default('nyc1') }}"
+  size = "{{ vm.size|default('s-2vcpu-4gb') }}"
+  tags = [digitalocean_tag.op_number.id, digitalocean_tag.ttl.id]
+  user_data = "${file("cloud-init-do.yaml")}"
+  ssh_keys = [
+    digitalocean_ssh_key.ansible_ssh_key.fingerprint
+  ]
+}
+{% endif %}
+{% if vm.firewall.enabled is true and vm.provider == "digitalocean" %}
+resource "digitalocean_firewall" "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name + '-firewall') }}" {
+  name = "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name + '-firewall') }}"
+
+  droplet_ids = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.id]
+{% for name in firewall|selectattr("name", "equalto", vm.name ) %}
+{% for rules in name.rules %}
+{% if rules.type == 'inbound' %}
+  inbound_rule {
+    protocol         = "{{ rules.protocol }}"
+    port_range       = "{{ rules.port_range }}"
+    source_addresses = [{% for source in rules.source_addresses %}"{{source}}"{% endfor %}]
+  }
+{% endif %}
+{% if rules.type == 'outbound' %}
+  outbound_rule {
+    protocol         = "{{ rules.protocol }}"
+    port_range       = "{{ rules.port_range }}"
+    destination_addresses = [{% for source in rules.destination_addresses %}"{{source}}"{% endfor %}]
+  }
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endif %}
+}
+{% endfor %}

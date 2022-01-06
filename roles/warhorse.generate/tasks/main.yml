@@ -1,0 +1,3 @@
+---
+- include: inventory.yml
+- include: generate.yml

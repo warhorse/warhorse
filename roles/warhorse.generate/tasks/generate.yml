@@ -1,0 +1,12 @@
+---
+- name: Generating deploy.yml
+  template:
+    mode: '0755'
+    src: templates/deploy.yml.j2
+    dest: "./deploy.yml"
+
+- name: Generating destroy.yml
+  template:
+    mode: '0755'
+    src: templates/destroy.yml.j2
+    dest: "./destroy.yml"
