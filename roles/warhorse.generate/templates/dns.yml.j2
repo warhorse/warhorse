@@ -27,7 +27,7 @@ all:
           hostnames:
             - "{{ vm.name }}"
 {% if vm.cobaltstrike.enabled is true %}
-            - "cs"
+            - "cs{{ loop.index }}"
 {% if vm.cobaltstrike.dns_over_https is true %}
             - "ns{{ loop.index }}"
         - entry:
