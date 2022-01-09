@@ -1,0 +1,8 @@
+--- 
+- name: Ensure the locale exists
+  locale_gen:
+    name: en_US.UTF-8
+    state: present
+    
+- name: set as default locale
+  command: localectl set-locale LANG=en_US.UTF-8

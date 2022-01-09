@@ -1,0 +1,6 @@
+# Log Everything
+if test -t 0 -a -t 1 -a -z "$SCRIPTING"
+then
+    export SCRIPTING="$HOME/log/terminal.log.$(date +%Y%m%d_%H%M%S).$$"
+    exec script "$SCRIPTING"
+fi

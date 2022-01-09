@@ -1,0 +1,18 @@
+---
+- name: create .zshrc
+  file:
+    path: /home/{{ item.username }}/.zshrc
+    state: touch
+  with_items: "{{ users }}"
+
+- name: Add source to .zshrc
+  lineinfile:
+    path: /home/{{ item.username }}/.zshrc
+    line: 'source /usr/share/zsh-config/.zshrc'
+    insertbefore: BOF
+  with_items: "{{ users }}"
+
+- name: Install zsh
+  apt:
+    name: zsh
+    state: present

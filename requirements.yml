@@ -3,20 +3,18 @@ roles:
   - name: arillso.restic
     version: 0.3.0
   - name: gantsign.golang
-    version: 
+    version: 2.9.6
   - name: geerlingguy.docker
-    version: 
+    version: 4.1.1
   - name: geerlingguy.ntp
-    version: 
+    version: 2.3.0
   - name: geerlingguy.pip
-    version: 
+    version: 2.1.0
   - name: geerlingguy.security
-    version: 
+    version: 2.1.0
   - name: viasite-ansible.zsh
-    version: 
+    version: 3.5.1
 
-collections:
-  # Install a collection from Ansible Galaxy.
-  - name: warhorse.warhorse_roles
-    version: 0.9.3
-    source: https://galaxy.ansible.com
+  - name: warhorse.cobaltstrike_docker
+  - name: warhorse.neo4j_docker
+  - name: warhorse.traefik_docker

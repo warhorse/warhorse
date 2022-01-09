@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo 'Uptime:'
+echo
+echo -n '     '
+uptime | awk -F'( |,|:)+' '{print $6,$7",",$8,"hours,",$9,"minutes"}'
+echo

@@ -1,0 +1,9 @@
+---
+- include: roles.yml
+- include: upgrade.yml
+- include: locale.yml
+- include: zsh.yml
+- include: motd.yml
+- include: packages.yml
+- include: network.yml
+- include: docker.yml

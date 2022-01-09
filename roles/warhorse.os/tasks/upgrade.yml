@@ -1,0 +1,19 @@
+---
+- name: Update all packages on a Debian/Ubuntu & autoremove
+  apt:
+      autoremove: yes
+      update_cache: yes
+      upgrade: dist
+      
+- name: Reboot box if kernel/libs updated and requested by the system
+  shell: sleep 10 && /sbin/shutdown -r now 'Rebooting box to update system libs/kernel as needed' 
+  args:
+      removes: /var/run/reboot-required
+  async: 300
+  poll: 0
+  ignore_errors: true
+  
+- name: Wait for system to become reachable again
+  wait_for_connection:
+      delay: 10
+      timeout: 300

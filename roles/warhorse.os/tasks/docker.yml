@@ -1,0 +1,12 @@
+---
+- name: Containers internal network
+  docker_network:
+    name: "{{ dockernet }}"
+    attachable: "yes"
+    ipam_config:
+    - subnet: 172.3.27.0/24
+      gateway: 172.3.27.2
+      iprange: 172.3.27.0/26
+      aux_addresses:
+        host1: 172.3.27.3
+        host2: 172.3.27.4

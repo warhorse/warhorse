@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if ! which docker >/dev/null 2>&1; then
+	exit
+fi
+
+echo 'Services:'
+echo
+
+longest=0
+while read -r name; do
+	len="${#name}"
+	if ((len > longest)); then
+		longest=$len
+	fi
+done < <(docker ps -a --format "{{.Names}}" | sort)
+
+while read -r name id image status; do
+	if [[ "$status" = Up* ]]; then
+		echo -en "\e[1;32m"
+	else
+		echo -en "\e[1;31m"
+	fi
+
+	printf "     %s%b%s%b   %*s   %s" "$update" "$color" "$name" "\e[0m" "$((longest - ${#name}))" "" "$status"
+
+	imageID="$(docker image inspect $image --format '{{.Id}}')"
+	currentImage="$(docker inspect $id --format '{{.Image}}')"
+	if [[ "${currentImage//:/}" -ne "${imageID//:/}" ]]; then
+		echo -ne "\tUpdate available!"
+	fi
+
+	echo
+done < <(docker ps -a --format "table {{.Names}}\t{{.ID}}\t{{.Image}}\t{{.Status}}" | tail -n +2 | sort)
+
+echo

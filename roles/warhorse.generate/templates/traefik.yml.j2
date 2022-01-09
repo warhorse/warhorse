@@ -11,7 +11,7 @@ all:
             # Traefik
               dns_traefik: "{{ warhorse.dns.provider }}"
               traefik_dir: "{{ vm.traefik.dir | default('/opt/docker/traefik') }}"
-              traefik_network: "{% raw %}{{ dockernet }}{% endraw %}"
+              traefik_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               traefik_hostname: "traefik"
               traefik_vpn_hostname: "traefik"
               traefik_acme_email: "{{ vm.traefik.acme_email }}"

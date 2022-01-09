@@ -1,0 +1,57 @@
+--- 
+- name: Install figlet
+  apt:
+    name: figlet
+    state: present
+
+- name: Clean MOTD Folder
+  shell: /bin/rm -rf /etc/update-motd.d/*
+
+- name: Add 10-logo file
+  copy:
+    src: 10-logo
+    dest: /etc/update-motd.d/10-logo
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Add 11-uptime file
+  copy:
+    src: 11-uptime
+    dest: /etc/update-motd.d/11-uptime
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Add 12-services file
+  copy:
+    src: 12-services
+    dest: /etc/update-motd.d/12-services
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Add 13-drives file
+  copy:
+    src: 13-drives
+
+    dest: /etc/update-motd.d/13-drives
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Add 14-updates file
+  copy:
+    src: 14-updates
+    dest: /etc/update-motd.d/14-updates
+    owner: root
+    group: root
+    mode: 0755
+
+- name: disable ubuntu motd-news
+  lineinfile:
+    dest: /etc/default/motd-news
+    state: present
+    regexp: '^ENABLED='
+    line: 'ENABLED=0'
+  when: ansible_distribution == 'Ubuntu'

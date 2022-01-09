@@ -6,7 +6,7 @@
 # Folders
 _obj
 _test
-files/
+files/*
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -63,12 +63,14 @@ hashicorp/
 # ansible
 secrets.yml
 inventory/
+warhorse_roles/
 keys/
 temp/
 !roles/
 roles/*
 !roles/warhorse.generate/
 !roles/warhorse.terraform/
+!roles/warhorse.os/
 config.yml
 deploy.yml
 destroy.yml

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+apt update > /dev/null 2>&1
+num="$(apt list --upgradable 2>/dev/null | wc -l)"
+
+if ((num > 0)); then
+	echo "$num updates available!"
+fi

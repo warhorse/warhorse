@@ -1,0 +1,5 @@
+--- 
+- name: Install Extra Packages
+  apt:
+    pkg: "{{ extra_packages }}"
+    state: present
