@@ -18,3 +18,8 @@ roles:
   - name: warhorse.cobaltstrike_docker
   - name: warhorse.neo4j_docker
   - name: warhorse.traefik_docker
+
+collections:
+  # Install a collection from Ansible Galaxy.
+  - name: community.general
+    source: https://galaxy.ansible.com
