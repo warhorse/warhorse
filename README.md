@@ -2,7 +2,12 @@
 
 # Warhorse
 
-![GitHub Stars](https://img.shields.io/github/stars/warhorse/warhorse?style=social) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/warhorse/warhorse) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/warhorse/warhorse) ![GitHub Contributors](https://img.shields.io/github/contributors/warhorse/warhorse?style=plastic) 
+![GitHub Stars](https://img.shields.io/github/stars/warhorse/warhorse?style=social) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/warhorse/warhorse) 
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/warhorse/warhorse) 
+![GitHub Contributors](https://img.shields.io/github/contributors/warhorse/warhorse?style=plastic) 
+[![CI](https://github.com/warhorse/warhorse/workflows/CI/badge.svg?event=push)](https://github.com/warhorse/warhorse/actions?query=workflow%3ACI)
+![License](https://img.shields.io/github/license/warhorse/warhorse)
+![Commit](https://img.shields.io/github/last-commit/warhorse/warhorse)
 
 Table of contents 
 ------------------
