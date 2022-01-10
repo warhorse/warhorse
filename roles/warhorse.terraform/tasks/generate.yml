@@ -1,9 +1,14 @@
 ---
-- name: Create a terraform directory 
+- name: Create a terraform directorys 
   ansible.builtin.file:
-    path: '{{ terraform_project_path }}'
+    path: '{{ item }}'
     state: directory
     mode: '0755'
+  with_items:
+  - "{{ terraform_project_path }}"
+  - "{{ terraform_project_path }}/redirector"
+  - "{{ terraform_project_path }}/redirector/iis"
+
 
 - name: Generating Terraform Variables
   template:
@@ -15,6 +20,8 @@
     src: templates/terraform_provider.tf.j2
     dest: "{{ terraform_project_path }}/provider.tf"
 
+- include: azure.yml
+
 - name: Generating Terraform Digital Ocean Droplet
   template:
     src: templates/terraform_digitalocean_do.tf.j2
@@ -24,16 +31,6 @@
   template:
     src: templates/terraform_digitalocean_dns.tf.j2
     dest: "{{ terraform_project_path }}/digitalocean_dns.tf"
-
-- name: Generating Terraform Azure CDN
-  template:
-    src: templates/terraform_azure_cdn.tf.j2
-    dest: "{{ terraform_project_path }}/azure_cdn.tf"
-
-- name: Generating Terraform Azure Resource
-  template:
-    src: templates/terraform_azure_resource.tf.j2
-    dest: "{{ terraform_project_path }}/azure_resource.tf"
 
 - name: Generating Terraform Outputs
   template:

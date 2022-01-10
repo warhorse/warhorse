@@ -1,2 +1,2 @@
 ---
-ansible_playbook_project_path : './playbook'
+ansible_playbook_project_path: './playbook'

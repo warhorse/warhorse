@@ -20,17 +20,22 @@ provider "digitalocean" {
 {% endfor %}
 
 {% for vm in warhorse.vm %}
-{% if loop.last %}
-{% for cdn in vm.cdn %}
-{% if loop.last %}
-{% if vm.provider == 'azure' or cdn.provider == 'azure' %}
+{% if loop.index == 1 and vm.provider == "azure" %}
 provider "azurerm" {
   features {}
-  {% if azure_subId is defined %}
+{% if azure_subId is defined %}
   subscription_id = "{{ azure_subId }}"
-  {% endif %}
-}
 {% endif %}
+}
+{% else %}
+{% for cdn in vm.cdn %}
+{% if loop.index == 1 and cdn.provider == "azure" %}
+provider "azurerm" {
+  features {}
+{% if azure_subId is defined %}
+  subscription_id = "{{ azure_subId }}"
+{% endif %}
+}
 {% endif %}
 {% endfor %}
 {% endif %}

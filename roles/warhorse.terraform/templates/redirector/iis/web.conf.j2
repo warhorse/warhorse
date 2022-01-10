@@ -1,0 +1,24 @@
+{% for vm in warhorse.vm %}
+{% if loop.first %}
+<configuration>
+    <system.webServer>
+        <rewrite>
+            <rules>
+                <rule name="redirect get requests URI1" stopProcessing="true">
+                    <match url="^(.*)$" />
+                    <conditions>
+                        <add input="{HTTP_USER_AGENT}" pattern="^(.*)$" />
+{% for redirector in vm.redirector %}
+{% if redirector.enable_auth_header == true %}
+                        <add input="{% raw %}{{% endraw %}{{ vm.cobaltstrike.auth_header_name }}{% raw %}}{% endraw %}" pattern="{{ vm.cobaltstrike.auth_header_value }}" />
+{% endif %}
+{% endfor %}
+                    </conditions>
+                    <action type="Rewrite" url="https://{{ vm.name }}.{{ warhorse.dns.op_domain_name }}/{R:0}" appendQueryString="true" logRewrittenUrl="false" />
+                </rule>
+            </rules>
+        </rewrite>
+    </system.webServer>
+</configuration>
+{% endif %}
+{% endfor %}

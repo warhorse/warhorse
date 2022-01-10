@@ -25,9 +25,9 @@ all:
     ansible_ssh_private_key_file: "{% raw %}{{ lookup('env', 'PWD') }}/keys/id_rsa_ansible{% endraw %}"
     ansible_ssh_public_key_file: "{% raw %}{{ lookup('env', 'PWD') }}/keys/id_rsa_ansible.pub{% endraw %}"
     ansible_ssh_user: 'ansible'
-{% for users in warhorse.users %}
     # Create Users
     users:
+{% for users in warhorse.users %}
       - username: {{ users.username }}
         name: {{ users.name }}
         authorized_keys:
@@ -38,10 +38,14 @@ all:
         append: {{ users.append | default ('yes') }}
         home_mode: "{{ users.home_mode | default ('0750') }}"
         shell: {{ users.shell | default ('/usr/bin/zsh') }} 
+{% endfor %}
     users_authorized_keys_exclusive: yes
     security_sudoers_passwordless:
+{% for users in warhorse.users %}
       - {{ users.username }}
+{% endfor %}
     docker_users:
+{% for users in warhorse.users %}
       - {{ users.username }}
 {% endfor %}
     # ZSH Settings

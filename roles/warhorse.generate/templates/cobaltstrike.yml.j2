@@ -51,5 +51,7 @@ all:
 {% endfor %}
   vars:
     cs_auth_header_value: "{% raw %}{{ op_number | b64encode }}{% endraw %}"
-    cs_auth_header_name: "cdnauth"
+{% for vm in warhorse.vm %}
+    cs_auth_header_name: "{{ vm.cobaltstrike.auth_header_name }}"
+{% endfor %}
     cs_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"

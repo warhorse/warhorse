@@ -1,0 +1,82 @@
+{% for vm in warhorse.vm %}
+{% if loop.first %}
+{% for redirector in vm.redirector %}
+{% if redirector.provider == 'azure' %}
+
+resource "azurerm_storage_account" "storage_account" {
+  name = "{{ vm.name }}strg"
+  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  location = "{{ vm.region|default('East US') }}"
+  account_tier = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_storage_container" "storage_container" {
+    name = "{{ vm.name }}-storage-container-functions"
+    storage_account_name = azurerm_storage_account.storage_account.name
+    container_access_type = "private"
+}
+
+data "azurerm_storage_account_blob_container_sas" "storage_account_blob_container_sas" {
+  connection_string = azurerm_storage_account.storage_account.primary_connection_string
+  container_name    = azurerm_storage_container.storage_container.name
+
+  start = "2022-01-01T00:00:00Z"
+  expiry = "2023-01-01T00:00:00Z"
+
+  permissions {
+    read   = true
+    add    = false
+    create = false
+    write  = false
+    delete = false
+    list   = false
+  }
+}
+
+resource "azurerm_app_service_plan" "app_service_plan" {
+  name                = "{{ vm.name }}-app-service-plan"
+  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  location            = "{{ vm.region|default('East US') }}"
+  kind                = "FunctionApp"
+  sku {
+    tier = "Dynamic"
+    size = "Y1"
+  }
+}
+
+data "archive_file" "file_function_app_{{ vm.name }}" {
+  type        = "zip"
+  source_dir  = "${path.root}/redirector/iis"
+  output_path = "function-app.zip"
+}
+
+resource "azurerm_storage_blob" "storage_blob_{{ vm.name }}" {
+  name = "${filesha256(data.archive_file.file_function_app_{{ vm.name }}.output_path)}.zip"
+  storage_account_name = azurerm_storage_account.storage_account.name
+  storage_container_name = azurerm_storage_container.storage_container.name
+  type = "Block"
+  source = data.archive_file.file_function_app_{{ vm.name }}.output_path
+}
+
+resource "azurerm_function_app" "function_app_{{ vm.name }}" {
+  name                       = "{{ vm.name }}-function-app"
+  resource_group_name        = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  location                   = "{{ vm.region|default('East US') }}"
+  app_service_plan_id        = azurerm_app_service_plan.app_service_plan.id
+  app_settings = {
+    "WEBSITE_RUN_FROM_PACKAGE"    = "https://${azurerm_storage_account.storage_account.name}.blob.core.windows.net/${azurerm_storage_container.storage_container.name}/${azurerm_storage_blob.storage_blob_{{ vm.name }}.name}${data.azurerm_storage_account_blob_container_sas.storage_account_blob_container_sas.sas}",
+    "AzureWebJobsDisableHomepage" = "true"
+  }
+  os_type = "linux"
+  site_config {
+    use_32_bit_worker_process = false
+  }
+  storage_account_name       = azurerm_storage_account.storage_account.name
+  storage_account_access_key = azurerm_storage_account.storage_account.primary_access_key
+  version                    = "~3"
+}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

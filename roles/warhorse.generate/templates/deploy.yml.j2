@@ -59,6 +59,9 @@
   connection: ssh
   become: True
   roles:
+{% if vm.http_proxy == "traefik" %}
+    - { role: warhorse.traefik_docker }
+{% endif %}
 {% if vm.cobaltstrike.enabled %}
     - { role: warhorse.cobaltstrike_docker }
 {% endif %}
