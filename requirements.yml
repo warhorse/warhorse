@@ -13,7 +13,7 @@ roles:
   - name: geerlingguy.security
     version: 2.1.0
   - name: viasite-ansible.zsh
-    version: 3.5.1
+    version: v3.5.1
 
   - name: warhorse.cobaltstrike_docker
   - name: warhorse.neo4j_docker
