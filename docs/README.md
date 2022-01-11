@@ -43,13 +43,7 @@ Warhorse consists of a fully-featured Ansible playbook to deploy infrastructure 
 | ------ | ----- | ------ |
 |  <img src='https://github.com/warhorse/ansible-role-cobaltstrike-docker/blob/master/images/cs_logo.png?raw=true' width='40'>                                                                                                                         | Cobaltstrike  | [cobaltstrike_docker](https://github.com/warhorse/ansible-role-cobaltstrike-docker)|
 |  <img src='https://github.com/warhorse/ansible-role-traefik-docker/blob/master/images/traefik_logo.png?raw=true' width='40'>                                                                                                                         | Traefik  | [traefik_docker](https://github.com/warhorse/ansible-role-traefik-docker)|
-### [Getting Started](https://docs.war-horse.io/#/?id=table-of-contents)
-- #### [Secrets](https://docs.war-horse.io/#/?id=table-of-contents)
-- #### [Advanced Configuration](https://docs.war-horse.io/#/?id=table-of-contents)
 
-- #### [Deploy](https://docs.war-horse.io/#/?id=table-of-contents)
-
-- #### [Destroy](https://docs.war-horse.io/#/?id=table-of-contents)
 ## Development
 
 Does none of this work for you? Submit an issue [HERE](https://github.com/warhorse/warhorse/issues)
