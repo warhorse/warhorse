@@ -6,6 +6,9 @@
     mode: '0755'
   with_items:
   - "{{ terraform_project_path }}"
+  - "{{ terraform_project_path }}/aws"
+  - "{{ terraform_project_path }}/digitalocean"
+  - "{{ terraform_project_path }}/azure"
   - "{{ terraform_project_path }}/redirector"
   - "{{ terraform_project_path }}/redirector/iis"
 
@@ -21,16 +24,8 @@
     dest: "{{ terraform_project_path }}/provider.tf"
 
 - include: azure.yml
-
-- name: Generating Terraform Digital Ocean Droplet
-  template:
-    src: templates/terraform_digitalocean_do.tf.j2
-    dest: "{{ terraform_project_path }}/digitalocean_do.tf"
-
-- name: Generating Terraform Digital Ocean DNS
-  template:
-    src: templates/terraform_digitalocean_dns.tf.j2
-    dest: "{{ terraform_project_path }}/digitalocean_dns.tf"
+- include: digitalocean.yml
+- include: aws.yml
 
 - name: Generating Terraform Outputs
   template:
@@ -41,8 +36,3 @@
   template:
     src: templates/inventory.tmpl.j2
     dest: "{{ terraform_project_path }}/inventory.tmpl"
-
-- name: Generating Terraform CloudInit
-  template:
-    src: templates/cloud-init-do.yaml.j2
-    dest: "{{ terraform_project_path }}/cloud-init-do.yaml"

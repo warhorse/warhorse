@@ -1,45 +1,41 @@
 terraform {
   required_version = ">= 0.12.0"
   required_providers {
-{% for vm in warhorse.vm|selectattr("provider", "equalto", "digitalocean") %}
-{% if loop.last %}
+{% if warhorse|regex_search("'provider': 'digitalocean'", multiline=True, ignorecase=True) %}
     digitalocean = {
       source = "digitalocean/digitalocean"
     }
 {% endif %}
-{% endfor %}
+{% if warhorse|regex_search("'provider': 'aws'", multiline=True, ignorecase=True) %}
+    aws = {
+      source  = "hashicorp/aws"
+    }
+{% endif %}
     local = ">= 1.2"
   }
 }
-{% for vm in warhorse.vm|selectattr("provider", "equalto", "digitalocean") %}
-{% if loop.last %}
+{% if warhorse|regex_search("'provider': 'digitalocean'", multiline=True, ignorecase=True) %}
 provider "digitalocean" {
   token = var.do_token
 }
 {% endif %}
-{% endfor %}
-
-{% for vm in warhorse.vm %}
-{% if loop.index == 1 and vm.provider == "azure" %}
+{% if warhorse|regex_search("'provider': 'aws'", multiline=True, ignorecase=True) %}
+provider "aws" {
+{% if aws_access_key is defined and aws_secret_key is defined %}
+  access_key = {{ aws_access_key }}
+  secret_key = {{ aws_secret_key }}
+{% endif %}
+  region = "us-east-1"
+{% endif %}
+}
+{% if warhorse|regex_search("'provider': 'azure'", multiline=True, ignorecase=True) %}
 provider "azurerm" {
   features {}
 {% if azure_subId is defined %}
   subscription_id = "{{ azure_subId }}"
 {% endif %}
 }
-{% else %}
-{% for cdn in vm.cdn %}
-{% if loop.index == 1 and cdn.provider == "azure" %}
-provider "azurerm" {
-  features {}
-{% if azure_subId is defined %}
-  subscription_id = "{{ azure_subId }}"
 {% endif %}
-}
-{% endif %}
-{% endfor %}
-{% endif %}
-{% endfor %}
 {% if warhorse.terraform.state_bucket_enable is true %}
 terraform {
   backend "s3" {

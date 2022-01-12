@@ -46,13 +46,6 @@ Warhorse consists of a fully-featured Ansible playbook to deploy infrastructure 
 ## Documentation 
 
 https://docs.war-horse.io/
-### [Getting Started](https://docs.war-horse.io/#/?id=table-of-contents)
-- #### [Secrets](https://docs.war-horse.io/#/?id=table-of-contents)
-- #### [Advanced Configuration](https://docs.war-horse.io/#/?id=table-of-contents)
-
-- #### [Deploy](https://docs.war-horse.io/#/?id=table-of-contents)
-
-- #### [Destroy](https://docs.war-horse.io/#/?id=table-of-contents)
 ## Development
 
 Does none of this work for you? Submit an issue [HERE](https://github.com/warhorse/warhorse/issues)

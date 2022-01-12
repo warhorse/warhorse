@@ -34,3 +34,11 @@
     dest: "./inventory/traefik.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.http_proxy == 'traefik'
+
+- name: Generating neo4j inventory
+  template:
+    mode: '0755'
+    src: templates/neo4j.yml.j2
+    dest: "./inventory/neo4j.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.neo4j.enabled

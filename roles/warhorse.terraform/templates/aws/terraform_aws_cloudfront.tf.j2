@@ -1,0 +1,69 @@
+{% for vm in warhorse.vm %}
+{% set outer_loop = loop %}
+{% if vm.cobaltstrike.cdn is defined %}
+{% for cdn in vm.cobaltstrike.cdn %}
+{% if cdn.provider == 'aws' %}
+resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}" {
+  origin {
+    domain_name = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    origin_id   = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+
+    custom_origin_config {
+      http_port              = "80"
+      https_port             = "443"
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.1"]
+    }
+
+
+  }
+
+  enabled             = true
+  is_ipv6_enabled     = false
+  comment             = "Some comment"
+  default_root_object = "index.html"
+
+  default_cache_behavior {
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+
+    forwarded_values {
+      query_string = true
+      headers      = ["*"]
+
+      cookies {
+        forward = "all"
+      }
+    }
+
+    viewer_protocol_policy = "allow-all"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+  }
+
+
+  price_class = "PriceClass_200"
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "whitelist"
+      locations        = ["US", "CA"]
+    }
+  }
+
+  tags = {
+    OP    = "{{ warhorse.general.op_number }}"
+    TTL   = "{{ warhorse.general.ttl }}"
+    Owner = "{{ warhorse.general.user_tag }}"
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
+}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

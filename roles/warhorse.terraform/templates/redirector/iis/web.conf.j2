@@ -8,9 +8,9 @@
                     <match url="^(.*)$" />
                     <conditions>
                         <add input="{HTTP_USER_AGENT}" pattern="^(.*)$" />
-{% for redirector in vm.redirector %}
-{% if redirector.enable_auth_header == true %}
-                        <add input="{% raw %}{{% endraw %}{{ vm.cobaltstrike.auth_header_name }}{% raw %}}{% endraw %}" pattern="{{ vm.cobaltstrike.auth_header_value }}" />
+{% for redirector in vm.cobaltstrike.redirector %}
+{% if redirector.auth_header_name is defined %}
+                        <add input="{% raw %}{{% endraw %}{{ redirector.auth_header_name }}{% raw %}}{% endraw %}" pattern="{{ redirector.auth_header_value }}" />
 {% endif %}
 {% endfor %}
                     </conditions>

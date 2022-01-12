@@ -21,18 +21,19 @@ all:
               cs_profile_location: "{% raw %}{{ lookup('env', 'PWD') }}/files/azure.profile.j2{% endraw %}"
               cs_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               cs_dir: '/opt/docker/cobaltstrike'
-{% if vm.tailscale.enabled is true %}
-              cs_ports:
-                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:50050:50050{% endraw %}"
-{% for ports in vm.cobaltstrike.socks_ports %}
-                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:{% endraw %}{{ ports }}:{{ ports }}"
-{% endfor %}
-{% else %}
               cs_ports:
                 - "127.0.0.1:50050:50050"
 {% for ports in vm.cobaltstrike.socks_ports %}
                 - "127.0.0.1:{{ ports }}:{{ ports }}"
 {% endfor %}
+{% if vm.tailscale.enabled is true %}
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:50050:50050{% endraw %}"
+{% for ports in vm.cobaltstrike.socks_ports %}
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:{% endraw %}{{ ports }}:{{ ports }}"
+{% endfor %}
+{% endif %}
+{% if vm.cobaltstrike.dns_over_https is true %}
+                - "53:53"
 {% endif %}
 {% if vm.http_proxy == "traefik" %}
               cs_docker_labels:

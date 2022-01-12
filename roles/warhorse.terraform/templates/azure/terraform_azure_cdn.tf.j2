@@ -1,7 +1,8 @@
 {% for vm in warhorse.vm %}
-{% if loop.first %}
-{% for cdn in vm.cdn %}
-{% if cdn.provider == 'azure' and loop.first %}
+{% set outer_loop = loop %}
+{% if vm.cobaltstrike.cdn is defined %}
+{% for cdn in vm.cobaltstrike.cdn %}
+{% if cdn|regex_search("'provider': 'azure'", multiline=True, ignorecase=True) %}
 resource "azurerm_cdn_profile" "cdn_profile_{{ op_number }}" {
   name                = "{{ op_number }}"
   location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
@@ -9,10 +10,7 @@ resource "azurerm_cdn_profile" "cdn_profile_{{ op_number }}" {
   sku                 = "Standard_Microsoft"
 }
 {% endif %}
-{% endfor %}
-{% endif %}
-{% for cdn in vm.cdn %}
-{% if cdn.provider == 'azure' and cdn.enable_auth_header is not defined or cdn.enable_auth_header is false and vm.cobaltstrike.enabled == true %}
+{% if cdn.provider == 'azure' and cdn.auth_header_name is not defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
@@ -45,7 +43,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   }
 }
 {% endif %}
-{% if cdn.provider == 'azure' and cdn.enable_auth_header is true and vm.cobaltstrike.enabled == true %}
+{% if cdn.provider == 'azure' and cdn.auth_header_name is defined and cdn.auth_header_value is defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
@@ -81,10 +79,10 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
     name = "header"
     order = 2
     request_header_condition {
-      selector = "{{ vm.cobaltstrike.auth_header_name }}"
+      selector = "{{ cdn.auth_header_name }}"
       operator = "Equal"
       negate_condition = true
-      match_values = ["{{ vm.cobaltstrike.auth_header_value }}"]
+      match_values = ["{{ cdn.auth_header_value }}"]
     }
 
     url_redirect_action {
@@ -95,4 +93,5 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 }
 {% endif %}
 {% endfor %}
+{% endif %}
 {% endfor %}

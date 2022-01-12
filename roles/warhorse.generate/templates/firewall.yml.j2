@@ -53,5 +53,13 @@ all:
           source_addresses:
           - "0.0.0.0/0"
 {% endif %}
+{% if vm.cobaltstrike.dns_over_https is true %}
+        - rule: 
+          type: inbound
+          protocol: "udp"
+          port_range: "53"
+          source_addresses:
+          - "0.0.0.0/0"
+{% endif %}
 {% endfor %}
 

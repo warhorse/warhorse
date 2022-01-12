@@ -1,12 +1,24 @@
 ---
 - name: Generating Terraform Azure CDN
   template:
-    src: templates/terraform_azure_cdn.tf.j2
+    src: templates/azure/terraform_azure_cdn.tf.j2
     dest: "{{ terraform_project_path }}/azure_cdn.tf"
 
 - name: Generating Terraform Azure Resource
   template:
-    src: templates/terraform_azure_resource.tf.j2
+    src: templates/azure/terraform_azure_resource.tf.j2
     dest: "{{ terraform_project_path }}/azure_resource.tf"
 
-- include: azure_appservice.yml
+- name: Generating Terraform Azure Appservice files
+  template:
+    src: templates/redirector/iis/{{ item }}.j2
+    dest: "{{ terraform_project_path }}/redirector/iis/{{ item }}"
+  with_items:
+  - applicationHost.xdt
+  - index.html
+  - web.conf
+
+- name: Generating Terraform Azure Appservice
+  template:
+    src: templates/azure/terraform_azure_appservice.tf.j2
+    dest: "{{ terraform_project_path }}/azure_appservice.tf"

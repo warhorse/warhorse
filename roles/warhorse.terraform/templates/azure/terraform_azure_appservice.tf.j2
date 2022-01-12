@@ -1,8 +1,8 @@
 {% for vm in warhorse.vm %}
-{% if loop.first %}
-{% for redirector in vm.redirector %}
+{% set outer_loop = loop %}
+{% if vm.cobaltstrike.redirector is defined %}
+{% for redirector in vm.cobaltstrike.redirector %}
 {% if redirector.provider == 'azure' %}
-
 resource "azurerm_storage_account" "storage_account" {
   name = "{{ vm.name }}strg"
   resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name

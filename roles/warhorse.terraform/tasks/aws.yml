@@ -1,0 +1,5 @@
+---
+- name: Generating Terraform AWS Cloudfront
+  template:
+    src: templates/aws/terraform_aws_cloudfront.tf.j2
+    dest: "{{ terraform_project_path }}/aws_cloudfront.tf"

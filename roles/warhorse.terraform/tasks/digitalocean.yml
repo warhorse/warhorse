@@ -1,0 +1,15 @@
+---
+- name: Generating Terraform Digital Ocean Droplet
+  template:
+    src: templates/digitalocean/terraform_digitalocean_do.tf.j2
+    dest: "{{ terraform_project_path }}/digitalocean_do.tf"
+
+- name: Generating Terraform Digital Ocean DNS
+  template:
+    src: templates/digitalocean/terraform_digitalocean_dns.tf.j2
+    dest: "{{ terraform_project_path }}/digitalocean_dns.tf"
+
+- name: Generating Terraform CloudInit
+  template:
+    src: templates/digitalocean/cloud-init-do.yaml.j2
+    dest: "{{ terraform_project_path }}/cloud-init-do.yaml"
