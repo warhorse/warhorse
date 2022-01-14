@@ -8,7 +8,7 @@ all:
           hosts:
 {% endif %}
             {{ vm.name }}:
-              hostname: '{{ vm.hostname|default(warhorse.general.op_number + '-teamserver')}}'
+              hostname: '{{ vm.hostname|default(warhorse.general.op_number + '-' + vm.name )}}'
 {% endfor %}
   vars:
     op_number: '{{ warhorse.general.op_number }}'

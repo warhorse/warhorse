@@ -1,6 +1,6 @@
 ---
 {% for vm in warhorse.vm %}
-{% if vm.tailscale.enabled == true %}
+{% if vm.tailscale is defined and vm.tailscale.enabled %}
 - name: Cleanup Tailscale
   gather_facts: True
   hosts: {{ vm.name }}

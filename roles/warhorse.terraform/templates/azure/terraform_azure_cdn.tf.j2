@@ -10,7 +10,7 @@ resource "azurerm_cdn_profile" "cdn_profile_{{ op_number }}" {
   sku                 = "Standard_Microsoft"
 }
 {% endif %}
-{% if cdn.provider == 'azure' and cdn.auth_header_name is not defined %}
+{% if cdn.provider == 'azure' and vm.cobaltstrike.auth_header_name is not defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
@@ -43,7 +43,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   }
 }
 {% endif %}
-{% if cdn.provider == 'azure' and cdn.auth_header_name is defined and cdn.auth_header_value is defined %}
+{% if cdn.provider == 'azure' and vm.cobaltstrike.auth_header_name is defined and vm.cobaltstrike.auth_header_value is defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
@@ -79,15 +79,52 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
     name = "header"
     order = 2
     request_header_condition {
-      selector = "{{ cdn.auth_header_name }}"
+      selector = "{{ vm.cobaltstrike.auth_header_name }}"
       operator = "Equal"
       negate_condition = true
-      match_values = ["{{ cdn.auth_header_value }}"]
+      match_values = ["{{ vm.cobaltstrike.auth_header_value }}"]
     }
 
     url_redirect_action {
       redirect_type = "PermanentRedirect"
       hostname = "azure.microsoft.com"
+    }
+  }
+}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if vm.evilginx2.cdn is defined %}
+{% for cdn in vm.evilginx2.cdn %}
+{% if cdn.provider == 'azure' %}
+resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
+  name                = "{{ cdn.hostname }}"
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  origin_host_header  = "{{ cdn.hostname }}.azureedge.net"
+  querystring_caching_behaviour = "BypassCaching"
+
+  origin {
+    name      = "{{ cdn.hostname }}"
+    host_name = "{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
+  }
+
+  delivery_rule{
+    name = "nocache"
+    order = 1
+    
+    query_string_condition {
+      operator = "Any"
+    }
+
+    
+    url_path_condition {
+      operator = "Any"
+    }
+
+    cache_expiration_action {
+      behavior =  "BypassCache"
     }
   }
 }

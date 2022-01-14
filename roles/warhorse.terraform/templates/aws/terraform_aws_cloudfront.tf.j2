@@ -1,7 +1,6 @@
 {% for vm in warhorse.vm %}
-{% set outer_loop = loop %}
 {% if vm.cobaltstrike.cdn is defined %}
-{% for cdn in vm.cobaltstrike.cdn %}
+{% for cdn in vm.cobaltstrike.cdn|selectattr("provider", "equalto", "aws" ) %}
 {% if cdn.provider == 'aws' %}
 resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}" {
   origin {
@@ -15,12 +14,11 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}" {
       origin_ssl_protocols   = ["TLSv1.1"]
     }
 
-
   }
 
   enabled             = true
   is_ipv6_enabled     = false
-  comment             = "Some comment"
+  comment             = "Warhorse Deployment"
   default_root_object = "index.html"
 
   default_cache_behavior {
@@ -28,21 +26,18 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
 
-    forwarded_values {
-      query_string = true
-      headers      = ["*"]
-
-      cookies {
-        forward = "all"
-      }
+    function_association {
+      event_type   = "viewer-request"
+      function_arn   = aws_cloudfront_function.header_auth.arn
     }
+
+    cache_policy_id  = aws_cloudfront_cache_policy.no-cache.id
 
     viewer_protocol_policy = "allow-all"
     min_ttl                = 0
     default_ttl            = 0
     max_ttl                = 0
   }
-
 
   price_class = "PriceClass_200"
 
@@ -63,6 +58,33 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}" {
     cloudfront_default_certificate = true
   }
 }
+resource "aws_cloudfront_cache_policy" "no-cache" {
+  name        = "no-cache"
+  comment     = "Warhorse Deployment"
+  default_ttl = 50
+  max_ttl     = 100
+  min_ttl     = 1
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "none"
+    }
+    headers_config {
+      header_behavior = "none"
+    }
+    query_strings_config {
+      query_string_behavior = "none"
+    }
+  }
+}
+
+resource "aws_cloudfront_function" "header_auth" {
+  name    = "header_auth"
+  runtime = "cloudfront-js-1.0"
+  comment = "Warhorse Header Auth"
+  publish = true
+  code    = file("${path.root}/aws_cloudfront_auth_function.js")
+}
+
 {% endif %}
 {% endfor %}
 {% endif %}

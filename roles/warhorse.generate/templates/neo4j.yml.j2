@@ -1,4 +1,5 @@
 {% for vm in warhorse.vm %}
+{% if vm.neo4j is defined and vm.neo4j.enabled %}
 {% if loop.first %}
 all:
   children:
@@ -21,4 +22,5 @@ all:
                 - "127.0.0.1:7687:7687"
 {% endif %}
               neo4j_username: "{{ vm.neo4j.username }}"
+{% endif %}
 {% endfor %}

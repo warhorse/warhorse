@@ -1,0 +1,17 @@
+{% for vm in warhorse.vm %}
+{% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
+{% if loop.last %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+              evilginx2_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
+              evilginx_domain: '{{ vm.evilginx2.evilginx_domain }}'
+              redirect_domain: '{{ vm.evilginx2.redirect_domain }}'
+              phishlet: '{{ vm.evilginx2.phishlet }}'
+{% endif %}
+{% endfor %}

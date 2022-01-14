@@ -59,26 +59,32 @@
   connection: ssh
   become: True
   roles:
-{% if vm.http_proxy == "traefik" %}
+{% if vm.golang is defined and vm.golang.enabled %}
+    - { role: gantsign.golang }
+{% endif %}
+{% if vm.http_proxy is defined and vm.http_proxy == "traefik" %}
     - { role: warhorse.traefik_docker }
 {% endif %}
-{% if vm.cobaltstrike.enabled %}
+{% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
     - { role: warhorse.cobaltstrike_docker }
 {% endif %}
-{% if vm.neo4j.enabled %}
+{% if vm.neo4j is defined and vm.neo4j.enabled %}
     - { role: warhorse.neo4j_docker }
 {% endif %}
-{% if vm.syncthing.enabled %}
+{% if vm.syncthing is defined and vm.syncthing.enabled %}
     - { role: warhorse.syncthing_docker }
 {% endif %}
-{% if vm.tailscale.enabled %}
+{% if vm.tailscale is defined and vm.tailscale.enabled %}
     - { role: warhorse.tailscale }
 {% endif %}
-{% if vm.dashy.enabled %}
+{% if vm.dashy is defined and vm.dashy.enabled %}
     - { role: warhorse.dashy_docker }
 {% endif %}
-{% if vm.backup.enabled %}
+{% if vm.backup is defined and vm.backup.enabled %}
     - { role: warhorse.backup }
+{% endif %}
+{% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
+    - { role: warhorse.evilginx2_docker }
 {% endif %}
 
 {% endfor %}
