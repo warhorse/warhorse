@@ -3,6 +3,7 @@
 * [Requirements](requirements.md "Requirements")
 * [Getting Started](getting_started.md "Quick Start Guide")
 * [Deployments](deployments.md "Deployments")
+* [Providers](providers.md "Providers")
 * [Configuration](configuration.md "Configuration File")
 * [Modules](modules.md "Modules")
 * [Deploy](deploy.md "Deploy")
