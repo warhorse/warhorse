@@ -21,4 +21,6 @@ API Key
 
 AZ CLI
 
-## 3. Secrets Manager
+## 3. Secrets Manager (optional)
+
+## 4. State File (optional)

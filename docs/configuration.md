@@ -14,17 +14,17 @@ Time zone to use for all systems part of this engagment
 ### Example
 ```
   general:
-    op_number: "2021-109"
+    op_number: "123456"
     user_tag: 'operator'
-    ttl: '2022-02-04' #Kill Date
+    ttl: '2022-12-30' #Kill Date
     ntp_timezone: 'America/New_York' # Time Zone Link
 ```
 ## DNS
-### provider: Cloud provider to use
+#### provider: Cloud provider to use
 
-### op_tdl: The operation top level domain 
+#### op_tdl: The operation top level domain 
 
-### op_domain_name: The operation sub domain
+#### op_domain_name: The operation sub domain
 ### Example
 ```
   dns:
