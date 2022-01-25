@@ -13,5 +13,8 @@ all:
               evilginx_domain: '{{ vm.evilginx2.evilginx_domain }}'
               redirect_domain: '{{ vm.evilginx2.redirect_domain }}'
               phishlet: '{{ vm.evilginx2.phishlet }}'
+              evilginx2_ports: []
+              evilginx2_phishlet_location: "{{ lookup('env', 'PWD') }}/files/o365.yaml.j2"
+              evilginx2_config_location: "{{ lookup('env', 'PWD') }}/files/evilginx.yaml.j2"
 {% endif %}
 {% endfor %}

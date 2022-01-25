@@ -1,8 +1,4 @@
-{% for vm in warhorse.vm %}
-{% set outer_loop = loop %}
-{% if vm.cobaltstrike.cdn is defined %}
-{% for cdn in vm.cobaltstrike.cdn %}
-{% if cdn|regex_search("'provider': 'azure'", multiline=True, ignorecase=True) %}
+{% if warhorse.vm|regex_search("(?i).+('cdn':.+'provider':\s'azure')", multiline=True, ignorecase=True) %}
 resource "azurerm_cdn_profile" "cdn_profile_{{ op_number }}" {
   name                = "{{ op_number }}"
   location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
@@ -10,6 +6,10 @@ resource "azurerm_cdn_profile" "cdn_profile_{{ op_number }}" {
   sku                 = "Standard_Microsoft"
 }
 {% endif %}
+{% for vm in warhorse.vm %}
+{% set outer_loop = loop %}
+{% if vm.cobaltstrike.cdn is defined %}
+{% for cdn in vm.cobaltstrike.cdn %}
 {% if cdn.provider == 'azure' and vm.cobaltstrike.auth_header_name is not defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
@@ -87,7 +87,96 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 
     url_redirect_action {
       redirect_type = "PermanentRedirect"
-      hostname = "azure.microsoft.com"
+      hostname = "{{ cdn.redirect_domain |default('https://azure.microsoft.com') }}"
+    }
+  }
+}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% for vm in warhorse.vm %}
+{% set outer_loop = loop %}
+{% if vm.nighthawk.cdn is defined %}
+{% for cdn in vm.nighthawk.cdn %}
+{% if cdn.provider == 'azure' and vm.nighthawk.auth_header_name is not defined %}
+resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
+  name                = "{{ cdn.hostname }}"
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  origin_host_header  = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+  querystring_caching_behaviour = "BypassCaching"
+
+  origin {
+    name      = "{{ cdn.hostname }}"
+    host_name = "nighthawk.{{ warhorse.dns.op_domain_name }}"
+  }
+
+  delivery_rule{
+    name = "nocache"
+    order = 1
+    
+    query_string_condition {
+      operator = "Any"
+    }
+
+    
+    url_path_condition {
+      operator = "Any"
+    }
+
+    cache_expiration_action {
+      behavior =  "BypassCache"
+    }
+  }
+}
+{% endif %}
+{% if cdn.provider == 'azure' and vm.nighthawk.auth_header_name is defined and vm.nighthawk.auth_header_value is defined %}
+resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
+  name                = "{{ cdn.hostname }}"
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  origin_host_header  = "nighthawk.{{ warhorse.dns.op_domain_name }}"
+  querystring_caching_behaviour = "BypassCaching"
+
+  origin {
+    name      = "{{ cdn.hostname }}"
+    host_name = "nighthawk.{{ warhorse.dns.op_domain_name }}"
+  }
+
+  delivery_rule{
+    name = "nocache"
+    order = 1
+    
+    query_string_condition {
+      operator = "Any"
+    }
+
+    
+    url_path_condition {
+      operator = "Any"
+    }
+
+    cache_expiration_action {
+      behavior =  "BypassCache"
+    }
+  }
+
+  delivery_rule{
+    name = "header"
+    order = 2
+    request_header_condition {
+      selector = "{{ vm.nighthawk.auth_header_name }}"
+      operator = "Equal"
+      negate_condition = true
+      match_values = ["{{ vm.nighthawk.auth_header_value }}"]
+    }
+
+    url_redirect_action {
+      redirect_type = "PermanentRedirect"
+      hostname = "{{ cdn.redirect_domain |default('https://azure.microsoft.com') }}"
     }
   }
 }

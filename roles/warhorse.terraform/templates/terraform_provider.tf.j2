@@ -26,8 +26,8 @@ provider "aws" {
   secret_key = {{ aws_secret_key }}
 {% endif %}
   region = "us-east-1"
-{% endif %}
 }
+{% endif %}
 {% if warhorse|regex_search("'provider': 'azure'", multiline=True, ignorecase=True) %}
 provider "azurerm" {
   features {}

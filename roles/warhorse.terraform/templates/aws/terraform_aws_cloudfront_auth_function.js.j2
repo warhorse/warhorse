@@ -5,9 +5,8 @@
 function handler(event) {
     var request = event.request;
     var headers = request.headers;
-    var host = request.headers.host.value;
     var headerValue = '{{ vm.cobaltstrike.auth_header_value }}'
-    var newurl = 'https://aws.com' // Change the redirect URL to your choice 
+    var newurl = '{{ cdn.redirect_domain |default('https://aws.com') }}'
   
     if (headers['{{ vm.cobaltstrike.auth_header_name }}']) {
         var authHeader = headers['{{ vm.cobaltstrike.auth_header_name }}'].value;
