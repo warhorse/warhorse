@@ -68,6 +68,8 @@
   become: True
   vars_files:
   - ./config.yml
+  vars: 
+    deploy: true
   roles:
 {% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
     - { role: artis3n.tailscale }
