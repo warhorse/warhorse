@@ -1,0 +1,29 @@
+{% for vm in warhorse.vm %}
+{% if loop.first %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+{% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
+                cs_password: "{{ vm.cobaltstrike.password }}"
+                cs_key: "{{ vm.cobaltstrike.key }}"
+{% endif %}
+{% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
+                tailscale_auth_key: "{{ vm.tailscale.tailscale_auth_key }}"
+{% endif %}
+{% if vm.tailscale.tailscale_api_key is defined and vm.tailscale.enabled %}
+                tailscale_api_key: "{{ vm.tailscale.tailscale_api_key }}"
+{% endif %}
+  vars:
+{% if warhorse.terraform.bucket_access_key is defined and warhorse.terraform.bucket_secret_key %}
+    bucket_access_key: "{{ warhorse.terraform.bucket_access_key }}"
+    bucket_secret_key: "{{ warhorse.terraform.bucket_secret_key }}"
+{% endif %}
+{% if warhorse.terraform.digitalocean_token is defined %}
+    digitalocean_token: "{{ warhorse.terraform.digitalocean_token }}"
+{% endif %}
+{% endfor %}

@@ -1,4 +1,8 @@
-![Warhorse](/images/logo_full.png)
+<div style="text-align: center;">
+
+![Warhorse](/images/logo_full.png "Logo")
+
+</div>
 
 # Warhorse
 

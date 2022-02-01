@@ -1,0 +1,24 @@
+- name: Collect all facts
+  ansible.builtin.setup:
+
+- name: Create tailsacle DNS records
+  community.digitalocean.digital_ocean_domain_record:
+    state: present
+    type: A
+    domain: "{{ op_domain_name }}"
+    name: "{{ item }}"
+    data: "{{ ansible_tailscale0.ipv4.address }}"
+    oauth_token: "{{ digitalocean_token }}"
+  with_items: "{{ tailscale_hostnames }}"
+  when: deploy
+
+- name: Remove tailsacle DNS records
+  community.digitalocean.digital_ocean_domain_record:
+    state: absent
+    type: A
+    domain: "{{ op_domain_name }}"
+    name: "{{ item }}"
+    data: "{{ ansible_tailscale0.ipv4.address }}"
+    oauth_token: "{{ digitalocean_token }}"
+  with_items: "{{ tailscale_hostnames }}"
+  when: not deploy

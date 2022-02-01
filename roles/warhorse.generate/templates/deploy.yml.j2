@@ -3,12 +3,14 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  environment: 
+    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   vars: 
     deploy: true
   vars_files:
   - ./config.yml
   roles:
-      - { role: warhorse.terraform }
+    - { role: warhorse.terraform }
 
 - name: Refresh Inventory
   hosts: localhost
@@ -40,7 +42,11 @@
   gather_facts: yes
   hosts: warhorse
   connection: ssh
+  environment: 
+    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
+  vars_files:
+  - ./config.yml
   vars: 
     deploy: true
   roles:
@@ -57,8 +63,15 @@
   gather_facts: True
   hosts: {{ vm.name }}
   connection: ssh
+  environment: 
+    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
+  vars_files:
+  - ./config.yml
   roles:
+{% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
+    - { role: artis3n.tailscale }
+{% endif %}
 {% if vm.golang is defined and vm.golang.enabled %}
     - { role: gantsign.golang }
 {% endif %}
@@ -86,5 +99,4 @@
 {% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
     - { role: warhorse.evilginx2_docker }
 {% endif %}
-
 {% endfor %}

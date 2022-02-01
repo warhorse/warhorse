@@ -2,6 +2,7 @@
 * [Home](/)
 * [Requirements](requirements.md "Requirements")
 * [Getting Started](getting_started.md "Quick Start Guide")
+* [Secrets](Secrets.md "Secrets")
 * [Deployments](deployments.md "Deployments")
 * [Providers](providers.md "Providers")
 * [Configuration](configuration.md "Configuration File")

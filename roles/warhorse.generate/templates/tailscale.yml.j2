@@ -1,0 +1,15 @@
+{% for vm in warhorse.vm %}
+{% if vm.tailscale is defined and vm.tailscale.enabled %}
+{% if loop.first %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+              # tailscale_args: ""
+              tailnet_name: "{{ vm.tailscale.tailnet_name }}"
+{% endif %}
+{% endfor %}

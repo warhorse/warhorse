@@ -1,0 +1,6 @@
+---
+- name: Remove Host
+  include_tasks: "{{ item }}.yml"
+  with_items:
+    - api
+  when: not deploy 

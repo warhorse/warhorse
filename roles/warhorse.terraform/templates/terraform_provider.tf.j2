@@ -11,6 +11,10 @@ terraform {
       source  = "hashicorp/aws"
     }
 {% endif %}
+    javascript = {
+      source = "apparentlymart/javascript"
+      version = "0.0.1"
+    }
     local = ">= 1.2"
   }
 }

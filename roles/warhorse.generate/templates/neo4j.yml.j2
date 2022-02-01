@@ -12,8 +12,8 @@ all:
               neo4j_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
 {% if vm.tailscale.enabled is true %}
               neo4j_ports:
-                - "{{ ansible_tailscale0.ipv4.address }}:7474:7474"
-                - "{{ ansible_tailscale0.ipv4.address }}:7687:7687"
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}{% endraw %}:7474:7474"
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}{% endraw %}:7687:7687"
                 - "127.0.0.1:7474:7474"
                 - "127.0.0.1:7687:7687"
 {% else %}

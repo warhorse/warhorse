@@ -69,8 +69,10 @@ temp/
 !roles/
 roles/*
 !roles/warhorse.generate/
+!roles/warhorse.tailscale/
 !roles/warhorse.terraform/
 !roles/warhorse.os/
 config.yml
+*_config.yml
 deploy.yml
 destroy.yml

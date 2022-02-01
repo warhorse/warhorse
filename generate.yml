@@ -12,7 +12,7 @@
       mode: '0755'
   - name: Create SSH Keys
     community.crypto.openssh_keypair:
-      path: keys/id_rsa_ansible
+      path: "keys/id_rsa_ansible_{{ op_number }}"
       size: 2048
 
 - name: Generate Playbooks Roles & Terrafrom

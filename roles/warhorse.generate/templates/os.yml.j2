@@ -22,8 +22,8 @@ all:
     - net-tools
 
     ansible_python_interpreter: /usr/bin/python3
-    ansible_ssh_private_key_file: "{% raw %}{{ lookup('env', 'PWD') }}/keys/id_rsa_ansible{% endraw %}"
-    ansible_ssh_public_key_file: "{% raw %}{{ lookup('env', 'PWD') }}/keys/id_rsa_ansible.pub{% endraw %}"
+    ansible_ssh_private_key_file: "{% raw %}{{ lookup('env', 'PWD') }}/keys/id_rsa_ansible_{% endraw %}{{ warhorse.general.op_number }}"
+    ansible_ssh_public_key_file: "{% raw %}{{ lookup('env', 'PWD') }}/keys/id_rsa_ansible_{% endraw %}{{ warhorse.general.op_number }}.pub"
     ansible_ssh_user: 'ansible'
     # Create Users
     users:
