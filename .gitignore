@@ -60,9 +60,12 @@ TODO.txt
 hashicorp/
 /terraform
 
+
 # ansible
+!inventory/empty
+!files/empty
 secrets.yml
-inventory/
+inventory/*
 warhorse_roles/
 keys/
 temp/

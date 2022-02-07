@@ -1,0 +1,8 @@
+---
+- name: Generating nginx Configuration
+  template:
+    mode: '0755'
+    src: templates/nginx_config.yml.j2
+    dest: "./files/nginx_config.yml.j2"
+  with_items: "{{ warhorse.vm }}"
+  when: item.nginx_generate

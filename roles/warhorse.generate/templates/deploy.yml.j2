@@ -80,6 +80,9 @@
 {% if vm.http_proxy is defined and vm.http_proxy == "traefik" %}
     - { role: warhorse.traefik_docker }
 {% endif %}
+{% if vm.http_proxy is defined and vm.http_proxy == "nginx" %}
+    - { role: warhorse.nginx_docker }
+{% endif %}
 {% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
     - { role: warhorse.cobaltstrike_docker }
 {% endif %}

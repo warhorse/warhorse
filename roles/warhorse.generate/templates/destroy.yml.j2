@@ -30,6 +30,8 @@
   connection: local
   vars: 
     deploy: false
+  vars_files:
+  - ./config.yml
   tasks:
   - name: remove keys directory 
     ansible.builtin.file:
@@ -45,6 +47,8 @@
   connection: local
   vars: 
     deploy: false
+  vars_files:
+  - ./config.yml
   tasks:
   - name: remove terrafrom directory 
     ansible.builtin.file:

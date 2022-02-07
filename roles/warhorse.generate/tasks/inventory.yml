@@ -76,3 +76,11 @@
     dest: "./inventory/tailscale.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.tailscale is defined
+
+- name: Generating nginx inventory
+  template:
+    mode: '0755'
+    src: templates/nginx.yml.j2
+    dest: "./inventory/nginx.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.http_proxy == "nginx"

@@ -1,3 +1,4 @@
 ---
 - include: inventory.yml
 - include: generate.yml
+- include: nginx.yml

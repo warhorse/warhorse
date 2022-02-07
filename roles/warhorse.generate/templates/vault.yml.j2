@@ -12,6 +12,9 @@ all:
                 cs_password: "{{ vm.cobaltstrike.password }}"
                 cs_key: "{{ vm.cobaltstrike.key }}"
 {% endif %}
+{% if warhorse.terraform.digitalocean_token is defined and vm.http_proxy == "nginx" %}
+                nginx_digitalocean_token: "{{ warhorse.terraform.digitalocean_token }}"
+{% endif %}
 {% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
                 tailscale_auth_key: "{{ vm.tailscale.tailscale_auth_key }}"
 {% endif %}

