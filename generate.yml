@@ -2,6 +2,8 @@
   hosts: localhost
   gather_facts: true
   connection: local
+  vars_files:
+  - ./config.yml
   vars: 
     deploy: true
   tasks:
@@ -12,7 +14,7 @@
       mode: '0755'
   - name: Create SSH Keys
     community.crypto.openssh_keypair:
-      path: "keys/id_rsa_ansible_{{ op_number }}"
+      path: "keys/id_rsa_ansible_{{ warhorse.general.op_number }}"
       size: 2048
 
 - name: Generate Playbooks Roles & Terrafrom

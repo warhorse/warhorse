@@ -1,0 +1,31 @@
+{% for vm in warhorse.vm %}
+{% if vm.mythic is defined and vm.mythic.enabled %}
+{% if loop.first %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+              mythic_repo: "https://github.com/its-a-feature/Mythic"
+              mythic_version: "master"
+              installation_path: "/opt/mythic"
+              server_header: "nginx 1.2"
+              admin_username: "{{ vm.mythic.username }}"
+              default_password: "{{ vm.mythic.password }}"
+              operation_name: "{{ vm.mythic.operation }}"
+              agents:
+                  - repo: "https://github.com/MythicAgents/Apollo"
+                    branch: "master"
+                  - repo: "https://github.com/MythicC2Profiles/http"
+                    branch: "master"
+{% endif %}
+  vars:
+{% if vm.mythic is defined and vm.mythic.enabled and vm.mythic.auth_header_value and vm.mythic.auth_header_name %}
+    mythic_auth_header_value: "{{ vm.mythic.auth_header_value }}"
+    mythic_auth_header_name: "{{ vm.mythic.auth_header_name }}"
+{% endif %}
+{% endfor %}
+    mythic_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"

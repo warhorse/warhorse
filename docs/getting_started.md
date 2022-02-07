@@ -21,6 +21,7 @@ Run the following command from the root of the warhorse repository folder to ins
 ``` 
 cd warhorse
 ansible-galaxy install -r requirements.yml -p roles/
+export ANSIBLE_VAULT_PASSWORD_FILE=./vault-env
 ```
 ### Linux
 #### Install Ansible
@@ -45,6 +46,7 @@ Run the following command from the root of the warhorse repository folder to ins
 ``` 
 cd warhorse
 ansible-galaxy install -r requirements.yml -p roles/
+export ANSIBLE_VAULT_PASSWORD_FILE=./vault-env
 ```
 ## Config File
 

@@ -111,7 +111,6 @@ function handler(event) {
 EOF
 }
 {% endif %}
-
 {% endif %}
 {% endfor %}
 {% endif %}
@@ -227,6 +226,121 @@ function handler(event) {
 EOF
 }
 
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if vm.mythic.cdn is defined %}
+{% for cdn in vm.mythic.cdn|selectattr("provider", "equalto", "aws" ) %}
+{% if cdn.provider == 'aws' %}
+resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.name }}" {
+  origin {
+    domain_name = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    origin_id   = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+
+    custom_origin_config {
+      http_port              = "80"
+      https_port             = "443"
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.1"]
+    }
+
+  }
+
+  enabled             = true
+  is_ipv6_enabled     = false
+  comment             = "Warhorse Deployment"
+  default_root_object = "index.html"
+
+  default_cache_behavior {
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+{% if vm.mythic.auth_header_name is defined and vm.mythic.auth_header_value is defined %}
+    function_association {
+      event_type   = "viewer-request"
+      function_arn   = aws_cloudfront_function.header_auth_{{ vm.name }}_{{ cdn.name }}.arn
+    }
+{% endif %}
+    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ vm.name }}_{{ cdn.name }}.id
+
+    viewer_protocol_policy = "allow-all"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+  }
+
+  price_class = "PriceClass_200"
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "whitelist"
+      locations        = ["US", "CA"]
+    }
+  }
+
+  tags = {
+    OP    = "{{ warhorse.general.op_number }}"
+    TTL   = "{{ warhorse.general.ttl }}"
+    Owner = "{{ warhorse.general.user_tag }}"
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
+}
+resource "aws_cloudfront_cache_policy" "no_cache_{{ vm.name }}_{{ cdn.name }}" {
+  name        = "no_cache_{{ vm.name }}_{{ cdn.name }}"
+  comment     = "Warhorse Deployment"
+  default_ttl = 50
+  max_ttl     = 100
+  min_ttl     = 1
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "none"
+    }
+    headers_config {
+      header_behavior = "none"
+    }
+    query_strings_config {
+      query_string_behavior = "none"
+    }
+  }
+}
+{% if vm.mythic.auth_header_name is defined and vm.mythic.auth_header_value is defined %}
+resource "aws_cloudfront_function" "header_auth_{{ vm.name }}_{{ cdn.name }}" {
+  name    = "header_auth_{{ vm.name }}_{{ cdn.name }}"
+  runtime = "cloudfront-js-1.0"
+  comment = "Warhorse Header Auth"
+  publish = true
+  code    = data.javascript.aws_cloudfront_auth_{{ vm.name }}_{{ cdn.name }}.source
+}
+
+data "javascript" "aws_cloudfront_auth_{{ vm.name }}_{{ cdn.name }}" {
+  source = <<-EOF
+function handler(event) {
+    var request = event.request;
+    var headers = request.headers;
+    var headerValue = '{{ vm.mythic.auth_header_value }}'
+    var newurl = '{{ cdn.redirect_domain |default('https://aws.com') }}'
+  
+    if (headers['{{ vm.mythic.auth_header_name }}']) {
+        var authHeader = headers['{{ vm.mythic.auth_header_name }}'].value;
+        if (authHeader === headerValue ) {
+            return request;
+        } 
+    } else {
+        var response = {
+                statusCode: 302,
+            statusDescription: 'Found',
+                headers:
+                { "location": { "value": newurl } }
+        }
+        return response;
+    }
+}
+EOF
+}
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}

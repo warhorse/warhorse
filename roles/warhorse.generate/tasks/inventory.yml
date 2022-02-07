@@ -36,27 +36,43 @@
     mode: '0755'
     src: templates/cobaltstrike.yml.j2
     dest: "./inventory/cobaltstrike.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.cobaltstrike is defined
+
+- name: Generating mythic inventory
+  template:
+    mode: '0755'
+    src: templates/mythic.yml.j2
+    dest: "./inventory/mythic.yml"
 
 - name: Generating traefik inventory
   template:
     mode: '0755'
     src: templates/traefik.yml.j2
     dest: "./inventory/traefik.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.http_proxy == "traefik"
 
 - name: Generating neo4j inventory
   template:
     mode: '0755'
     src: templates/neo4j.yml.j2
     dest: "./inventory/neo4j.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.neo4j is defined
 
 - name: Generating evilginx2 inventory
   template:
     mode: '0755'
     src: templates/evilginx2.yml.j2
     dest: "./inventory/evilginx2.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.evilginx2 is defined
 
 - name: Generating tailscale inventory
   template:
     mode: '0755'
     src: templates/tailscale.yml.j2
     dest: "./inventory/tailscale.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.tailscale is defined

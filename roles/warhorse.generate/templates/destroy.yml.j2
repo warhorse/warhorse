@@ -33,5 +33,22 @@
   tasks:
   - name: remove keys directory 
     ansible.builtin.file:
-      path: keys
+      file: "{% raw %}{{ item }}{% endraw %}"
       state: absent
+    with_items:
+      - "{% raw %}id_rsa_ansible_{{ warhorse.general.op_number }}{% endraw %}"
+      - "{% raw %}id_rsa_ansible_{{ warhorse.general.op_number }}.pub{% endraw %}"
+
+- name: Destroy Terraform Files
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars: 
+    deploy: false
+  tasks:
+  - name: remove terrafrom directory 
+    ansible.builtin.file:
+      folder: "{% raw %}{{ item }}{% endraw %}"
+      state: absent
+    with_items:
+      - "terraform"

@@ -83,6 +83,9 @@
 {% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
     - { role: warhorse.cobaltstrike_docker }
 {% endif %}
+{% if vm.mythic is defined and vm.mythic.enabled %}
+    - { role: t94j0.mythic }
+{% endif %}
 {% if vm.neo4j is defined and vm.neo4j.enabled %}
     - { role: warhorse.neo4j_docker }
 {% endif %}

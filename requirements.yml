@@ -20,6 +20,9 @@ roles:
   - name: warhorse.cobaltstrike_docker
   - name: warhorse.neo4j_docker
   - name: warhorse.traefik_docker
+  - name: warhorse.nighthawk_docker
+
+  - name: t94j0.mythic
 
 collections:
   # Install a collection from Ansible Galaxy.

@@ -28,6 +28,10 @@ all:
             - "{{ vm.name }}"
 {% if vm.cobaltstrike.enabled is true %}
             - "cs{{ loop.index }}"
+{% endif %}
+{% if vm.mythic.enabled is true %}
+            - "mythic{{ loop.index }}"
+{% endif %}
 {% if vm.cobaltstrike.dns_over_https is true %}
             - "ns{{ loop.index }}"
         - entry:
@@ -40,7 +44,6 @@ all:
           value: "ns{{ loop.index }}.{{ warhorse.dns.op_domain_name }}."
           hostnames:
             - "dns{{ loop.index }}"
-{% endif %}
 {% endif %}
 {% endfor %}
 
