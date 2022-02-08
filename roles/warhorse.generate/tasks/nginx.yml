@@ -5,4 +5,4 @@
     src: templates/nginx_config.yml.j2
     dest: "./files/nginx_config.yml.j2"
   with_items: "{{ warhorse.vm }}"
-  when: item.nginx_generate
+  when: item.nginx_generate is defined and item.nginx_generate

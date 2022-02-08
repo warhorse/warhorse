@@ -1,0 +1,8 @@
+---
+- name: Create Folders
+  file:
+    path: '{{ item }}'
+    state: directory
+  with_items:
+  - './inventory'
+  - './files'

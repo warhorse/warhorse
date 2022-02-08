@@ -62,8 +62,6 @@ hashicorp/
 
 
 # ansible
-!inventory/empty
-!files/empty
 secrets.yml
 inventory/*
 warhorse_roles/

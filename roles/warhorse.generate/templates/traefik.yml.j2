@@ -7,6 +7,7 @@ all:
         {{ vm.provider }}:
           hosts:
 {% endif %}
+{% if vm.http_proxy == 'traefik' %}
             {{ vm.name }}:
             # Traefik
               dns_traefik: "{{ warhorse.dns.provider }}"
@@ -77,4 +78,5 @@ all:
                       resolvers: 
                         - "1.1.1.1:53"
                         - "8.8.8.8:53"
+{% endif %}
 {% endfor %}
