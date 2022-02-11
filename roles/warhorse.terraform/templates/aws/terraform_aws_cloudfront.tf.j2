@@ -28,10 +28,10 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.na
 {% if vm.cobaltstrike.auth_header_name is defined and vm.cobaltstrike.auth_header_value is defined %}
     function_association {
       event_type   = "viewer-request"
-      function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}.arn
+      function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.arn
     }
 {% endif %}
-    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ warhorse.general.op_number }}_{{ cdn.name }}.id
+    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.id
 
     viewer_protocol_policy = "allow-all"
     min_ttl                = 0
@@ -58,8 +58,8 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.na
     cloudfront_default_certificate = true
   }
 }
-resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }}_{{ cdn.name }}" {
-  name        = "no_cache_{{ warhorse.general.op_number }}_{{ cdn.name }}"
+resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
+  name        = "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
   comment     = "Warhorse Deployment"
   default_ttl = 50
   max_ttl     = 100
@@ -77,15 +77,15 @@ resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }
   }
 }
 {% if vm.cobaltstrike.auth_header_name is defined and vm.cobaltstrike.auth_header_value is defined %}
-resource "aws_cloudfront_function" "header_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}" {
-  name    = "header_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}"
+resource "aws_cloudfront_function" "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
+  name    = "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
   runtime = "cloudfront-js-1.0"
   comment = "Warhorse Header Auth"
   publish = true
-  code    = data.javascript.aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}.source
+  code    = data.javascript.aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.source
 }
 
-data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}" {
+data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   source = <<-EOF
 function handler(event) {
     var request = event.request;
@@ -117,7 +117,7 @@ EOF
 {% if vm.nighthawk.cdn is defined %}
 {% for cdn in vm.nighthawk.cdn|selectattr("provider", "equalto", "aws" ) %}
 {% if cdn.provider == 'aws' %}
-resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.name }}" {
+resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   origin {
     domain_name = "nighthawk{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
     origin_id   = "nighthawk{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
@@ -143,10 +143,10 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.na
 
     function_association {
       event_type   = "viewer-request"
-      function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}.arn
+      function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.arn
     }
 
-    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ warhorse.general.op_number }}_{{ cdn.name }}.id
+    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.id
 
     viewer_protocol_policy = "allow-all"
     min_ttl                = 0
@@ -173,8 +173,8 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.na
     cloudfront_default_certificate = true
   }
 }
-resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }}_{{ cdn.name }}" {
-  name        = "no_cache_{{ warhorse.general.op_number }}_{{ cdn.name }}"
+resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
+  name        = "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
   comment     = "Warhorse Deployment"
   default_ttl = 50
   max_ttl     = 100
@@ -192,15 +192,15 @@ resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }
   }
 }
 
-resource "aws_cloudfront_function" "header_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}" {
-  name    = "header_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}"
+resource "aws_cloudfront_function" "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
+  name    = "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
   runtime = "cloudfront-js-1.0"
   comment = "Warhorse Header Auth"
   publish = true
-  code    = data.javascript.aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}.source
+  code    = data.javascript.aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.source
 }
 
-data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}" {
+data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   source = <<-EOF
 function handler(event) {
     var request = event.request;
@@ -232,7 +232,7 @@ EOF
 {% if vm.mythic.cdn is defined %}
 {% for cdn in vm.mythic.cdn|selectattr("provider", "equalto", "aws" ) %}
 {% if cdn.provider == 'aws' %}
-resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.name }}" {
+resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   origin {
     domain_name = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
     origin_id   = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
@@ -258,10 +258,10 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.na
 {% if vm.mythic.auth_header_name is defined and vm.mythic.auth_header_value is defined %}
     function_association {
       event_type   = "viewer-request"
-      function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}.arn
+      function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.arn
     }
 {% endif %}
-    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ warhorse.general.op_number }}_{{ cdn.name }}.id
+    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.id
 
     viewer_protocol_policy = "allow-all"
     min_ttl                = 0
@@ -288,8 +288,8 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.na
     cloudfront_default_certificate = true
   }
 }
-resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }}_{{ cdn.name }}" {
-  name        = "no_cache_{{ warhorse.general.op_number }}_{{ cdn.name }}"
+resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
+  name        = "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
   comment     = "Warhorse Deployment"
   default_ttl = 50
   max_ttl     = 100
@@ -307,15 +307,15 @@ resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }
   }
 }
 {% if vm.mythic.auth_header_name is defined and vm.mythic.auth_header_value is defined %}
-resource "aws_cloudfront_function" "header_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}" {
-  name    = "header_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}"
+resource "aws_cloudfront_function" "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
+  name    = "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
   runtime = "cloudfront-js-1.0"
   comment = "Warhorse Header Auth"
   publish = true
-  code    = data.javascript.aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}.source
+  code    = data.javascript.aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.source
 }
 
-data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ cdn.name }}" {
+data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   source = <<-EOF
 function handler(event) {
     var request = event.request;

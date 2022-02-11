@@ -22,6 +22,8 @@ roles:
   - name: warhorse.traefik_docker
   - name: warhorse.nighthawk_docker
   - name: warhorse.gophish_docker
+  - name: warhorse.evilginx2_docker
+  - name: warhorse.nginx_docker
 
   - name: t94j0.mythic
 
