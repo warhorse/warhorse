@@ -75,5 +75,5 @@ roles/*
 !roles/warhorse.os/
 config.yml
 *_config.yml
-deploy.yml
-destroy.yml
+/deploy.yml
+/destroy.yml

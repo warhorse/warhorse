@@ -1,0 +1,24 @@
+- name: Deploy Terraform Remote State
+  community.general.terraform:
+    project_path: '{{ terraform_project_path }}'
+    state: "{{ state }}"
+    backend_config:
+      region: "{{ warhorse.terraform.state_bucket_region }}"
+      bucket: "{{ warhorse.terraform.state_bucket_name }}"
+      key: "{{ warhorse.terraform.state_bucket_key }}"
+      access_key: "{{ bucket_access_key }}"
+      secret_key: "{{ bucket_secret_key }}"
+      endpoint: "{{ warhorse.terraform.state_bucket_endpoint }}"
+    force_init: true
+    variables:
+      do_token: "{{ digitalocean_token }}"
+  when: warhorse.terraform.state_bucket_enable
+
+- name: Deploy Terraform Local State
+  community.general.terraform:
+    project_path: '{{ terraform_project_path }}'
+    state: "{{ state }}"
+    force_init: true
+    variables:
+      do_token: "{{ digitalocean_token }}"
+  when: warhorse.terraform.state_bucket_enable is not defined
