@@ -86,6 +86,9 @@
 {% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
     - { role: warhorse.cobaltstrike_docker }
 {% endif %}
+{% if vm.gophish is defined and vm.gophish.enabled %}
+    - { role: warhorse.gophish_docker }
+{% endif %}
 {% if vm.mythic is defined and vm.mythic.enabled %}
     - { role: t94j0.mythic }
 {% endif %}
@@ -107,4 +110,5 @@
 {% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
     - { role: warhorse.evilginx2_docker }
 {% endif %}
+
 {% endfor %}

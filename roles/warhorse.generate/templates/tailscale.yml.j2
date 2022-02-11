@@ -1,5 +1,5 @@
-{% for vm in warhorse.vm %}
-{% if vm.tailscale is defined and vm.tailscale.enabled %}
+{% for vm in warhorse.vm|selectattr("tailscale", "defined" ) %}
+{% if vm.tailscale.enabled %}
 {% if loop.first %}
 all:
   children:

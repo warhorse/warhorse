@@ -87,7 +87,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 
     url_redirect_action {
       redirect_type = "PermanentRedirect"
-      hostname = "{{ cdn.redirect_domain |default('https://azure.microsoft.com') }}"
+      hostname = "{{ cdn.redirect_domain |default('azure.microsoft.com') }}"
     }
   }
 }
@@ -176,7 +176,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 
     url_redirect_action {
       redirect_type = "PermanentRedirect"
-      hostname = "{{ cdn.redirect_domain |default('https://azure.microsoft.com') }}"
+      hostname = "{{ cdn.redirect_url |default('https://azure.microsoft.com') }}"
     }
   }
 }
@@ -265,7 +265,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 
     url_redirect_action {
       redirect_type = "PermanentRedirect"
-      hostname = "{{ cdn.redirect_domain |default('https://azure.microsoft.com') }}"
+      hostname = "{{ cdn.redirect_url |default('https://azure.microsoft.com') }}"
     }
   }
 }

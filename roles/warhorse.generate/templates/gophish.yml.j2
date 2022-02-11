@@ -1,0 +1,42 @@
+{% for vm in warhorse.vm %}
+{% if vm.gophish is defined and vm.gophish.enabled %}
+{% if loop.last %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+              gophish_site_hostname: 'gophish'
+              gophish_vpn_hostname: 'gophish'
+
+              gophish_hostname: "gophish"
+              gophish_container_name: "gophish"
+
+              gophish_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
+              gophish_dir: '/opt/docker/gophish'
+{% if vm.tailscale.enabled is true %}
+              gophish_ports:
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}{% endraw %}:3333:3333"
+                - "127.0.0.1:3333:3333"
+{% else %}
+              gophish_ports:
+                - "127.0.0.1:3333:3333"
+{% endif %}
+{% if vm.http_proxy == "traefik" %}
+              gophish_docker_labels:
+                traefik.docker.network: "{% raw %}{{ dockernet }}{% endraw %}"
+                traefik.enable: "true"
+                traefik.http.routers.cs.rule: "{% raw %}Host(`{{ gophish_site_hostname }}.{{ op_domain_name }}`){% endraw %}"
+                traefik.http.routers.cs.middlewares: "cdn@docker"
+                traefik.http.routers.cs.tls: "true"
+                traefik.http.routers.cs.tls.certresolver: "letsencrypt"
+                traefik.http.services.cs.loadbalancer.server.scheme: "https"
+                traefik.http.services.cs.loadbalancer.server.port: "443"
+                traefik.frontend.passHostHeader: "true"
+                traefik.frontend.headers.SSLHost: "{% raw %}{{ gophish_site_hostname }}.{{ op_domain_name }}{% endraw %}"
+{% endif %}
+{% endif %}
+{% endfor %}

@@ -39,6 +39,14 @@
   with_items: "{{ warhorse.vm }}"
   when: item.cobaltstrike is defined
 
+- name: Generating gophish inventory
+  template:
+    mode: '0755'
+    src: templates/gophish.yml.j2
+    dest: "./inventory/gophish.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.gophish is defined
+
 - name: Generating mythic inventory
   template:
     mode: '0755'

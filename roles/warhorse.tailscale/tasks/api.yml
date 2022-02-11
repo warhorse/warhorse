@@ -24,6 +24,7 @@
     password: ""
     method: DELETE
     force_basic_auth: yes
+  ignore_errors: True
   vars:
     jmesquery: "devices[?hostname==`{{ hostname }}`]|[0].id"
     device_id: "{{ tailscale_devices.json | json_query(jmesquery) }}"

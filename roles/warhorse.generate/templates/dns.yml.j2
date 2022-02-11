@@ -32,6 +32,10 @@ all:
 {% if vm.mythic.enabled is true %}
             - "mythic{{ loop.index }}"
 {% endif %}
+{% if vm.gophish.enabled is true %}
+            - "{{ vm.gophish.site_hostname }}"
+            - "{{ vm.gophish.admin_hostname }}"
+{% endif %}
 {% if vm.cobaltstrike.dns_over_https is true %}
             - "ns{{ loop.index }}"
         - entry:
