@@ -1,6 +1,6 @@
-{% for vm in warhorse.vm %}
-{% if vm.gophish is defined and vm.gophish.enabled %}
-{% if loop.last %}
+{% for vm in warhorse.vm|selectattr("gophish", "defined" ) %}
+{% if vm.gophish.enabled %}
+{% if loop.first %}
 all:
   children:
     warhorse:

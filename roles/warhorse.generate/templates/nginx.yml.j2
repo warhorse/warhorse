@@ -1,6 +1,5 @@
-{% for vm in warhorse.vm %}
-{% if vm.http_proxy is defined and vm.http_proxy == "nginx" %}
-{% if loop.last %}
+{% for vm in warhorse.vm|selectattr("http_proxy", "equalto", "nginx" ) %}
+{% if loop.first %}
 all:
   children:
     warhorse:
@@ -13,5 +12,4 @@ all:
               nginx_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               nginx_dns_plugin: '{{ warhorse.dns.provider }}'
               nginx_config_location: '{{ lookup('env', 'PWD') }}/files/nginx_config.yml.j2'
-{% endif %}
 {% endfor %}

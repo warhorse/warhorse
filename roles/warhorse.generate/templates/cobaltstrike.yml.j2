@@ -1,5 +1,5 @@
-{% for vm in warhorse.vm %}
-{% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
+{% for vm in warhorse.vm|selectattr("cobaltstrike", "defined" ) %}
+{% if vm.cobaltstrike.enabled %}
 {% if loop.first %}
 all:
   children:
@@ -52,8 +52,8 @@ all:
 {% endif %}
 {% endfor %}
   vars:
-{% for vm in warhorse.vm %}
-{% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
+{% for vm in warhorse.vm|selectattr("cobaltstrike", "defined" ) %}
+{% if vm.cobaltstrike.enabled %}
     cs_auth_header_value: "{{ vm.cobaltstrike.auth_header_value }}"
     cs_auth_header_name: "{{ vm.cobaltstrike.auth_header_name }}"
 {% endif %}

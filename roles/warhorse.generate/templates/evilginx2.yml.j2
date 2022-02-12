@@ -1,6 +1,6 @@
-{% for vm in warhorse.vm %}
-{% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
-{% if loop.last %}
+{% for vm in warhorse.vm|selectattr("evilginx2", "defined" ) %}
+{% if vm.evilginx2.enabled %}
+{% if loop.first %}
 all:
   children:
     warhorse:

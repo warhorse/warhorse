@@ -1,5 +1,5 @@
-{% for vm in warhorse.vm %}
-{% if vm.mythic is defined and vm.mythic.enabled %}
+{% for vm in warhorse.vm|selectattr("mythic", "defined" ) %}
+{% if vm.mythic.enabled %}
 {% if loop.first %}
 all:
   children:
