@@ -110,5 +110,8 @@
 {% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
     - { role: warhorse.evilginx2_docker }
 {% endif %}
+{% if vm.nighthawk is defined and vm.nighthawk.enabled %}
+    - { role: warhorse.nighthawk_docker }
+{% endif %}
 
 {% endfor %}

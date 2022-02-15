@@ -1,0 +1,60 @@
+{% for vm in warhorse.vm|selectattr("nighthawk", "defined" ) %}
+{% if vm.nighthawk.enabled %}
+{% if loop.first %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+              nighthawk_site_hostname: 'nh{{ loop.index }}'
+              nighthawk_vpn_hostname: 'nighthawk'
+
+              redirect_url: "azure.microsoft.com"
+              dns_plugin: 'digitalocean'
+
+              nighthawk_username: "{{ vm.nighthawk.username }}"
+              nighthawk_password: "{{ vm.nighthawk.password }}"
+              nighthawk_campaign: "{{ vm.nighthawk.campaign }}"
+              nighthawk_zip: "{{ vm.nighthawk.zip_location }}"
+
+              nighthawk_hostname: "nighthawk"
+              nighthawk_container_name: "nighthawk"
+              nighthawk_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
+              nighthawk_dir: '/opt/docker/nighthawk'
+              nighthawk_ports:
+                - "127.0.0.1:8888:8888"
+{% for ports in vm.nighthawk.socks_ports %}
+                - "127.0.0.1:{{ ports }}:{{ ports }}"
+{% endfor %}
+{% if vm.tailscale.enabled is true %}
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:8888:8888{% endraw %}"
+{% for ports in vm.nighthawk.socks_ports %}
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:{% endraw %}{{ ports }}:{{ ports }}"
+{% endfor %}
+{% endif %}
+{% if vm.http_proxy == "traefik" %}
+              nighthawk_docker_labels:
+                traefik.docker.network: "{% raw %}{{ dockernet }}{% endraw %}"
+                traefik.enable: "true"
+                traefik.http.routers.nighthawk.rule: "{% raw %}Host(`{{ nighthawk_site_hostname }}.{{ op_domain_name }}`){% endraw %}"
+                traefik.http.routers.nighthawk.middlewares: "cdn@docker"
+                traefik.http.routers.nighthawk.tls: "true"
+                traefik.http.routers.nighthawk.tls.certresolver: "letsencrypt"
+                traefik.http.services.nighthawk.loadbalancer.server.scheme: "https"
+                traefik.http.services.nighthawk.loadbalancer.server.port: "443"
+                traefik.frontend.passHostHeader: "true"
+                traefik.frontend.headers.SSLHost: "{% raw %}{{ nighthawk_site_hostname }}.{{ op_domain_name }}{% endraw %}"
+{% endif %}
+{% endif %}
+{% endfor %}
+  vars:
+{% for vm in warhorse.vm|selectattr("nighthawk", "defined" ) %}
+{% if vm.nighthawk.enabled %}
+    nighthawk_auth_header_value: "{{ vm.nighthawk.auth_header_value }}"
+    nighthawk_auth_header_name: "{{ vm.nighthawk.auth_header_name }}"
+{% endif %}
+{% endfor %}
+    nighthawk_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"

@@ -119,8 +119,8 @@ EOF
 {% if cdn.provider == 'aws' %}
 resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   origin {
-    domain_name = "nighthawk{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
-    origin_id   = "nighthawk{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    domain_name = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    origin_id   = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
 
     custom_origin_config {
       http_port              = "80"
@@ -139,7 +139,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "nighthawk{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    target_origin_id = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
 
     function_association {
       event_type   = "viewer-request"
@@ -205,11 +205,11 @@ data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.na
 function handler(event) {
     var request = event.request;
     var headers = request.headers;
-    var headerValue = '{{ vm.cobaltstrike.auth_header_value }}'
+    var headerValue = '{{ vm.nighthawk.auth_header_value }}'
     var newurl = '{{ cdn.redirect_domain |default('https://aws.com') }}'
   
-    if (headers['{{ vm.cobaltstrike.auth_header_name }}']) {
-        var authHeader = headers['{{ vm.cobaltstrike.auth_header_name }}'].value;
+    if (headers['{{ vm.nighthawk.auth_header_name }}']) {
+        var authHeader = headers['{{ vm.nighthawk.auth_header_name }}'].value;
         if (authHeader === headerValue ) {
             return request;
         } 

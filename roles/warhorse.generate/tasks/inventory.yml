@@ -39,6 +39,14 @@
   with_items: "{{ warhorse.vm }}"
   when: item.cobaltstrike is defined
 
+- name: Generating nighthawk inventory
+  template:
+    mode: '0755'
+    src: templates/nighthawk.yml.j2
+    dest: "./inventory/nighthawk.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.nighthawk is defined
+
 - name: Generating gophish inventory
   template:
     mode: '0755'
