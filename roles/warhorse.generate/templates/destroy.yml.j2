@@ -11,7 +11,7 @@
   vars: 
     deploy: false
   vars_files:
-    - ./config.yml
+    - ../../{{ warhorse.general.op_number }}.yml
   roles:
     - { role: warhorse.tailscale }
 {% endif %}
@@ -26,7 +26,7 @@
   vars: 
     deploy: false
   vars_files:
-  - ./config.yml
+  - ../../{{ warhorse.general.op_number }}.yml
   roles:
     - { role: warhorse.terraform }
 
@@ -37,7 +37,7 @@
   vars: 
     deploy: false
   vars_files:
-  - ./config.yml
+  - ../../{{ warhorse.general.op_number }}.yml
   tasks:
   - name: remove keys directory 
     ansible.builtin.file:
@@ -54,7 +54,7 @@
   vars: 
     deploy: false
   vars_files:
-  - ./config.yml
+  - ../../{{ warhorse.general.op_number }}.yml
   tasks:
   - name: remove terrafrom & inventory directory 
     ansible.builtin.file:
