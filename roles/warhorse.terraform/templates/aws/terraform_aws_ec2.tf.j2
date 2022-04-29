@@ -1,0 +1,111 @@
+{% for vm in warhorse.vm %}
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "${var.op}-vpc"
+  cidr = "10.0.0.0/16"
+
+  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+
+  enable_nat_gateway = false
+  enable_vpn_gateway = false
+  enable_dns_hostnames = true
+
+  tags = {
+    Terraform = "true"
+    OP        = var.op
+    TTL       = var.ttl
+    Owner     = var.user_tag
+  }
+}
+
+data "aws_ami" "ubuntu-linux-2004" {
+  most_recent = true
+  owners      = ["099720109477"] # Canonical
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-disco-19.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+module "ansible_key_pair" {
+  source = "terraform-aws-modules/key-pair/aws"
+
+  key_name   = "ansible_${var.op}"
+  public_key = var.ansible_ssh_key
+
+}
+
+module "cobaltstrike_sg" {
+  source = "terraform-aws-modules/security-group/aws"
+
+  name        = "cobaltstrike-sg"
+  description = "Security group cobaltstrike instance"
+  vpc_id      = module.vpc.vpc_id
+  egress_with_cidr_blocks = [
+    {
+      rule        = "all-all"
+      cidr_blocks = "0.0.0.0/0"
+      description = "Allow All Outbound"
+    },
+  ]
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 51820
+      to_port     = 51820
+      protocol    = "udp"
+      description = "Wireguard"
+      cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      rule        = "https-443-tcp"
+      cidr_blocks = "0.0.0.0/0"
+      description = "HTTPS"
+    },
+    {
+      rule        = "ssh-tcp"
+      cidr_blocks = "0.0.0.0/0"
+      description = "SSH"
+    },
+  ]
+  tags = {
+    Terraform = "true"
+    OP        = var.op
+    TTL       = var.ttl
+    Owner     = var.user_tag
+  }
+}
+
+module "cobaltstrike_ec2" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+
+  name           = var.ec2_name
+  instance_count = 1
+  ami                    = data.aws_ami.ubuntu-linux-2004.id
+  associate_public_ip_address = true
+  instance_type          = var.ec2_size
+  key_name               = "ansible_${var.op}"
+  monitoring             = true
+  vpc_security_group_ids = [module.cobaltstrike_sg.this_security_group_id]
+  subnet_ids             = module.vpc.public_subnets
+  user_data              = data.template_cloudinit_config.config.rendered
+  root_block_device = [{
+    volume_type = "gp2"
+    volume_size = 50
+  }]
+  tags = {
+    Terraform = "true"
+    OP        = var.op
+    TTL       = var.ttl
+    Owner     = var.user_tag
+  }
+}
+
+
+{% endfor %}

@@ -6,17 +6,23 @@
   hosts: {{ vm.name }}
   connection: ssh
   become: True
+  environment: 
+    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   vars: 
     deploy: false
+  vars_files:
+    - ./config.yml
   roles:
     - { role: warhorse.tailscale }
 {% endif %}
-
 {% endfor %}
+
 - name: Destroy Terraform
   hosts: localhost
   gather_facts: false
   connection: local
+  environment: 
+    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   vars: 
     deploy: false
   vars_files:
@@ -41,7 +47,7 @@
       - "keys/{% raw %}id_rsa_ansible_{{ warhorse.general.op_number }}{% endraw %}"
       - "keys/{% raw %}id_rsa_ansible_{{ warhorse.general.op_number }}.pub{% endraw %}"
 
-- name: Destroy Terraform Files
+- name: Destroy Terraform Files and Inventory files
   hosts: localhost
   gather_facts: false
   connection: local
@@ -50,9 +56,10 @@
   vars_files:
   - ./config.yml
   tasks:
-  - name: remove terrafrom directory 
+  - name: remove terrafrom & inventory directory 
     ansible.builtin.file:
       path: "{% raw %}{{ item }}{% endraw %}"
       state: absent
     with_items:
       - "terraform"
+      - "inventory"

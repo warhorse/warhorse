@@ -65,6 +65,7 @@ hashicorp/
 secrets.yml
 inventory/*
 warhorse_roles/
+OP/
 keys/
 temp/
 !roles/
@@ -74,6 +75,6 @@ roles/*
 !roles/warhorse.terraform/
 !roles/warhorse.os/
 config.yml
-*_config.yml
+config/
 /deploy.yml
 /destroy.yml

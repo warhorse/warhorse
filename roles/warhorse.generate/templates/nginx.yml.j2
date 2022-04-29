@@ -11,5 +11,5 @@ all:
               nginx_domain_name: "{{ warhorse.dns.op_domain_name }}"
               nginx_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               nginx_dns_plugin: '{{ warhorse.dns.provider }}'
-              nginx_config_location: '{{ lookup('env', 'PWD') }}/files/nginx_config.yml.j2'
+              nginx_config_location: '{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.nginx.config_name }}'
 {% endfor %}

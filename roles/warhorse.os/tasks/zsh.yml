@@ -16,3 +16,20 @@
   apt:
     name: zsh
     state: present
+
+- name: create log dir
+  file:
+    path: /home/{{ item.username }}/log
+    state: directory
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  with_items: "{{ users }}"
+
+- name: add zsh log
+  copy:
+    src: .zshrc.local
+    dest: /home/{{ item.username }}/.zshrc.local
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+    mode: 0600
+  with_items: "{{ users }}"

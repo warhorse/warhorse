@@ -11,7 +11,7 @@
 |  <img src='https://github.com/warhorse/ansible-role-evilginx2-docker/blob/master/images/evilginx2_logo.png?raw=true' width='40'>                                                                                                                         | Evilginx2  | [evilginx2_docker](https://github.com/warhorse/ansible-role-evilginx2-docker)|
 |  <img src='https://github.com/warhorse/ansible-role-nighthawk-docker/blob/master/images/nighthawk_logo.png?raw=true' width='40'>                                                                                                                         | Nighthawk  | [nighthawk_docker](https://github.com/warhorse/ansible-role-nighthawk-docker)|
 |  <img src='https://cdn-1.webcatalog.io/catalog/tailscale/tailscale-icon.png' width='40'>                                                                                                                         | Tailscale  | [tailscale](https://github.com/artis3n/ansible-role-tailscale)
-|  <img src='https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F716050681-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-28427.appspot.com%2Fo%2Fspaces%252F-LkPUrFPV0ZTAaVORysL%252Favatar-1597327657680.png%3Fgeneration%3D1597327658453273%26alt%3Dmedia' width='40'>                                                                                                                         | Mythic  | [mythic](https://github.com/t94j0/ansible-role-mythic)|
+|  <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqaWTrw1ttvAZKoTi6guz8mP4WO_h-5EoXAzBzWzVX2g&s' width='40'>                                                                                                                         | Mythic  | [mythic](https://github.com/t94j0/ansible-role-mythic)|
 |  <img src='https://github.com/warhorse/ansible-role-gophish-docker/blob/master/images/gophish_logo.png?raw=true' width='40'>                                                                                                                         | Gophish  | [gophish](https://github.com/t94j0/ansible-role-gophish-docker)|
 
 ## HTTP Proxy
@@ -65,14 +65,18 @@ nighthawk:
     enabled: true
     auth_header_name: "cdnauth" # Make sure to keep capilized
     auth_header_value: "{{ '123456' | b64encode }}"
+    username: "admin"
+    password: "password"
+    campaign: "test"
+    zip_location: "test"
+    socks_ports: 
+    - 9201
+    - 9202
+    - 9203
     cdn:
-    - name: "azure"
+    - name: "login"
         provider: "azure"
-        hostname: "host1"
-        redirect_url: "https://azure.microsoft.com"
-    - name: "aws"
-        provider: "aws"
-        redirect_url: "https://aws.com"
+        hostname: "company"
 ```
 
 ## Phishing
@@ -98,6 +102,8 @@ evilginx2:
 
 ### Tailscale
 
+### Wireguard
+
 ## Extras
 
 ### Neo4j
@@ -115,3 +121,5 @@ neo4j:
 ### syncthing
 
 ### ipfs
+
+## Backup 

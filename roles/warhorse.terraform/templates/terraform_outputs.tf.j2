@@ -13,3 +13,25 @@ resource "local_file" "Inventory" {
  )
  filename = "../inventory/inventory"
 }
+
+{% for vm in warhorse.vm %}
+{% if vm.nighthawk.cdn is defined %}
+{% for cdn in vm.nighthawk.cdn|selectattr("provider", "equalto", "aws" ) %}
+{% if cdn.provider == 'aws' %}
+## The outputs file
+resource "local_file" "outputs" {
+ content = templatefile("outputs.tmpl",
+ {
+    aws-cdn = aws_cloudfront_distribution.cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.*.domain_name,
+{% if warhorse.dns.provider == 'aws' %}
+    aws-dns-key-id = aws_iam_access_key.dns_key_{{ warhorse.general.op_number }}.id
+    aws-dns-secret-id = aws_iam_access_key.dns_key_{{ warhorse.general.op_number }}.secret
+{% endif %}
+ }
+ )
+ filename = "../inventory/outputs"
+}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

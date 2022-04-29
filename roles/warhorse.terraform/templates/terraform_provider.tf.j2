@@ -17,6 +17,15 @@ terraform {
     }
     local = ">= 1.2"
   }
+{% if warhorse.terraform.cloud_enabled is true %}
+  cloud {
+    organization = "{{ warhorse.terraform.cloud_organization }}"
+
+    workspaces {
+      name = "{{ warhorse.terraform.cloud_workspace }}"
+    }
+  }
+{% endif %}
 }
 {% if warhorse|regex_search("'provider': 'digitalocean'", multiline=True, ignorecase=True) %}
 provider "digitalocean" {
@@ -30,6 +39,9 @@ provider "aws" {
   secret_key = {{ aws_secret_key }}
 {% endif %}
   region = "us-east-1"
+{% if warhorse.terraform.aws_profile is defined %}
+  profile = "{{ warhorse.terraform.aws_profile }}"
+{% endif %}
 }
 {% endif %}
 {% if warhorse|regex_search("'provider': 'azure'", multiline=True, ignorecase=True) %}
@@ -40,7 +52,7 @@ provider "azurerm" {
 {% endif %}
 }
 {% endif %}
-{% if warhorse.terraform.state_bucket_enable is true %}
+{% if warhorse.terraform.state_bucket_enabled is true %}
 terraform {
   backend "s3" {
     skip_credentials_validation = true

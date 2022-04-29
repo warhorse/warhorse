@@ -12,7 +12,17 @@
     force_init: true
     variables:
       do_token: "{{ digitalocean_token }}"
-  when: warhorse.terraform.state_bucket_enable
+  when: warhorse.terraform.state_bucket_enabled is defined and true
+
+- name: Deploy Terraform Cloud
+  community.general.terraform:
+    project_path: '{{ terraform_project_path }}'
+    state: "{{ state }}"
+    workspace: "{{ warhorse.terraform.cloud_workspace }}"
+    force_init: true
+    variables:
+      do_token: "{{ digitalocean_token }}"
+  when: warhorse.terraform.cloud_enabled is defined and true
 
 - name: Deploy Terraform Local State
   community.general.terraform:
@@ -21,4 +31,4 @@
     force_init: true
     variables:
       do_token: "{{ digitalocean_token }}"
-  when: warhorse.terraform.state_bucket_enable is not defined
+  when: warhorse.terraform.state_bucket_enabled is not defined and warhorse.terraform.cloud_enabled is not defined

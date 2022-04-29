@@ -3,3 +3,16 @@
   template:
     src: templates/aws/terraform_aws_cloudfront.tf.j2
     dest: "{{ terraform_project_path }}/aws_cloudfront.tf"
+  when: warhorse.vm | regex_search("(?i).+('cdn':.+'provider':\s'aws')", multiline=True, ignorecase=True)
+
+- name: Generating Terraform AWS Route53
+  template:
+    src: templates/aws/terraform_aws_route53.tf.j2
+    dest: "{{ terraform_project_path }}/aws_route53.tf"
+  when: warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'aws')", multiline=True, ignorecase=True)
+
+# - name: Generating Terraform AWS EC2
+#   template:
+#     src: templates/aws/terraform_aws_ec2.tf.j2
+#     dest: "{{ terraform_project_path }}/aws_ec2.tf"
+#   when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'aws')", multiline=True, ignorecase=True)

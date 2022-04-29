@@ -3,13 +3,16 @@
   template:
     src: templates/digitalocean/terraform_digitalocean_do.tf.j2
     dest: "{{ terraform_project_path }}/digitalocean_do.tf"
+  when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)
 
 - name: Generating Terraform Digital Ocean DNS
   template:
     src: templates/digitalocean/terraform_digitalocean_dns.tf.j2
     dest: "{{ terraform_project_path }}/digitalocean_dns.tf"
+  when: warhorse | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)
 
 - name: Generating Terraform CloudInit
   template:
     src: templates/digitalocean/cloud-init-do.yaml.j2
     dest: "{{ terraform_project_path }}/cloud-init-do.yaml"
+  when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)

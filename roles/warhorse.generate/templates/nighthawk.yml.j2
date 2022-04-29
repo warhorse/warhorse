@@ -26,9 +26,11 @@ all:
               nighthawk_dir: '/opt/docker/nighthawk'
               nighthawk_ports:
                 - "127.0.0.1:8888:8888"
+{% if vm.nighthawk.socks_ports is defined %}
 {% for ports in vm.nighthawk.socks_ports %}
                 - "127.0.0.1:{{ ports }}:{{ ports }}"
 {% endfor %}
+{% endif %}
 {% if vm.tailscale.enabled is true %}
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:8888:8888{% endraw %}"
 {% for ports in vm.nighthawk.socks_ports %}

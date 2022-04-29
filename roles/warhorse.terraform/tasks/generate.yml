@@ -12,7 +12,6 @@
   - "{{ terraform_project_path }}/redirector"
   - "{{ terraform_project_path }}/redirector/iis"
 
-
 - name: Generating Terraform Variables
   template:
     src: templates/terraform_variables.tf.j2
@@ -36,3 +35,8 @@
   template:
     src: templates/inventory.tmpl.j2
     dest: "{{ terraform_project_path }}/inventory.tmpl"
+
+- name: Generating Terraform Outputs Template
+  template:
+    src: templates/outputs.tmpl.j2
+    dest: "{{ terraform_project_path }}/outputs.tmpl"

@@ -1,9 +1,14 @@
+- name: Generate Playbooks Roles & Terrafrom
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+      - { role: warhorse.generate }
+
 - name: Create SSH Keys
   hosts: localhost
   gather_facts: true
   connection: local
-  vars_files:
-  - ./config.yml
   vars: 
     deploy: true
   tasks:
@@ -14,14 +19,5 @@
       mode: '0755'
   - name: Create SSH Keys
     community.crypto.openssh_keypair:
-      path: "keys/id_rsa_ansible_{{ warhorse.general.op_number }}"
+      path: "./OP/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}"
       size: 2048
-
-- name: Generate Playbooks Roles & Terrafrom
-  hosts: localhost
-  gather_facts: false
-  connection: local
-  vars_files:
-  - ./config.yml
-  roles:
-      - { role: warhorse.generate }

@@ -10,7 +10,12 @@ all:
 {% if vm.http_proxy == 'traefik' %}
             {{ vm.name }}:
             # Traefik
-              dns_traefik: "{{ warhorse.dns.provider }}"
+{% if warhorse.dns.provider == 'aws' %}
+              dns_traefik: "route53"
+{% endif %}
+{% if warhorse.dns.provider == 'digitalocean' %}
+              dns_traefik: "digitalocean"
+{% endif %}
               traefik_dir: "{{ vm.traefik.dir | default('/opt/docker/traefik') }}"
               traefik_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               traefik_hostname: "traefik"
@@ -34,8 +39,13 @@ all:
                 traefik.http.routers.traefik.service: "api@internal"
 {% endif %}
               traefik_env:
+{% if warhorse.dns.provider == 'digitalocean' %}
                 DO_AUTH_TOKEN: '{% raw %}{{ digitalocean_token }}{% endraw %}'
-
+{% endif %}
+{% if warhorse.dns.provider == 'aws' %}
+                AWS_ACCESS_KEY_ID: '{% raw %}{{ aws_dns_key_id }}{% endraw %}'
+                AWS_SECRET_ACCESS_KEY: '{% raw %}{{ aws_dns_key_secret_id }}{% endraw %}'
+{% endif %}
               traefik_confkey_api:
                 insecure: true
 {% if vm.traefik.dashboard is true %}

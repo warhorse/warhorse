@@ -1,0 +1,100 @@
+{% for vm in warhorse.vm %}
+{% for name in dns|selectattr("name", "equalto", vm.name ) %}
+{% for entrys in name.entrys %}
+{% if entrys.provider == "aws"%}
+{% if entrys.resource_name == 'tld' %}
+data "aws_route53_zone" "op_tld" {
+  name         = "{{ warhorse.dns.op_tld }}."
+  private_zone = false
+}
+resource "aws_route53_zone" "op" {
+  name = "{{ entrys.domain_name }}"
+}
+resource "aws_route53_record" "aws_sub_zone_ns" {
+  zone_id = data.aws_route53_zone.op_tld.zone_id
+  name    = "{{ entrys.domain_name }}"
+  type    = "NS"
+  ttl     = "30"
+  records = [ for awsns in aws_route53_zone.op.name_servers: awsns ]
+}
+{% endif %}
+{% if entrys.dns_type is defined %}
+{% for hostnames in entrys.hostnames %}
+resource "aws_route53_record" "{{ entrys.resource_name }}_{{ hostnames }}" {
+  zone_id = aws_route53_zone.op.zone_id
+  name    = "{{ hostnames }}.{{ entrys.domain_name }}"
+  type    = "{{ entrys.dns_type }}"
+  ttl     = "300"
+{% if vm.provider == "digitalocean" %}
+{% if entrys.dns_type == 'A' %}
+  records = [digitalocean_droplet.{{ entrys.value }}.ipv4_address]
+{% endif %}
+}
+{% if entrys.dns_type == 'NS' %}
+  value  = "{{ entrys.value }}"
+  depends_on = [digitalocean_record.{{ entrys.depends_on }}]
+}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+
+{% for vm in warhorse.vm %}
+{% for name in dns|selectattr("name", "equalto", vm.name ) %}
+{% for entrys in name.entrys %}
+{% if entrys.provider == "aws" %}
+resource "aws_iam_user" "dns_{{ warhorse.general.op_number }}" {
+  name = "dns_user_{{ warhorse.general.op_number }}"
+  path = "/"
+  tags = {
+    Terraform = "true"
+    OP        = "{{ warhorse.general.op_number }}"
+    TTL       = "{{ warhorse.general.ttl }}"
+    Owner     = "{{ warhorse.general.user_tag }}"
+  }
+}
+
+resource "aws_iam_access_key" "dns_key_{{ warhorse.general.op_number }}" {
+  user = aws_iam_user.dns_{{ warhorse.general.op_number }}.name
+}
+
+resource "aws_iam_user_policy" "dns_policy_{{ warhorse.general.op_number }}" {
+  name = "dns_policy_{{ warhorse.general.op_number }}"
+  user = aws_iam_user.dns_{{ warhorse.general.op_number }}.name
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "route53:GetChange",
+                "route53:ListHostedZonesByName",
+                "route53:ListResourceRecordSets"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "route53:ChangeResourceRecordSets"
+            ],
+            "Resource": [
+                "arn:aws:route53:::hostedzone/${aws_route53_zone.op.zone_id}"
+            ]
+        }
+    ]
+}
+EOF
+}
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endfor %}

@@ -41,7 +41,7 @@ Warhorse consists of a fully-featured Ansible playbook to deploy infrastructure 
 | ------ | ----- | ------ |
 |  <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/DigitalOcean_logo.svg/1200px-DigitalOcean_logo.svg.png' width='40'> | Digital Ocean  | Droplet,DNS |
 | <img src='https://download.logo.wine/logo/Microsoft_Azure/Microsoft_Azure-Logo.wine.png' width='40'> | Azure    | CDN|
-| <img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpngimage.net%2Fwp-content%2Fuploads%2F2020%2F02%2Faws-logo-png-4.png&f=1&nofb=1' width='40'> | AWS    | CDN|
+| <img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpngimage.net%2Fwp-content%2Fuploads%2F2020%2F02%2Faws-logo-png-4.png&f=1&nofb=1' width='40'> | AWS    | CDN,EC2,DNS|
 ## Modules
 
 | Logo | Service | Role |
@@ -54,7 +54,7 @@ Warhorse consists of a fully-featured Ansible playbook to deploy infrastructure 
 |  <img src='https://github.com/warhorse/ansible-role-nighthawk-docker/blob/master/images/nighthawk_logo.png?raw=true' width='40'>                                                                                                                         | Nighthawk  | [nighthawk_docker](https://github.com/warhorse/ansible-role-nighthawk-docker)|
 |  <img src='https://cdn-1.webcatalog.io/catalog/tailscale/tailscale-icon.png' width='40'>                                                                                                                         | Tailscale  | [tailscale](https://github.com/artis3n/ansible-role-tailscale)|
 |  <img src='https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F716050681-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-28427.appspot.com%2Fo%2Fspaces%252F-LkPUrFPV0ZTAaVORysL%252Favatar-1597327657680.png%3Fgeneration%3D1597327658453273%26alt%3Dmedia' width='40'>                                                                                                                         | Mythic  | [mythic](https://github.com/t94j0/ansible-role-mythic)|
-|  <img src='https://github.com/warhorse/ansible-role-gophish-docker/blob/master/images/gophish_logo.png?raw=true' width='40'>                                                                                                                         | Gophish  | [gophish](https://github.com/t94j0/ansible-role-gophish-docker)|
+|  <img src='https://github.com/warhorse/ansible-role-gophish-docker/blob/master/images/gophish_logo.png?raw=true' width='40'>                                                                                                                         | Gophish  | [gophish_docker](https://github.com/warhorse/ansible-role-gophish-docker)|
 ## Documentation 
 
 https://docs.war-horse.io/

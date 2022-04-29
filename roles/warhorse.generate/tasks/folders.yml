@@ -4,5 +4,8 @@
     path: '{{ item }}'
     state: directory
   with_items:
-  - './inventory'
-  - './files'
+  - './OP'
+  - './OP/{{ warhorse.general.op_number }}'
+  - './OP/{{ warhorse.general.op_number }}/inventory'
+  - './OP/{{ warhorse.general.op_number }}/files'
+  - './OP/{{ warhorse.general.op_number }}/keys'
