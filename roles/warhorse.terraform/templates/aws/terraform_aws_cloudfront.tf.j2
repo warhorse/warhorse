@@ -46,7 +46,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.na
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
-      locations        = [{{ cdn.country_allow |default("US") }}]
+      locations        = [{{ cdn.country_allow |default('"US"') }}]
     }
   }
 
@@ -163,7 +163,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
-      locations        = [{{ cdn.country_allow |default("US") }}]
+      locations        = [{{ cdn.country_allow |default('"US"') }}]
     }
   }
 
@@ -280,7 +280,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
-      locations        = [{{ cdn.country_allow |default("US") }}]
+      locations        = [{{ cdn.country_allow |default('"US"') }}]
     }
   }
 
