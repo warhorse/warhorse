@@ -56,6 +56,6 @@ all:
 {% if vm.cobaltstrike.enabled %}
     cs_auth_header_value: "{{ vm.cobaltstrike.auth_header_value }}"
     cs_auth_header_name: "{{ vm.cobaltstrike.auth_header_name }}"
+    cs_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"
 {% endif %}
 {% endfor %}
-    cs_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"

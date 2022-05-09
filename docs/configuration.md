@@ -10,7 +10,7 @@ Time to Live for the engagment year month day 2022-01-01
 #### ntp_timezone
 Time zone to use for all systems part of this engagment
 
-### Example
+#### Example
 ```
   general:
     op_number: "123456"
@@ -21,11 +21,11 @@ Time zone to use for all systems part of this engagment
 ## DNS
 #### provider: Cloud provider to use
 The cloud provider you want to use for DNS.
-#### op_tdl: The operation top level domain 
+#### op_tld: The operation top level domain 
 The top level domain name for DNS
 #### op_domain_name: The operation sub domain
 The operation subdomain you want to use for DNS
-### Example
+#### Example
 ```
   dns:
     provider: "digitalocean"
@@ -37,30 +37,22 @@ The operation subdomain you want to use for DNS
 This is the name you would like to use for the Virtual Machine
 #### provider: - Cloud provider to use *REQUIRED*
 The cloud provider you want to use for Virtual Machine.
-        
-        resource_name: "operator-0000-01-teamserver"
-        hostname: "123456-teamserver" optional
-        dns_hostname: "teamserver" optional
-        size: "s-2vcpu-4gb" optional
-        region: "nyc1" optional
-        img: "ubuntu-20-04-x64" optional
-        http_proxy: "traefik" # nginx,caddy
 #### resource_name: - *optional*
-Time
+The name you would like to use for the VM resource
 #### hostname: - *optional*
-Time
+The hostname you would like to use for the VM
 #### dns_hostname: - *optional*
-Time
+The DNS hostname you would like to use for the VM
 #### size: - *optional*
-Time
+The size of the instance for the VM. This will chnage depending on the cloud you use.
 #### region: - *optional*
-Time
+The region you would like to use for the VM. This will change depending on the cloud you use.
 #### img: - *optional*
-Time
+The cloud provider operating system to use. Currently Warhorse only supports Ubuntu 20.04. This will change in the future. This will change depending on the cloud you use. 
 
 #### http_proxy: - *optional*
-Time
-
+The HTTP proxy you would like to use with your modules. Currently only traefik and nginx are supported
+#### Example
 ```
   vm:
     - name: "teamserver"
@@ -72,15 +64,22 @@ Time
         region: "nyc1" optional
         img: "ubuntu-20-04-x64" optional
         http_proxy: "traefik" # nginx,caddy
-        firewall: 
-            enabled: true # You should keep this true
-        backup: 
-            enabled: false
-            archive_zip: false
 ```
 
 ## Terraform
+#### state_bucket_enabled: <mark>REQUIRED</mark>
+This will enable the terraform state bucket in a S3 bucket.
+#### state_bucket_name: <mark>REQUIRED</mark>
+The name of the S3 bucket
+#### state_bucket_key: <mark>REQUIRED</mark>
 
+This is the path to the sate file in the S3 bucket.
+#### state_bucket_region: <mark>REQUIRED</mark>
+This is the region used for the S3 bucket.
+
+#### state_bucket_endpoint: <mark>REQUIRED</mark>
+This is the URL used to access this S3 bucket.
+#### Example
 ```
   terraform:
     state_bucket_enabled: true
@@ -99,7 +98,15 @@ Time
     cloud_workspace: 'test'
 ```
 ## Users
-
+#### - username: <mark>REQUIRED</mark>
+This is the name you would like to use for a user account
+#### name: <mark>REQUIRED</mark>
+This is the username that will be used on your VM's
+#### authorized_keys: <mark>REQUIRED</mark>
+This is the public SSH key to use for the user. You can put a file path of a github url.
+#### shell: <mark>REQUIRED</mark>
+This is the shell to use for the user. Default shell is ZSH
+#### Example
 ```
 users:
     - username: operator

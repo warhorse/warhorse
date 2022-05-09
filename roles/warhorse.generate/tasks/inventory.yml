@@ -11,11 +11,11 @@
     src: templates/vault.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/vault.yml"
 
-# - name: Encrypt vault
-#   ansible.builtin.shell: ansible-vault encrypt "{{ lookup('env', 'PWD') }}"/inventory/vault.yml
-#   environment: 
-#     ANSIBLE_VAULT_PASSWORD: "{{ warhorse.general.vault_key }}"
-#     ANSIBLE_VAULT_PASSWORD_FILE: "./vault-env"
+- name: Encrypt vault
+  ansible.builtin.shell: ansible-vault encrypt "{{ lookup('env', 'PWD') }}"/OP/{{ warhorse.general.op_number }}/inventory/vault.yml
+  environment: 
+    ANSIBLE_VAULT_PASSWORD: "{{ warhorse.general.vault_key }}"
+    ANSIBLE_VAULT_PASSWORD_FILE: "./vault-env"
 
 - name: Generating dns inventory
   template:

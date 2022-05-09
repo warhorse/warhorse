@@ -8,5 +8,6 @@
 
 [GitHub](https://github.com/warhorse/warhorse/)
 [Get Started](##getting_started)
+[Demo](##demo)
 [Modules](##modules#supported-modules)
 [Providers](##providers)

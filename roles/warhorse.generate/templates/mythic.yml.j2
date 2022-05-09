@@ -26,6 +26,6 @@ all:
 {% if vm.mythic is defined and vm.mythic.enabled and vm.mythic.auth_header_value and vm.mythic.auth_header_name %}
     mythic_auth_header_value: "{{ vm.mythic.auth_header_value }}"
     mythic_auth_header_name: "{{ vm.mythic.auth_header_name }}"
+    mythic_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"
 {% endif %}
 {% endfor %}
-    mythic_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"

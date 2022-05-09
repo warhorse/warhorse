@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="images/favicon-32x32.png">
   <title>Warhorse Documentation</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
   <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/js/docsify-themeable.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-edit-on-github"></script>
 <body>
   <div id="app"></div>
   <script>
@@ -17,10 +19,14 @@
       coverpage: true,
       repo: 'warhorse/warhorse',
       logo: 'images/logo_full.png',
-      themeColor: '#3F51B5',
+      themeColor: '#4c4c4d',
       onlyCover: true,
       loadSidebar: true,
-      subMaxLevel: 3
+      subMaxLevel: 3,
+      notFoundPage: true,
+      plugins: [
+        EditOnGithubPlugin.create('https://github.com/warhorse/warhorse/blob/main/docs/')
+      ]
     }
   </script>
   <!-- Docsify v4 -->

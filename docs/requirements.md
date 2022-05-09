@@ -9,9 +9,10 @@ You will need to use a cloud provider and more importenly you will need API keys
 
 ### AWS
 
-AWSCLI 
+[AWS Command Line Interface](https://aws.amazon.com/cli/)
 
-API Key
+API - Access Key
+API - Secret Key
 
 ### Digital Ocean
 
@@ -19,7 +20,7 @@ API Key
 
 ### Azure
 
-AZ CLI
+[Azure Command Line Interface](https://docs.microsoft.com/en-us/cli/azure/)
 
 ## 3. Secrets Manager (optional)
 

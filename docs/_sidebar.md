@@ -1,6 +1,7 @@
 <!-- docs/_sidebar.md -->
 * [Home](/)
 * [Requirements](requirements.md "Requirements")
+* [Demo](demo.md "Demo")
 * [Getting Started](getting_started.md "Quick Start Guide")
 * [Secrets](secrets.md "Secrets")
 * [Deployments](deployments.md "Deployments")

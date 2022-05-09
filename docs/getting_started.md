@@ -91,5 +91,6 @@ ansible-playbook generate.yml
 ## Deploy
 Run the following command to deploy your environment.
 ``` 
+cd OP\12345
 ansible-playbook deploy.yml
 ```
