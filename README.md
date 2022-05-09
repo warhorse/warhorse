@@ -26,7 +26,7 @@ Table of contents
 Warhorse consists of a fully-featured Ansible playbook to deploy infrastructure in the cloud for conducting security assessments. The Playbook combines Terraform & Ansible to deploy and configure virtual machines for a wide range of use cases. This Playbook is highly customizable and includes operational security. No experience with Ansible or Terraform is required to use this Playbook.
 
 ## Video Demo
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Vd9wW3A2f90" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![WarHorse Demo](https://img.youtube.com/vi/Vd9wW3A2f90/0.jpg)](https://www.youtube.com/watch?v=Vd9wW3A2f90)
 
 ## Current Features
 
