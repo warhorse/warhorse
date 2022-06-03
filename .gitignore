@@ -64,6 +64,7 @@ hashicorp/
 # ansible
 secrets.yml
 inventory/*
+old_config/
 warhorse_roles/
 OP/
 keys/
@@ -74,6 +75,9 @@ roles/*
 !roles/warhorse.tailscale/
 !roles/warhorse.terraform/
 !roles/warhorse.os/
+!roles/warhorse.notification/
+!roles/warhorse.deployment/
+!roles/warhorse.backup_archive/
 config.yml
 config/
 /deploy.yml

@@ -1,0 +1,32 @@
+- name: Install 7zip
+  apt:
+    name: p7zip*
+    state: present
+
+- name: Create 7zip password protected archive 
+  ansible.builtin.shell: "7z a -p'{{ vm.backup.password|default(warhorse.general.vault_key) }}' -mhe=on -mmt=8 /tmp/{{ ansible_hostname }}.7z {{ backup_folders }}"
+  args:
+    executable: /bin/bash
+
+- name: Uploading backup to S3 Bucket
+  amazon.aws.aws_s3:
+    bucket: "{{ backup_bucket }}"
+    src: "/tmp/{{ op_number }}-{{ ansible_hostname }}.7z"
+    object: "/{{ op_number }}/{{ ansible_hostname }}.7z"
+    s3_url: "{{ backup_endpoint }}"
+    aws_access_key: "{{ backup_bucket_access_key }}"
+    aws_secret_key: "{{ backup_bucket_secret_key }}"
+    region: "{{ backup_region }}"
+    mode: put
+
+- name: Get Presigned URL
+  amazon.aws.aws_s3:
+    bucket: "{{ backup_bucket }}"
+    object: "/{{ op_number }}/{{ ansible_hostname }}.7z"
+    s3_url: "{{ backup_endpoint }}"
+    aws_access_key: "{{ backup_bucket_access_key }}"
+    aws_secret_key: "{{ backup_bucket_secret_key }}"
+    region: "{{ backup_region }}"
+    mode: geturl
+    expiry: "86400"
+  register: s3_backup

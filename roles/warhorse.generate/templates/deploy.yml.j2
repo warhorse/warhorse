@@ -60,6 +60,9 @@
 {% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
     - { role: artis3n.tailscale }
 {% endif %}
+{% if vm.backup is defined and vm.backup.enabled %}
+    - { role: arillso.restic }
+{% endif %}
 {% endfor %}
 
 {% for vm in warhorse.vm %}
@@ -105,14 +108,29 @@
 {% if vm.dashy is defined and vm.dashy.enabled %}
     - { role: warhorse.dashy_docker }
 {% endif %}
-{% if vm.backup is defined and vm.backup.enabled %}
-    - { role: warhorse.backup }
-{% endif %}
 {% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
     - { role: warhorse.evilginx2_docker }
 {% endif %}
 {% if vm.nighthawk is defined and vm.nighthawk.enabled %}
     - { role: warhorse.nighthawk_docker }
 {% endif %}
-
 {% endfor %}
+
+{% if warhorse.general.deployment_txt is undefined or warhorse.general.deployment_txt is true %}
+- name: Deployment Extras
+  gather_facts: yes
+  hosts: warhorse
+  connection: ssh
+  environment: 
+    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
+  become: True
+  vars_files:
+  - ../../{{ warhorse.general.op_number }}.yml
+  vars: 
+    deploy: true
+  roles:
+    - { role: warhorse.deployment }
+{% if warhorse.notification.email is defined %}
+    - { role: warhorse.notification }
+{% endif %}
+{% endif %}

@@ -60,6 +60,9 @@
     mode: '0755'
     src: templates/mythic.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/mythic.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.mythic is defined
+
 
 - name: Generating traefik inventory
   template:
@@ -100,3 +103,11 @@
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/nginx.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.http_proxy == "nginx"
+
+- name: Generating backup inventory
+  template:
+    mode: '0755'
+    src: templates/backup.yml.j2
+    dest: "./OP/{{ warhorse.general.op_number }}/inventory/backup.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.backup is defined

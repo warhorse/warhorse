@@ -31,12 +31,12 @@
     src: templates/terraform_outputs.tf.j2
     dest: "{{ terraform_project_path }}/outputs.tf"
 
-- name: Generating Terraform Outputs Template
+- name: Generating Terraform Inventory Template
   template:
     src: templates/inventory.tmpl.j2
     dest: "{{ terraform_project_path }}/inventory.tmpl"
 
-- name: Generating Terraform Outputs Template
+- name: Generating Terraform aws Template
   template:
-    src: templates/outputs.tmpl.j2
-    dest: "{{ terraform_project_path }}/outputs.tmpl"
+    src: templates/aws.tmpl.j2
+    dest: "{{ terraform_project_path }}/aws.tmpl"

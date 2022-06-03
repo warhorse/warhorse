@@ -12,11 +12,6 @@
   vars: 
     deploy: true
   tasks:
-  - name: Create a keys directory 
-    ansible.builtin.file:
-      path: keys
-      state: directory
-      mode: '0755'
   - name: Create SSH Keys
     community.crypto.openssh_keypair:
       path: "./OP/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}"

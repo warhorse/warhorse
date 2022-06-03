@@ -1,0 +1,55 @@
+
+{% for vm in warhorse.vm %}
+{% if vm.nighthawk.cdn is defined and vm.cobaltstrike.cdn is undefined %}
+{% for cdn_nighthawk in vm.nighthawk.cdn|selectattr("provider", "equalto", "aws" ) %}
+{% if cdn_nighthawk.provider == 'aws' %}
+${yamlencode({all: {vars: {aws_cdn_nighthawk_hostnames: [for domain_name in aws-cdn-nighthawk : "${domain_name}"],
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if vm.cobaltstrike.cdn is defined and vm.nighthawk.cdn is undefined %}
+{% for cdn_cobaltstrike in vm.cobaltstrike.cdn|selectattr("provider", "equalto", "aws" ) %}
+{% if cdn_cobaltstrike.provider == 'aws' %}
+${yamlencode({all: {vars: {aws_cdn_cobaltstrike_hostnames: [for domain_name in aws-cdn-cobaltstrike : "${domain_name}"],
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if vm.cobaltstrike.cdn is defined and vm.nighthawk.cdn is defined %}
+{% for cdn_cobaltstrike in vm.cobaltstrike.cdn|selectattr("provider", "equalto", "aws" ) %}
+{% for cdn_nighthawk in vm.nighthawk.cdn|selectattr("provider", "equalto", "aws" ) %}
+{% if cdn_nighthawk.provider == 'aws' and cdn_cobaltstrike.provider == 'aws' and loop.last %}
+${yamlencode({all: {vars: {aws_cdn_cobaltstrike_hostnames: [for domain_name in aws-cdn-cobaltstrike: "${domain_name}"], aws_cdn_nighthawk_hostnames: [for domain_name in aws-cdn-nighthawk: "${domain_name}"],
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% for name in dns|selectattr("name", "equalto", vm.name ) %}
+{% for entrys in name.entrys %}
+{% if entrys.provider == "aws"%}
+    aws_dns_key_id: "${aws-dns-key-id}"
+    aws_dns_key_secret_id: "${aws-dns-secret-id}"
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% if vm.nighthawk.cdn is defined and vm.cobaltstrike.cdn is undefined %}
+{% for cdn in vm.nighthawk.cdn|selectattr("provider", "equalto", "aws" ) %}
+{% if cdn.provider == 'aws' %}
+}}})}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if vm.cobaltstrike.cdn is defined and vm.nighthawk.cdn is undefined %}
+{% for cdn in vm.cobaltstrike.cdn|selectattr("provider", "equalto", "aws" ) %}
+{% if cdn.provider == 'aws' %}
+}}})}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if vm.cobaltstrike.cdn is defined and vm.nighthawk.cdn is defined %}
+{% for cdn in vm.cobaltstrike.cdn|selectattr("provider", "equalto", "aws" ) %}
+{% if cdn.provider == 'aws' %}
+}}})}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

@@ -13,6 +13,9 @@ all:
   vars:
     op_number: '{{ warhorse.general.op_number }}'
     op_tld: '{{ warhorse.dns.op_tld }}'
+{% if warhorse.general.owner_email is defined %}
+    owner_email: '{{ warhorse.general.owner_email }}'
+{% endif %}
     op_domain_name: '{{ warhorse.dns.op_domain_name }}'
     domain_name: "{% raw %}{{ op_domain_name }}{% endraw %}"
     user_tag: '{{ warhorse.general.user_tag }}'
@@ -57,7 +60,9 @@ all:
 
     # Pip Settings
     pip_install_packages:
-      - name: docker
+      - docker
+      - botocore
+      - boto3
     pip_executable: pip3
     pip_package: python3-pip
 
