@@ -1,5 +1,15 @@
+{% if vm.provider == "digitalocean" %}
 variable "do_token" {
   description = "Digital Ocean API Key"
   type        = string
   sensitive   = true
 }
+{% endif %}
+
+{% if vm.provider == "linode" %}
+variable "linode_token" {
+  description = "Linode API Key"
+  type        = string
+  sensitive   = true
+}
+{% endif %}

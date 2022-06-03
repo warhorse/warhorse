@@ -1,7 +1,7 @@
 - name: Collect all facts
   ansible.builtin.setup:
 
-- name: Create tailsacle DNS records
+- name: Create tailsacle Digital Ocean DNS records
   community.digitalocean.digital_ocean_domain_record:
     state: present
     type: A
@@ -10,9 +10,9 @@
     data: "{{ ansible_tailscale0.ipv4.address }}"
     oauth_token: "{{ digitalocean_token }}"
   with_items: "{{ tailscale_hostnames }}"
-  when: deploy
+  when: deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)
 
-- name: Remove tailsacle DNS records
+- name: Remove tailsacle Digital Ocean DNS records
   community.digitalocean.digital_ocean_domain_record:
     state: absent
     type: A
@@ -21,4 +21,26 @@
     data: "{{ ansible_tailscale0.ipv4.address }}"
     oauth_token: "{{ digitalocean_token }}"
   with_items: "{{ tailscale_hostnames }}"
-  when: not deploy
+  when: not deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)
+
+- name: Create tailsacle Linode DNS records
+  linode.cloud.domain_record:
+    state: present
+    type: A
+    domain: "{{ op_domain_name }}"
+    name: "{{ item }}"
+    target: "{{ ansible_tailscale0.ipv4.address }}"
+    api_token: "{{ linode_token }}"
+  with_items: "{{ tailscale_hostnames }}"
+  when: deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True)
+
+- name: Remove tailsacle Linode DNS records
+  linode.cloud.domain_record:
+    state: absent
+    type: A
+    domain: "{{ op_domain_name }}"
+    name: "{{ item }}"
+    target: "{{ ansible_tailscale0.ipv4.address }}"
+    api_token: "{{ linode_token }}"
+  with_items: "{{ tailscale_hostnames }}"
+  when: not deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True)

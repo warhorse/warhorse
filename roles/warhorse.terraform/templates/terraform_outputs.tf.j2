@@ -8,6 +8,10 @@ resource "local_file" "Inventory" {
     {{ vm.name }}-ip = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address,
     {{ vm.name }}-id = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.id,
 {% endif %}
+{% if vm.provider == "linode" %}
+    {{resource.name}}-ip = linode_instance.{{resource.name}}.ip_address,
+    {{resource.name}}-label = linode_instance.{{resource.name}}.label,
+{% endif %}
 {% endfor %}
  }
  )

@@ -36,6 +36,17 @@ resource "aws_route53_record" "{{ entrys.resource_name }}_{{ hostnames }}" {
 }
 {% endif %}
 {% endif %}
+{% if vm.provider == "linode" %}
+{% if entrys.dns_type == 'A' %}
+  records = [linode_instance.{{ entrys.value }}.ip_address]
+{% endif %}
+}
+{% if entrys.dns_type == 'NS' %}
+  value  = "{{ entrys.value }}"
+  depends_on = [linode_domain_record.{{ entrys.depends_on }}]
+}
+{% endif %}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% endif %}

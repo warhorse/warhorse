@@ -24,7 +24,7 @@ roles:
   - name: warhorse.gophish_docker
   - name: warhorse.evilginx2_docker
   - name: warhorse.nginx_docker
-  - name: warhorse.parrotos
+  # - name: warhorse.parrotos_docker
 
   - name: t94j0.mythic
 

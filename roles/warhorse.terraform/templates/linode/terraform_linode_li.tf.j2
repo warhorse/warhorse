@@ -1,0 +1,81 @@
+{% for vm in warhorse.vm %}
+{% if vm.provider == "linode" and loop.first %}
+resource "linode_sshkey" "foo" {
+  label       = "foo"
+  ssh_key     = chomp(file("{{ ansible_ssh_public_key_file }}"))
+}
+{% endif %}
+{% if vm.provider == "linode"%}
+resource "linode_instance" "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}" {
+  image   = "{{ vm.img|default('linode/ubuntu20.04') }}"
+  label   = "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}"
+  region  = "{{ vm.region|default('us-southeast') }}"
+  type    = "{{ vm.size|default('g6-standard-1') }}"
+  tags    = [ "{{ ttl }}", "{{ op_number }}" ]
+  authorized_keys = [linode_sshkey.foo.ssh_key]
+  connection {
+    host = self.ip_address
+    user = "root"
+    type = "ssh"
+    agent = false
+    timeout = "3m"
+    private_key = var.ansible_ssh_key_private
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "export PATH=$PATH:/usr/bin",
+      "sudo apt-get update",
+      "sudo adduser --disabled-password --gecos '' ansible",
+      "sudo mkdir -p /home/ansible/.ssh",
+      "sudo touch /home/ansible/.ssh/authorized_keys",
+      "sudo echo '{{ lookup('file', '{{ ansible_ssh_public_key_file }}') }}' > authorized_keys",
+      "sudo mv authorized_keys /home/ansible/.ssh",
+      "sudo chown -R ansible:ansible /home/ansible/.ssh",
+      "sudo chmod 700 /home/ansible/.ssh",
+      "sudo chmod 600 /home/ansible/.ssh/authorized_keys",
+      "sudo usermod -aG sudo ansible",
+      "sudo echo 'ansible ALL=(ALL) NOPASSWD:ALL' | sudo tee -a /etc/sudoers",
+      "sudo apt-get update"
+    ]
+  }
+}
+{% endif %}
+{% if vm.firewall.enabled is true and vm.provider == "linode" %}
+resource "linode_firewall" "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name + '-firewall') }}" {
+  label           = "{{resource.name}}-firewall"
+
+  linodes         = [linode_instance.{{resource.name}}.id]
+  inbound_policy  = "DROP"
+  outbound_policy = "ACCEPT"
+{% for name in firewall|selectattr("name", "equalto", vm.name ) %}
+{% for rules in name.rules %}
+{% if rules.type == 'inbound' %}
+  inbound {
+    label     = "{{rules.label}}"
+    protocol  = "{{rules.protocol}}"
+    ports     = "{{rules.ports}}"
+    action    = "{{rules.action}}"
+    ipv4      = [{% for source in rules.ipv4_addresses %}"{{source}}"{% endfor %}]
+    {% if rules.ipv6 is defined %}}
+    ipv6      = [{% for source in rules.ipv6_addresses %}"{{source}}"{% endfor %}]
+    {% endif %}}
+  }
+{% endif %}
+
+{% if rules.type == 'outbound' %}
+  outbound {
+    label     = "{{rules.label}}"
+    protocol  = "{{rules.protocol}}"
+    ports     = "{{rules.ports}}"
+    action    = "{{rules.action}}"
+    ipv4      = [{% for source in rules.ipv4_addresses %}"{{source}}"{% endfor %}]
+    {% if rules.ipv6 is defined %}}
+    ipv6      = [{% for source in rules.ipv6_addresses %}"{{source}}"{% endfor %}]
+    {% endif %}}
+  }
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endif %}
+}
+{% endfor %}

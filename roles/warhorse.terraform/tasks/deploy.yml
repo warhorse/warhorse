@@ -11,7 +11,7 @@
       endpoint: "{{ warhorse.terraform.state_bucket_endpoint }}"
     force_init: true
     variables:
-      do_token: "{{ digitalocean_token }}"
+      "{{ token }}": "{{ token_value }}"
   when: warhorse.terraform.state_bucket_enabled is defined and true
 
 - name: Deploy Terraform Cloud
@@ -21,7 +21,7 @@
     workspace: "{{ warhorse.terraform.cloud_workspace }}"
     force_init: true
     variables:
-      do_token: "{{ digitalocean_token }}"
+      "{{ token }}": "{{ token_value }}"
   when: warhorse.terraform.cloud_enabled is defined and true
 
 - name: Deploy Terraform Local State
@@ -30,5 +30,6 @@
     state: "{{ state }}"
     force_init: true
     variables:
-      do_token: "{{ digitalocean_token }}"
+      "{{ token }}": "{{ token_value }}"
   when: warhorse.terraform.state_bucket_enabled is not defined and warhorse.terraform.cloud_enabled is not defined
+  
