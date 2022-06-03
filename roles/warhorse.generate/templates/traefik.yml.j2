@@ -46,7 +46,7 @@ all:
                 DO_AUTH_TOKEN: '{% raw %}{{ digitalocean_token }}{% endraw %}'
 {% endif %}
 {% if warhorse.dns.provider == 'linode' %}
-                DO_AUTH_TOKEN: '{% raw %}{{ linode_token }}{% endraw %}'
+                LINODE_TOKEN: '{% raw %}{{ linode_token }}{% endraw %}'
 {% endif %}
 {% if warhorse.dns.provider == 'aws' %}
                 AWS_ACCESS_KEY_ID: '{% raw %}{{ aws_dns_key_id }}{% endraw %}'
