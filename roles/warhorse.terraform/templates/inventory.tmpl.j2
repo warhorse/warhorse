@@ -2,5 +2,13 @@
 {% if loop.first %}
 [vm]
 {% endif %}
+
+{% if vm.provider == "digitalocean" %}
 {{ vm.name }} ansible_host=${% raw %}{{% endraw %}{{ vm.name }}-ip} # ${% raw %}{{% endraw %}{{ vm.name }}-id}
+{% endif %}
+
+{% if vm.provider == "linode" %}
+${% raw %}{{% endraw %}{{resource.name}}-label} ansible_host=${% raw %}{{% endraw %}{{resource.name}}-ip}
+{% endif %}
+
 {% endfor %}

@@ -1,0 +1,31 @@
+{% for vm in warhorse.vm %}
+{% for name in dns|selectattr("name", "equalto", vm.name ) %}
+{% for entrys in name.entrys %}
+{% if entrys.provider == "linode"%}
+{% if entrys.resource_name == 'tld' %}
+data "linode_domain" "domain" {
+  domain = "{{ entrys.domain_name }}"
+}
+{% endif %}
+{% if entrys.dns_type is defined %}
+{% for hostnames in entrys.hostnames %}
+resource "linode_domain_record" "{{ entrys.resource_name }}_{{ hostnames }}" {
+  domain_id   = "${% raw %}{{% endraw %}data.linode_domain.domain.id}"
+  record_type = "{{ entrys.dns_type }}"
+  name        = "{{ hostnames }}"
+{% if entrys.dns_type == 'A' %}
+  target      = linode_instance.{{ entrys.value }}.ip_address
+  depends_on  = [linode_instance.{{ entrys.depends_on }}]
+}
+{% endif %}
+{% if entrys.dns_type == 'NS' %}
+  target      = "{{ entrys.value }}"
+  depends_on  = [linode_domain_record.{{ entrys.depends_on }}]
+}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endfor %}

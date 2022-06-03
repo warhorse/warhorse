@@ -6,6 +6,11 @@ terraform {
       source = "digitalocean/digitalocean"
     }
 {% endif %}
+{% if warhorse|regex_search("'provider': 'linode'", multiline=True, ignorecase=True) %}
+    linode = {
+      source = "linode/linode"
+    }
+{% endif %}
 {% if warhorse|regex_search("'provider': 'aws'", multiline=True, ignorecase=True) %}
     aws = {
       source  = "hashicorp/aws"
@@ -30,6 +35,11 @@ terraform {
 {% if warhorse|regex_search("'provider': 'digitalocean'", multiline=True, ignorecase=True) %}
 provider "digitalocean" {
   token = var.do_token
+}
+{% endif %}
+{% if warhorse|regex_search("'provider': 'linode'", multiline=True, ignorecase=True) %}
+provider "linode" {
+  token = var.linode_token
 }
 {% endif %}
 {% if warhorse|regex_search("'provider': 'aws'", multiline=True, ignorecase=True) %}

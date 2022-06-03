@@ -3,7 +3,7 @@
   gather_facts: false
   connection: local
   roles:
-      - { role: warhorse.generate }
+    - { role: warhorse.generate }
 
 - name: Create SSH Keys
   hosts: localhost

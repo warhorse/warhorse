@@ -1,8 +1,26 @@
 ---
 - include: generate.yml
+
 - include: deploy.yml
     state="present"
-  when: deploy
+    token="linode_token"
+    token_value="linode_token"
+  when: deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True)
+
+- include: deploy.yml
+    state="present"
+    token="do_token"
+    token_value="digitalocean_token"
+  when: deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)
+
 - include: destroy.yml
     state="absent"
-  when: not deploy
+    token="linode_token"
+    token_value="linode_token"
+  when: not deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True)
+
+- include: destroy.yml
+    state="absent"
+    token="do_token"
+    token_value="digitalocean_token"
+  when: not deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)

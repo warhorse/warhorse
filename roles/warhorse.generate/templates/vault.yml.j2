@@ -15,6 +15,9 @@ all:
 {% if warhorse.terraform.digitalocean_token is defined and vm.http_proxy == "nginx" %}
                 nginx_digitalocean_token: "{{ warhorse.terraform.digitalocean_token }}"
 {% endif %}
+{% if warhorse.terraform.linode_token is defined and vm.http_proxy == "nginx" %}
+                nginx_linode_token: "{{ warhorse.terraform.linode_token }}"
+{% endif %}
 {% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
                 tailscale_auth_key: "{{ vm.tailscale.tailscale_auth_key }}"
 {% endif %}
@@ -34,9 +37,11 @@ all:
 {% if warhorse.terraform.digitalocean_token is defined %}
     digitalocean_token: "{{ warhorse.terraform.digitalocean_token }}"
 {% endif %}
+{% if warhorse.terraform.linode_token is defined %}
+    linode_token: "{{ warhorse.terraform.linode_token }}"
+{% endif %}
 {% if warhorse.notification.email.username is defined and warhorse.notification.email.password %}
     notification_email_username: "{{ warhorse.notification.email.username }}"
     notification_email_password: "{{ warhorse.notification.email.password }}"
-{% endif %}
 {% endif %}
 {% endfor %}

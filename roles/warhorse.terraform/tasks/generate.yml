@@ -7,7 +7,8 @@
   with_items:
   - "{{ terraform_project_path }}"
   - "{{ terraform_project_path }}/aws"
-  - "{{ terraform_project_path }}/digitalocean"
+  - {item: "{{ terraform_project_path }}/linode", when: warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True) }
+  - {item: "{{ terraform_project_path }}/digitalocean", when: warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True) }
   - "{{ terraform_project_path }}/azure"
   - "{{ terraform_project_path }}/redirector"
   - "{{ terraform_project_path }}/redirector/iis"
@@ -24,6 +25,9 @@
 
 - include: azure.yml
 - include: digitalocean.yml
+  when: warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)
+- include: linode.yml
+  when: warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True)
 - include: aws.yml
 
 - name: Generating Terraform Outputs

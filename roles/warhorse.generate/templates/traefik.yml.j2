@@ -16,6 +16,9 @@ all:
 {% if warhorse.dns.provider == 'digitalocean' %}
               dns_traefik: "digitalocean"
 {% endif %}
+{% if warhorse.dns.provider == 'linode' %}
+              dns_traefik: "linode
+{% endif %}
               traefik_dir: "{{ vm.traefik.dir | default('/opt/docker/traefik') }}"
               traefik_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               traefik_hostname: "traefik"
@@ -41,6 +44,9 @@ all:
               traefik_env:
 {% if warhorse.dns.provider == 'digitalocean' %}
                 DO_AUTH_TOKEN: '{% raw %}{{ digitalocean_token }}{% endraw %}'
+{% endif %}
+{% if warhorse.dns.provider == 'linode' %}
+                LINODE_TOKEN: '{% raw %}{{ linode_token }}{% endraw %}'
 {% endif %}
 {% if warhorse.dns.provider == 'aws' %}
                 AWS_ACCESS_KEY_ID: '{% raw %}{{ aws_dns_key_id }}{% endraw %}'
