@@ -17,6 +17,24 @@
 {% endif %}
 {% endfor %}
 
+{% for vm in warhorse.vm %}
+{% if vm.backup is defined and vm.backup.enabled and vm.backup.archive_zip %}
+- name: Backup Archive
+  gather_facts: True
+  hosts: {{ vm.name }}
+  connection: ssh
+  become: True
+  environment: 
+    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
+  vars: 
+    deploy: false
+  vars_files:
+    - ../../{{ warhorse.general.op_number }}.yml
+  roles:
+    - { role: warhorse.backup_archive }
+{% endif %}
+{% endfor %}
+
 - name: Destroy Terraform
   hosts: localhost
   gather_facts: false

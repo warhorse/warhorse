@@ -8,6 +8,16 @@ resource "digitalocean_tag" "ttl" {
   name = "{{ ttl }}"
 }
 
+resource "digitalocean_tag" "warhorse" {
+  name = "warhorse"
+}
+
+{% if user_tag is defined %}
+resource "digitalocean_tag" "user_tag" {
+  name = "{{ user_tag }}"
+}
+{% endif %}
+
 resource "digitalocean_ssh_key" "ansible_ssh_key" {
   name       = "Ansible SSH Key"
   public_key = "{{ lookup('file', '{{ ansible_ssh_public_key_file }}') }}"
@@ -19,7 +29,7 @@ resource "digitalocean_droplet" "{{ vm.resource_name|default(warhorse.general.us
   name = "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}"
   region = "{{ vm.region|default('nyc1') }}"
   size = "{{ vm.size|default('s-2vcpu-4gb') }}"
-  tags = [digitalocean_tag.op_number.id, digitalocean_tag.ttl.id]
+  tags = [digitalocean_tag.warhorse.id, digitalocean_tag.op_number.id, digitalocean_tag.ttl.id{% if user_tag is defined %}, digitalocean_tag.user_tag.id{% endif %}]
   user_data = "${file("cloud-init-do.yaml")}"
   ssh_keys = [
     digitalocean_ssh_key.ansible_ssh_key.fingerprint

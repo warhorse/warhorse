@@ -24,6 +24,10 @@ all:
 {% if vm.tailscale.tailscale_api_key is defined and vm.tailscale.enabled %}
                 tailscale_api_key: "{{ vm.tailscale.tailscale_api_key }}"
 {% endif %}
+{% if vm.backup.backup_bucket_access_key is defined and vm.backup.enabled %}
+                backup_bucket_access_key: "{{ vm.backup.backup_bucket_access_key }}"
+                backup_bucket_secret_key: "{{ vm.backup.backup_bucket_secret_key }}"
+{% endif %}
 {% if loop.last %}
   vars:
 {% if warhorse.terraform.bucket_access_key is defined and warhorse.terraform.bucket_secret_key %}
@@ -36,5 +40,8 @@ all:
 {% if warhorse.terraform.linode_token is defined %}
     linode_token: "{{ warhorse.terraform.linode_token }}"
 {% endif %}
+{% if warhorse.notification.email.username is defined and warhorse.notification.email.password %}
+    notification_email_username: "{{ warhorse.notification.email.username }}"
+    notification_email_password: "{{ warhorse.notification.email.password }}"
 {% endif %}
 {% endfor %}

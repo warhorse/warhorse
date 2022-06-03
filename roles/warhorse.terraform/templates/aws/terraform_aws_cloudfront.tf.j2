@@ -2,7 +2,7 @@
 {% if vm.cobaltstrike.cdn is defined %}
 {% for cdn in vm.cobaltstrike.cdn|selectattr("provider", "equalto", "aws" ) %}
 {% if cdn.provider == 'aws' %}
-resource "aws_cloudfront_distribution" "cloudfront_front_{{ vm.name }}_{{ cdn.name }}" {
+resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   count = {{ cdn.count|default(1) }}
   origin {
     domain_name = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"

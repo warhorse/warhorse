@@ -1,0 +1,53 @@
+ __    __           _                         
+/ / /\ \ \__ _ _ __| |__   ___  _ __ ___  ___ 
+\ \/  \/ / _` | '__| '_ \ / _ \| '__/ __|/ _ \
+ \  /\  / (_| | |  | | | | (_) | |  \__ \  __/
+  \/  \/ \__,_|_|  |_| |_|\___/|_|  |___/\___|
+                                              
+Deployment information
+{% for vm in warhorse.vm %}
+Virtual Machines: {{ vm.name }}
+  domain_name:{{ vm.name }}.{{ warhorse.dns.op_domain_name }}
+{% if vm.nighthawk is defined and vm.nighthawk.enabled %}
+  nighthawk:
+    username: {{ vm.nighthawk.username }}
+    password: {{ vm.nighthawk.password }}
+    campaign: {{ vm.nighthawk.campaign }}
+{% if vm.nighthawk.auth_header_name is defined %}
+    auth_header_name: {{ vm.nighthawk.auth_header_name }}
+    auth_header_value: {{ vm.nighthawk.auth_header_value }}
+{% endif %}
+    CDN:
+{% if aws_cdn_nighthawk_hostnames is defined %}
+      aws:
+{% for aws_cdn in aws_cdn_nighthawk_hostnames %}      - "{{ aws_cdn }}"
+{% endfor %}
+{% endif %}
+{% for cdn in vm.nighthawk.cdn %}
+{% if cdn.provider == "azure" %}
+      azure:
+      - "{{ cdn.hostname }}.azureedge.net"
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
+  cobaltstrike:
+    password: {{ vm.cobaltstrike.password }}
+{% if vm.cobaltstrike.auth_header_name is defined %}
+    auth_header_name: {{ vm.cobaltstrike.auth_header_name }}
+    auth_header_value: {{ vm.cobaltstrike.auth_header_value }}
+{% endif %}
+    CDN:
+{% if aws_cdn_cobaltstrike_hostnames is defined %}
+      aws:
+{% for aws_cdn in aws_cdn_cobaltstrike_hostnames %}      - "{{ aws_cdn }}"
+{% endfor %}
+{% endif %}
+{% for cdn in vm.cobaltstrike.cdn %}
+{% if cdn.provider == "azure" %}
+      azure:
+      - "{{ cdn.hostname }}.azureedge.net"
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

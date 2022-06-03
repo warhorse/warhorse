@@ -85,12 +85,12 @@ warhorse:
 ## Generate
 Run the following command to generate configuration files.
 ``` 
-ansible-playbook generate.yml
+ansible-playbook generate.yml -e @config.yml
 ```
 
 ## Deploy
 Run the following command to deploy your environment.
 ``` 
-cd OP\12345
+cd OP\123456
 ansible-playbook deploy.yml
 ```
