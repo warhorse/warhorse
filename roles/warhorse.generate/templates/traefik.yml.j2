@@ -17,7 +17,7 @@ all:
               dns_traefik: "digitalocean"
 {% endif %}
 {% if warhorse.dns.provider == 'linode' %}
-              dns_traefik: "linode
+              dns_traefik: "linode"
 {% endif %}
               traefik_dir: "{{ vm.traefik.dir | default('/opt/docker/traefik') }}"
               traefik_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"

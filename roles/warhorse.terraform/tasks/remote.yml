@@ -1,0 +1,31 @@
+- name: "{{ name }} Terraform Remote State"
+  community.general.terraform:
+    project_path: '{{ terraform_project_path }}'
+    state: "{{ state }}"
+    backend_config:
+      region: "{{ warhorse.terraform.state_bucket_region }}"
+      bucket: "{{ warhorse.terraform.state_bucket_name }}"
+      key: "{{ warhorse.terraform.state_bucket_key }}"
+      access_key: "{{ bucket_access_key }}"
+      secret_key: "{{ bucket_secret_key }}"
+      endpoint: "{{ warhorse.terraform.state_bucket_endpoint }}"
+    force_init: true
+    variables:
+      do_token: "{{ digitalocean_token }}"
+  when: warhorse | regex_search("(?i).+('provider':\s'digitalocean')", multiline=True, ignorecase=True)
+
+- name: "{{ name }} Terraform Remote State"
+  community.general.terraform:
+    project_path: '{{ terraform_project_path }}'
+    state: "{{ state }}"
+    backend_config:
+      region: "{{ warhorse.terraform.state_bucket_region }}"
+      bucket: "{{ warhorse.terraform.state_bucket_name }}"
+      key: "{{ warhorse.terraform.state_bucket_key }}"
+      access_key: "{{ bucket_access_key }}"
+      secret_key: "{{ bucket_secret_key }}"
+      endpoint: "{{ warhorse.terraform.state_bucket_endpoint }}"
+    force_init: true
+    variables:
+      linode_token: "{{ linode_token }}"
+  when: warhorse | regex_search("(?i).+('provider':\s'linode')", multiline=True, ignorecase=True)

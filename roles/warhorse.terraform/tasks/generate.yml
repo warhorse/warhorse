@@ -1,17 +1,21 @@
 ---
 - name: Create a terraform directorys 
   ansible.builtin.file:
-    path: '{{ item }}'
+    path: '{{ item.folder }}'
     state: directory
     mode: '0755'
   with_items:
-  - "{{ terraform_project_path }}"
-  - "{{ terraform_project_path }}/aws"
-  - {item: "{{ terraform_project_path }}/linode", when: warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True) }
-  - {item: "{{ terraform_project_path }}/digitalocean", when: warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True) }
-  - "{{ terraform_project_path }}/azure"
-  - "{{ terraform_project_path }}/redirector"
-  - "{{ terraform_project_path }}/redirector/iis"
+  - folder: "{{ terraform_project_path }}"
+  - folder: "{{ terraform_project_path }}/aws"
+    when: warhorse | regex_search("(?i).+('provider':\s'aws')", multiline=True, ignorecase=True)
+  - folder: "{{ terraform_project_path }}/linode"
+    when: warhorse | regex_search("(?i).+('provider':\s'linode')", multiline=True, ignorecase=True)
+  - folder: "{{ terraform_project_path }}/digitalocean"
+    when: warhorse | regex_search("(?i).+('provider':\s'digitalocean')", multiline=True, ignorecase=True)
+  - folder: "{{ terraform_project_path }}/azure"
+    when: warhorse | regex_search("(?i).+('provider':\s'azure')", multiline=True, ignorecase=True)
+  - folder: "{{ terraform_project_path }}/redirector"
+  - folder: "{{ terraform_project_path }}/redirector/iis"
 
 - name: Generating Terraform Variables
   template:
@@ -25,10 +29,11 @@
 
 - include: azure.yml
 - include: digitalocean.yml
-  when: warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)
+  when: warhorse | regex_search("(?i).+('provider':\s'digitalocean')", multiline=True, ignorecase=True)
 - include: linode.yml
-  when: warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True)
+  when: warhorse | regex_search("(?i).+('provider':\s'linode')", multiline=True, ignorecase=True)
 - include: aws.yml
+  when: warhorse | regex_search("(?i).+('provider':\s'aws')", multiline=True, ignorecase=True)
 
 - name: Generating Terraform Outputs
   template:

@@ -13,12 +13,12 @@ all:
               cs_vpn_hostname: 'cobaltstrike'
 
               redirect_url: "azure.microsoft.com"
-              {% if warhorse.dns.provider == 'digitalocean' %}
+{% if warhorse.dns.provider == 'digitalocean' %}
               dns_plugin: 'digitalocean'
-              {% endif %}
-              {% if warhorse.dns.provider == 'linode' %}
+{% endif %}
+{% if warhorse.dns.provider == 'linode' %}
               dns_plugin: "linode
-              {% endif %}
+{% endif %}
 
               cs_hostname: "cobaltstrike"
               cs_container_name: "cobaltstrike"

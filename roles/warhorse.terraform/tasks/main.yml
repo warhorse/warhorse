@@ -1,26 +1,38 @@
 ---
 - include: generate.yml
 
-- include: deploy.yml
-    state="present"
-    token="linode_token"
-    token_value="linode_token"
-  when: deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True)
+- include: remote.yml
+  vars:
+    state: "present"
+    name: "Deploy"
+  when: deploy and warhorse.terraform.state_bucket_enabled is defined and true
 
-- include: deploy.yml
-    state="present"
-    token="do_token"
-    token_value="digitalocean_token"
-  when: deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)
+- include: cloud.yml
+  vars:
+    state: "present"
+    name: "Deploy"
+  when: deploy and warhorse.terraform.cloud_enabled is defined and true
 
-- include: destroy.yml
-    state="absent"
-    token="linode_token"
-    token_value="linode_token"
-  when: not deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True)
+- include: local.yml
+  vars:
+    state: "present"
+    name: "Deploy"
+  when: deploy and warhorse.terraform.state_bucket_enabled is not defined and warhorse.terraform.cloud_enabled is not defined
 
-- include: destroy.yml
-    state="absent"
-    token="do_token"
-    token_value="digitalocean_token"
-  when: not deploy and warhorse.vm | regex_search("(?i).+('dns':.+'provider':\s'digitalocean')", multiline=True, ignorecase=True)
+- include: remote.yml
+  vars:
+    state: "absent"
+    name: "Destroy"
+  when: not deploy and warhorse.terraform.state_bucket_enabled is defined and true
+
+- include: cloud.yml
+  vars:
+    state: "absent"
+    name: "Destroy"
+  when: not deploy and warhorse.terraform.cloud_enabled is defined and true
+
+- include: local.yml
+  vars:
+    state: "absent"
+    name: "Destroy"
+  when: not deploy and warhorse.terraform.state_bucket_enabled is not defined and warhorse.terraform.cloud_enabled is not defined

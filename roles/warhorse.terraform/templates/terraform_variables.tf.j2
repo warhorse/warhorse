@@ -1,3 +1,4 @@
+{% for vm in warhorse.vm %}
 {% if vm.provider == "digitalocean" %}
 variable "do_token" {
   description = "Digital Ocean API Key"
@@ -13,3 +14,4 @@ variable "linode_token" {
   sensitive   = true
 }
 {% endif %}
+{% endfor %}
