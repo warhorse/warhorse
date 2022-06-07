@@ -16,4 +16,4 @@
     force_init: true
     variables:
       linode_token: "{{ linode_token }}"
-  when: warhorse | regex_search("(?i).+('provider':\s'linode')", multiline=True, ignorecase=True)
+  when: warhorse | regex_search("(?i).+("provider":\s"linode")", multiline=True, ignorecase=True)

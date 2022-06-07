@@ -33,7 +33,12 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
       function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.arn
     }
 {% endif %}
-    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.id
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "all"
+      }
+    }
 
     viewer_protocol_policy = "allow-all"
     min_ttl                = 0
@@ -58,24 +63,6 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
 
   viewer_certificate {
     cloudfront_default_certificate = true
-  }
-}
-resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
-  name        = "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
-  comment     = "Warhorse Deployment"
-  default_ttl = 50
-  max_ttl     = 100
-  min_ttl     = 1
-  parameters_in_cache_key_and_forwarded_to_origin {
-    cookies_config {
-      cookie_behavior = "all"
-    }
-    headers_config {
-      header_behavior = "none"
-    }
-    query_strings_config {
-      query_string_behavior = "all"
-    }
   }
 }
 {% if vm.cobaltstrike.auth_header_name is defined and vm.cobaltstrike.auth_header_value is defined %}
@@ -150,9 +137,14 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
       function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.arn
     }
 
-    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.id
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "all"
+      }
+    }
 
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "https-only"
     min_ttl                = 0
     default_ttl            = 0
     max_ttl                = 0
@@ -175,24 +167,6 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
 
   viewer_certificate {
     cloudfront_default_certificate = true
-  }
-}
-resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
-  name        = "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
-  comment     = "Warhorse Deployment"
-  default_ttl = 50
-  max_ttl     = 100
-  min_ttl     = 1
-  parameters_in_cache_key_and_forwarded_to_origin {
-    cookies_config {
-      cookie_behavior = "all"
-    }
-    headers_config {
-      header_behavior = "none"
-    }
-    query_strings_config {
-      query_string_behavior = "all"
-    }
   }
 }
 
@@ -267,7 +241,12 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
       function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.arn
     }
 {% endif %}
-    cache_policy_id  = aws_cloudfront_cache_policy.no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.id
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "all"
+      }
+    }
 
     viewer_protocol_policy = "allow-all"
     min_ttl                = 0
@@ -292,24 +271,6 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
 
   viewer_certificate {
     cloudfront_default_certificate = true
-  }
-}
-resource "aws_cloudfront_cache_policy" "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
-  name        = "no_cache_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
-  comment     = "Warhorse Deployment"
-  default_ttl = 50
-  max_ttl     = 100
-  min_ttl     = 1
-  parameters_in_cache_key_and_forwarded_to_origin {
-    cookies_config {
-      cookie_behavior = "all"
-    }
-    headers_config {
-      header_behavior = "none"
-    }
-    query_strings_config {
-      query_string_behavior = "all"
-    }
   }
 }
 {% if vm.mythic.auth_header_name is defined and vm.mythic.auth_header_value is defined %}

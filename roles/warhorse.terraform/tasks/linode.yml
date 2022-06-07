@@ -1,9 +1,17 @@
 ---
+- name: Create a terraform directorys 
+  ansible.builtin.file:
+    path: '{{ item.folder }}'
+    state: directory
+    mode: '0755'
+  with_items:
+  - folder: "{{ terraform_project_path }}/linode"
+
 - name: Generating Terraform Linode Instance
   template:
     src: templates/linode/terraform_linode_li.tf.j2
     dest: "{{ terraform_project_path }}/linode_li.tf"
-  when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'linode')", multiline=True, ignorecase=True)
+  when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'linode"), multiline=True, ignorecase=True)
 
 - name: Generating Terraform Linode DNS
   template:

@@ -8,7 +8,7 @@
   vars: 
     deploy: true
   vars_files:
-  - ../../{{ warhorse.general.op_number }}.yml
+  - ../../config/{{ warhorse.general.op_number }}.yml
   roles:
     - { role: warhorse.terraform }
 
@@ -46,7 +46,7 @@
     ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
   vars_files:
-  - ../../{{ warhorse.general.op_number }}.yml
+  - ../../config/{{ warhorse.general.op_number }}.yml
   vars: 
     deploy: true
   roles:
@@ -74,7 +74,7 @@
     ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
   vars_files:
-  - ../../{{ warhorse.general.op_number }}.yml
+  - ../../config/{{ warhorse.general.op_number }}.yml
   vars: 
     deploy: true
   roles:
@@ -125,7 +125,7 @@
     ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
   vars_files:
-  - ../../{{ warhorse.general.op_number }}.yml
+  - ../../config/{{ warhorse.general.op_number }}.yml
   vars: 
     deploy: true
   roles:

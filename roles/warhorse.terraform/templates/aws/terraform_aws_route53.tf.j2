@@ -54,10 +54,7 @@ resource "aws_route53_record" "{{ entrys.resource_name }}_{{ hostnames }}" {
 {% endfor %}
 {% endfor %}
 
-{% for vm in warhorse.vm %}
-{% for name in dns|selectattr("name", "equalto", vm.name ) %}
-{% for entrys in name.entrys %}
-{% if entrys.provider == "aws" %}
+{% if warhorse.dns.provider == "aws" %}
 resource "aws_iam_user" "dns_{{ warhorse.general.op_number }}" {
   name = "dns_user_{{ warhorse.general.op_number }}"
   path = "/"
@@ -106,6 +103,3 @@ resource "aws_iam_user_policy" "dns_policy_{{ warhorse.general.op_number }}" {
 EOF
 }
 {% endif %}
-{% endfor %}
-{% endfor %}
-{% endfor %}

@@ -110,4 +110,4 @@
     src: templates/backup.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/backup.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.backup is defined
+  when: item.backup is defined and item.backup.enabled
