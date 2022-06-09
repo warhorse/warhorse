@@ -56,7 +56,6 @@
     - { role: warhorse.os }
     - { role: geerlingguy.ntp }
     - { role: geerlingguy.security }
-    - { role: viasite-ansible.zsh, zsh_shared: yes}
 {% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
     - { role: artis3n.tailscale }
 {% endif %}

@@ -14,8 +14,6 @@ roles:
     version: 2.1.0
   - name: geerlingguy.security
     version: 2.1.0
-  - name: viasite-ansible.zsh
-    version: v3.5.1
   - name: artis3n.tailscale
     version: v1.16.0
 
