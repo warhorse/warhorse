@@ -11,7 +11,7 @@
   template:
     src: templates/linode/terraform_linode_li.tf.j2
     dest: "{{ terraform_project_path }}/linode_li.tf"
-  when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'linode"), multiline=True, ignorecase=True)
+  when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'linode')", multiline=True, ignorecase=True)
 
 - name: Generating Terraform Linode DNS
   template:
