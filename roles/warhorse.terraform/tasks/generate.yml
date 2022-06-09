@@ -1,5 +1,5 @@
 ---
-- name: Create a terraform directorys 
+- name: Create a terraform directories 
   ansible.builtin.file:
     path: '{{ item.folder }}'
     state: directory
