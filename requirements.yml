@@ -2,6 +2,8 @@
 roles:
   - name: arillso.restic
     version: 0.3.0
+  - name: weareinteractive.users
+    version: 1.17.0
   - name: gantsign.golang
     version: 2.9.6
   - name: geerlingguy.docker
