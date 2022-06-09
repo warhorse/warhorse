@@ -4,9 +4,7 @@ all:
   vars:
     firewall:
 {% endif %}
-
 {% if vm.provider == "digitalocean" %}
-
       - server:
         name: {{ vm.name }}
         rules:
@@ -64,11 +62,8 @@ all:
           source_addresses:
           - "0.0.0.0/0"
 {% endif %}
-
 {% endif %}
-
 {% if vm.provider == "linode" %}
-
       - server:
         name: {{ vm.name }}
         rules:
@@ -81,14 +76,14 @@ all:
           ipv4: [ "0.0.0.0/0" ]
         - rule: 
           type: outbound
-          label: "allow-"
+          label: "allow-udp"
           protocol: "UDP"
           action: "ACCEPT"
           ports: "1-65535"
           ipv4: [ "0.0.0.0/0" ]
         - rule: 
           type: outbound
-          label: "allow-"
+          label: "allow-tcp"
           protocol: "TCP"
           action: "ACCEPT"
           ports: "1-65535"
@@ -105,6 +100,7 @@ all:
           type: inbound
           label: "allow-https"
           protocol: "TCP"
+          action: "ACCEPT"
           ports: "443"
           ipv4: [ "0.0.0.0/0" ]
 {% endif %}
@@ -133,8 +129,5 @@ all:
           ports: "53"
           ipv4: [ "0.0.0.0/0" ]
 {% endif %}
-
 {% endif %}
-
 {% endfor %}
-
