@@ -1,3 +1,4 @@
+
 {% for vm in warhorse.vm %}
 {% if vm.provider == "linode" and loop.first %}
 resource "linode_sshkey" "foo" {
@@ -19,7 +20,7 @@ resource "linode_instance" "{{ vm.resource_name|default(warhorse.general.user_ta
     type = "ssh"
     agent = false
     timeout = "3m"
-    private_key = var.ansible_ssh_key_private
+    private_key = chomp(file("{{ ansible_ssh_private_key_file }}"))
   }
   provisioner "remote-exec" {
     inline = [
@@ -28,7 +29,7 @@ resource "linode_instance" "{{ vm.resource_name|default(warhorse.general.user_ta
       "sudo adduser --disabled-password --gecos '' ansible",
       "sudo mkdir -p /home/ansible/.ssh",
       "sudo touch /home/ansible/.ssh/authorized_keys",
-      "sudo echo '{{ lookup('file', '{{ ansible_ssh_public_key_file }}') }}' > authorized_keys",
+      "sudo echo '{{ lookup('file', "{{ ansible_ssh_public_key_file }}") }}' > authorized_keys",
       "sudo mv authorized_keys /home/ansible/.ssh",
       "sudo chown -R ansible:ansible /home/ansible/.ssh",
       "sudo chmod 700 /home/ansible/.ssh",
@@ -42,36 +43,35 @@ resource "linode_instance" "{{ vm.resource_name|default(warhorse.general.user_ta
 {% endif %}
 {% if vm.firewall.enabled is true and vm.provider == "linode" %}
 resource "linode_firewall" "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name + '-firewall') }}" {
-  label           = "{{resource.name}}-firewall"
+  label           = "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name + '-firewall') }}"
 
-  linodes         = [linode_instance.{{resource.name}}.id]
+  linodes         = [linode_instance.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.id]
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 {% for name in firewall|selectattr("name", "equalto", vm.name ) %}
 {% for rules in name.rules %}
 {% if rules.type == 'inbound' %}
   inbound {
-    label     = "{{rules.label}}"
-    protocol  = "{{rules.protocol}}"
-    ports     = "{{rules.ports}}"
-    action    = "{{rules.action}}"
-    ipv4      = [{% for source in rules.ipv4_addresses %}"{{source}}"{% endfor %}]
-    {% if rules.ipv6 is defined %}}
-    ipv6      = [{% for source in rules.ipv6_addresses %}"{{source}}"{% endfor %}]
-    {% endif %}}
+    label     = "{{ rules.label }}"
+    protocol  = "{{ rules.protocol }}"
+    ports     = "{{ rules.ports }}"
+    action    = "{{ rules.action }}"
+    ipv4      = [{% for source in rules.ipv4 %}"{{source}}"{% endfor %}]
+    {% if rules.ipv6 is defined %}
+    ipv6      = [{% for source in rules.ipv6 %}"{{source}}"{% endfor %}]
+    {% endif %}
   }
 {% endif %}
-
 {% if rules.type == 'outbound' %}
   outbound {
-    label     = "{{rules.label}}"
-    protocol  = "{{rules.protocol}}"
-    ports     = "{{rules.ports}}"
-    action    = "{{rules.action}}"
-    ipv4      = [{% for source in rules.ipv4_addresses %}"{{source}}"{% endfor %}]
-    {% if rules.ipv6 is defined %}}
-    ipv6      = [{% for source in rules.ipv6_addresses %}"{{source}}"{% endfor %}]
-    {% endif %}}
+    label     = "{{ rules.label }}"
+    protocol  = "{{ rules.protocol }}"
+    ports     = "{{ rules.ports }}"
+    action    = "{{ rules.action }}"
+    ipv4      = [{% for source in rules.ipv4 %}"{{source}}"{% endfor %}]
+    {% if rules.ipv6 is defined %}
+    ipv6      = [{% for source in rules.ipv6 %}"{{source}}"{% endfor %}]
+    {% endif %}
   }
 {% endif %}
 {% endfor %}

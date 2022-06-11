@@ -3,14 +3,16 @@
 {% for entrys in name.entrys %}
 {% if entrys.provider == "linode"%}
 {% if entrys.resource_name == 'tld' %}
-data "linode_domain" "domain" {
-  domain = "{{ entrys.domain_name }}"
+resource "linode_domain" "domain" {
+  domain    = "{{ entrys.domain_name }}"
+  type      = "{{ entrys.dns_domain_type }}"
+  soa_email = "{{ entrys.dns_soa_email }}"
 }
 {% endif %}
 {% if entrys.dns_type is defined %}
 {% for hostnames in entrys.hostnames %}
 resource "linode_domain_record" "{{ entrys.resource_name }}_{{ hostnames }}" {
-  domain_id   = "${% raw %}{{% endraw %}data.linode_domain.domain.id}"
+  domain_id   = "${% raw %}{{% endraw %}resource.linode_domain.domain.id}"
   record_type = "{{ entrys.dns_type }}"
   name        = "{{ hostnames }}"
 {% if entrys.dns_type == 'A' %}

@@ -1,4 +1,4 @@
-- name: "{{ name }} Terraform Remote State"
+- name: "{{ name }} Digital Ocean Terraform Remote State"
   community.general.terraform:
     project_path: '{{ terraform_project_path }}'
     state: "{{ state }}"
@@ -11,10 +11,10 @@
       endpoint: "{{ warhorse.terraform.state_bucket_endpoint }}"
     force_init: true
     variables:
-      do_token: "{{ digitalocean_token }}"
+      do_token: "{{ warhorse.terraform.digitalocean_token }}"
   when: warhorse | regex_search("(?i).+('provider':\s'digitalocean')", multiline=True, ignorecase=True)
 
-- name: "{{ name }} Terraform Remote State"
+- name: "{{ name }} Linode Terraform Remote State"
   community.general.terraform:
     project_path: '{{ terraform_project_path }}'
     state: "{{ state }}"
@@ -27,5 +27,5 @@
       endpoint: "{{ warhorse.terraform.state_bucket_endpoint }}"
     force_init: true
     variables:
-      linode_token: "{{ linode_token }}"
+      li_token: "{{ warhorse.terraform.linode_token }}"
   when: warhorse | regex_search("(?i).+('provider':\s'linode')", multiline=True, ignorecase=True)

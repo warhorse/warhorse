@@ -39,7 +39,7 @@ provider "digitalocean" {
 {% endif %}
 {% if warhorse|regex_search("'provider': 'linode'", multiline=True, ignorecase=True) %}
 provider "linode" {
-  token = var.linode_token
+  token = var.li_token
 }
 {% endif %}
 {% if warhorse|regex_search("'provider': 'aws'", multiline=True, ignorecase=True) %}

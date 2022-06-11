@@ -46,6 +46,7 @@ builds/**/images/*
 *.mp4
 *.io
 TODO.txt
+.vscode/
 
 # security / ssl
 *.pem
@@ -78,7 +79,7 @@ roles/*
 !roles/warhorse.notification/
 !roles/warhorse.deployment/
 !roles/warhorse.backup_archive/
-config.yml
+*config.yml
 config/
 /deploy.yml
 /destroy.yml

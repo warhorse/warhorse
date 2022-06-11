@@ -14,6 +14,10 @@ all:
           provider: "{{ warhorse.dns.provider }}"
           domain_name: "{{ warhorse.dns.op_domain_name }}"
           tl_domain_name: "{{ warhorse.dns.op_tld }}"
+{% if warhorse.dns.provider == "linode" %}
+          dns_soa_email: "{{ warhorse.dns.soa_email }}"
+          dns_domain_type: "{{ warhorse.dns.dns_type }}"
+{% endif %}
 {% endif %}
 {% endif %}
         - entry: 

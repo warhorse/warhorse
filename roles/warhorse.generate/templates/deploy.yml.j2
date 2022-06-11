@@ -8,7 +8,7 @@
   vars: 
     deploy: true
   vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
+  - ../../config.yml
   roles:
     - { role: warhorse.terraform }
 
@@ -46,7 +46,7 @@
     ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
   vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
+  - ../../config.yml
   vars: 
     deploy: true
   roles:
@@ -56,7 +56,6 @@
     - { role: warhorse.os }
     - { role: geerlingguy.ntp }
     - { role: geerlingguy.security }
-    - { role: viasite-ansible.zsh, zsh_shared: yes}
 {% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
     - { role: artis3n.tailscale }
 {% endif %}
@@ -74,7 +73,7 @@
     ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
   vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
+  - ../../config.yml
   vars: 
     deploy: true
   roles:
@@ -125,7 +124,7 @@
     ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
   vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
+  - ../../config.yml
   vars: 
     deploy: true
   roles:
