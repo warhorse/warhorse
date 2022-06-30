@@ -17,10 +17,11 @@
   template:
     src: templates/aws/terraform_aws_route53.tf.j2
     dest: "{{ terraform_project_path }}/aws_route53.tf"
-  when: warhorse | regex_search("(?i).+('dns':.+'provider':\s'aws')", multiline=True, ignorecase=True)
+  when: warhorse.dns.provider == 'aws'
 
 # - name: Generating Terraform AWS EC2
 #   template:
 #     src: templates/aws/terraform_aws_ec2.tf.j2
 #     dest: "{{ terraform_project_path }}/aws_ec2.tf"
-#   when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'aws')", multiline=True, ignorecase=True)
+#   with_items: "{{ warhorse.vm }}"
+#   when: item.provider == 'aws'

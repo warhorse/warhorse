@@ -11,16 +11,18 @@
   template:
     src: templates/linode/terraform_linode_li.tf.j2
     dest: "{{ terraform_project_path }}/linode_li.tf"
-  when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'linode"), multiline=True, ignorecase=True)
+  with_items: "{{ warhorse.vm }}"
+  when: item.provider == 'linode'
 
 - name: Generating Terraform Linode DNS
   template:
     src: templates/linode/terraform_linode_dns.tf.j2
     dest: "{{ terraform_project_path }}/linode_dns.tf"
-  when: warhorse | regex_search("(?i).+('dns':.+'provider':\s'linode')", multiline=True, ignorecase=True)
+  when: warhorse.dns == 'linode'
 
 # - name: Generating Terraform CloudInit
 #   template:
 #     src: templates/linode/cloud-init-do.yaml.j2
 #     dest: "{{ terraform_project_path }}/cloud-init-do.yaml"
-#   when: warhorse | regex_search("(?i).+('vm':.+'provider':\s'linode')", multiline=True, ignorecase=True)
+#   with_items: "{{ warhorse.vm }}"
+#   when: item.provider == 'linode'

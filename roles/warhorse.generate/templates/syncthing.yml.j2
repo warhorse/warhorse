@@ -1,0 +1,43 @@
+{% for vm in warhorse.vm|selectattr("syncthing", "defined" ) %}
+{% if vm.syncthing.enabled %}
+{% if loop.first %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+              syncthing_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
+{% if vm.tailscale.enabled is true %}
+              syncthing_ports:
+                - "{% raw %}{{ ansible_tailscale0.ipv4.address }}{% endraw %}:8384:8384"
+                - "127.0.0.1:8384:8384"
+                - "{{ ansible_host }}:22000:22000/tcp"
+                - "{{ ansible_host }}:22000:22000/udp"
+                - "{{ ansible_host }}:21027:21027/udp"
+{% else %}
+              syncthing_ports:
+                - "127.0.0.1:8384:8384"
+                - "{{ ansible_host }}:22000:22000/tcp"
+                - "{{ ansible_host }}:22000:22000/udp"
+                - "{{ ansible_host }}:21027:21027/udp"
+{% endif %}
+              syncthing_password: "{{ vm.syncthing.password }}"
+              syncthing_vpn_hostname: "sync"
+              syncthing_user: "{{ vm.syncthing.user }}"
+              syncthing_api_url: "https://127.0.0.1"
+              syncthing_apikey: "{{ vm.syncthing.apikey }}"
+              syncthing_docker_puid: "0"
+              syncthing_docker_guid: "0"
+              syncthing_docker_labels:
+                traefik.docker.network: "{% raw %}{{ dockernet }}{% endraw %}"
+                traefik.enable: "true"
+                traefik.http.routers.syncthing.rule: "Host(`{{ vm.syncthing.hostname }}.{{ warhorse.dns.op_domain_name }}`)"
+                traefik.http.routers.syncthing.tls: "true"
+                traefik.http.routers.syncthing.tls.certresolver: "letsencrypt"
+                traefik.http.services.syncthing.loadbalancer.server.scheme: "http"
+                traefik.http.services.syncthing.loadbalancer.server.port: "8384"
+{% endif %}
+{% endfor %}

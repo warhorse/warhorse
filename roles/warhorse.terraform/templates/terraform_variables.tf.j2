@@ -1,5 +1,4 @@
-{% for vm in warhorse.vm %}
-{% if vm.provider == "digitalocean" %}
+{% if warhorse | regex_search("(?i).+('provider':\s'digitalocean')", multiline=True, ignorecase=True) %}
 variable "do_token" {
   description = "Digital Ocean API Key"
   type        = string
@@ -7,11 +6,10 @@ variable "do_token" {
 }
 {% endif %}
 
-{% if vm.provider == "linode" %}
+{% if warhorse | regex_search("(?i).+('provider':\s'linode')", multiline=True, ignorecase=True) %}
 variable "linode_token" {
   description = "Linode API Key"
   type        = string
   sensitive   = true
 }
 {% endif %}
-{% endfor %}

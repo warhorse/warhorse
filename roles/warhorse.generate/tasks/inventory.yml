@@ -23,6 +23,14 @@
     src: templates/dns.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/dns.yml"
 
+- name: Generating syncthing inventory
+  template:
+    mode: '0755'
+    src: templates/syncthing.yml.j2
+    dest: "./OP/{{ warhorse.general.op_number }}/inventory/syncthing.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.syncthing.enabled
+
 - name: Generating firewall inventory
   template:
     mode: '0755'
