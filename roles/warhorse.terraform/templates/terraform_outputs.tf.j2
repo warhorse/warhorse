@@ -45,7 +45,7 @@ resource "local_file" "aws" {
 resource "local_file" "aws" {
  content = templatefile("aws.tmpl",
  {
-    aws-cdn-cobalt = aws_cloudfront_distribution.cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn_cobaltstrike.name }}.*.domain_name,
+    aws-cdn-cobaltstrike = aws_cloudfront_distribution.cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn_cobaltstrike.name }}.*.domain_name,
 {% if warhorse.dns.provider == 'aws' %}
     aws-dns-key-id = aws_iam_access_key.dns_key_{{ warhorse.general.op_number }}.id
     aws-dns-secret-id = aws_iam_access_key.dns_key_{{ warhorse.general.op_number }}.secret
