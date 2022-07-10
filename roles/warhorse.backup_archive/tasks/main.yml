@@ -11,7 +11,7 @@
 - name: Uploading backup to S3 Bucket
   amazon.aws.aws_s3:
     bucket: "{{ backup_bucket }}"
-    src: "/tmp/{{ op_number }}-{{ ansible_hostname }}.7z"
+    src: "/tmp/{{ ansible_hostname }}.7z"
     object: "/{{ op_number }}/{{ ansible_hostname }}.7z"
     s3_url: "{{ backup_endpoint }}"
     aws_access_key: "{{ backup_bucket_access_key }}"

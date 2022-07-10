@@ -12,14 +12,14 @@ all:
         - entry: 
           resource_name: "tld"
           provider: "{{ warhorse.dns.provider }}"
-          domain_name: "{{ warhorse.dns.op_domain_name }}"
+          domain_name: "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
           tl_domain_name: "{{ warhorse.dns.op_tld }}"
 {% endif %}
 {% endif %}
         - entry: 
           resource_name: "{{ vm.name }}"
           provider: "{{ warhorse.dns.provider }}"
-          domain_name: "{{ warhorse.dns.op_domain_name }}"
+          domain_name: "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
           vm_provider: "{{ vm.provider }}"
           dns_type: "A"
           depends_on: "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}"
@@ -44,11 +44,11 @@ all:
         - entry:
           resource_name: "ns{{ loop.index }}"
           provider: "{{ warhorse.dns.provider }}"
-          domain_name: "{{ warhorse.dns.op_domain_name }}"
+          domain_name: "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
           vm_provider: "{{ vm.provider }}"
           dns_type: "NS"
           depends_on: "{{ vm.name }}_ns{{ loop.index }}"
-          value: "ns{{ loop.index }}.{{ warhorse.dns.op_domain_name }}."
+          value: "ns{{ loop.index }}.{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}."
           hostnames:
             - "dns{{ loop.index }}"
 {% endif %}

@@ -1,6 +1,6 @@
 - name: Generate Playbooks Roles & Terrafrom
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
   connection: local
   roles:
     - { role: warhorse.generate }
