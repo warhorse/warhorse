@@ -1,0 +1,26 @@
+---
+- name: Generating Evilginx2 Configuration
+  template:
+    mode: '0755'
+    src: templates/evilginx2_config.yaml.j2
+    dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/evilginx.yaml.j2"
+  with_items: "{{ warhorse.vm }}"
+  when: item.evilginx2.config_file is not defined
+
+- name: Create Phishlets Folder
+  file:
+    path: './OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/phishlets'
+    state: directory
+  with_items:
+  - '{{ warhorse.vm }}'
+  when: item.evilginx2.phishlet_folder is not defined
+
+- name: Generating Evilginx2 Phishlets
+  template:
+    mode: '0755'
+    src: templates/{{ item.1 }}.yaml.j2
+    dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.0.name }}/phishlets/{{ item.1 }}.yaml.j2"
+  with_subelements: 
+   - "{{ warhorse.vm }}"
+   - evilginx2.phishlets
+  when: item.1.evilginx2.phishlet_folder is not defined

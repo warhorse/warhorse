@@ -1,0 +1,34 @@
+{% for vm in warhorse.vm|selectattr("evilginx2", "defined" ) %}
+{% if vm.evilginx2.enabled %}
+ip: 0.0.0.0
+proxy_enabled: false
+proxy_type: http
+proxy_address: mitmproxy
+proxy_port: 8080
+lures:
+{% for lures in vm.evilginx2.lures %}
+- info: "{{ lures.name }}"
+  og_desc: ""
+  og_image: ""
+  og_title: ""
+  og_url: ""
+  params: {}
+  path: {{ lures.path }}
+  phishlet: {{ lures.phishlet }}
+  redirect_url: https://{{ lures.redirect_url }}
+{% endfor %}
+redirect_key: ia
+redirect_url: https://{{ vm.evilginx2.redirect_domain }}
+server: {{ vm.evilginx2.evilginx_domain }}
+site_domains:
+{% for phishlets in vm.evilginx2.phishlets %}
+  {{ phishlets }}: {{ vm.evilginx2.evilginx_domain }}
+{% endfor %}
+sites_enabled:
+{% for phishlets in vm.evilginx2.phishlets %}
+- {{ phishlets }}
+{% endfor %}
+verification_key: cj
+verification_token: 3ee7
+{% endif %}
+{% endfor %}

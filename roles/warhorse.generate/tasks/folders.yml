@@ -9,3 +9,10 @@
   - './OP/{{ warhorse.general.op_number }}/inventory'
   - './OP/{{ warhorse.general.op_number }}/files'
   - './OP/{{ warhorse.general.op_number }}/keys'
+
+- name: Create Folders
+  file:
+    path: './OP/{{ warhorse.general.op_number }}/files/{{ item.name }}'
+    state: directory
+  with_items:
+  - '{{ warhorse.vm }}'

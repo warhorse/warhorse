@@ -27,13 +27,13 @@ all:
           hostnames:
             - "{{ vm.name }}"
 {% if vm.cobaltstrike.enabled is true %}
-            - "cs{{ loop.index }}"
+            - "cs-{{ vm.name }}"
 {% endif %}
 {% if vm.nighthawk.enabled is true %}
-            - "nh{{ loop.index }}"
+            - "nh-{{ vm.name }}"
 {% endif %}
 {% if vm.mythic.enabled is true %}
-            - "mythic{{ loop.index }}"
+            - "mythic-{{ vm.name }}"
 {% endif %}
 {% if vm.gophish.enabled is true %}
             - "{{ vm.gophish.site_hostname }}"

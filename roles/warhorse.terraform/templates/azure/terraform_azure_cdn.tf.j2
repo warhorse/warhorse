@@ -16,12 +16,12 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
   location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
   resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
-  origin_host_header  = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+  origin_host_header  = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
   origin {
     name      = "{{ cdn.hostname }}"
-    host_name = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    host_name = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   }
 
   delivery_rule{
@@ -49,12 +49,12 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
   location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
   resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
-  origin_host_header  = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+  origin_host_header  = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
   origin {
     name      = "{{ cdn.hostname }}"
-    host_name = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    host_name = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   }
 
   delivery_rule{
@@ -105,12 +105,12 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
   location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
   resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
-  origin_host_header  = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+  origin_host_header  = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
   origin {
     name      = "{{ cdn.hostname }}"
-    host_name = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    host_name = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   }
 
   delivery_rule{
@@ -138,12 +138,12 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
   location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
   resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
-  origin_host_header  = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+  origin_host_header  = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
   origin {
     name      = "{{ cdn.hostname }}"
-    host_name = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    host_name = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   }
 
   delivery_rule{
@@ -194,12 +194,12 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
   location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
   resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
-  origin_host_header  = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+  origin_host_header  = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
   origin {
     name      = "{{ cdn.hostname }}"
-    host_name = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    host_name = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   }
 
   delivery_rule{
@@ -227,12 +227,12 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
   location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
   resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
-  origin_host_header  = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+  origin_host_header  = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
   origin {
     name      = "{{ cdn.hostname }}"
-    host_name = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    host_name = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   }
 
   delivery_rule{

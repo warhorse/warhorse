@@ -19,7 +19,7 @@ resource "digitalocean_tag" "user_tag" {
 {% endif %}
 
 resource "digitalocean_ssh_key" "ansible_ssh_key" {
-  name       = "Ansible SSH Key"
+  name       = "Warhorse SSH Key {{ op_number }}"
   public_key = "{{ lookup('file', '{{ ansible_ssh_public_key_file }}') }}"
 }
 {% endif %}

@@ -9,7 +9,7 @@ all:
           hosts:
 {% endif %}
             {{ vm.name }}:
-              cs_site_hostname: 'cs{{ loop.index }}'
+              cs_site_hostname: 'cs-{{ vm.name }}'
               cs_vpn_hostname: 'cobaltstrike'
 
               redirect_url: "azure.microsoft.com"

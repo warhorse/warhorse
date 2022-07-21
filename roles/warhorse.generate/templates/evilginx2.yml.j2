@@ -12,9 +12,17 @@ all:
               evilginx2_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               evilginx_domain: '{{ vm.evilginx2.evilginx_domain }}'
               redirect_domain: '{{ vm.evilginx2.redirect_domain }}'
-              phishlet: '{{ vm.evilginx2.phishlet }}'
+              phishlets: 
+{% for phishlets in vm.evilginx2.phishlets %}
+               - '{{ phishlets }}'
+{% endfor %}
               evilginx2_ports: []
-              evilginx2_phishlet_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.evilginx2.phishlet }}.yaml.j2"
-              evilginx2_config_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/evilginx.yaml.j2"
+{% if vm.evilginx2.config_file is defined and vm.evilginx2.phishlet_folder is defined %}
+              evilginx2_phishlet_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.evilginx2.phishlet_folder }}"
+              evilginx2_config_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.evilginx2.config_file }}.yaml.j2"
+{% else %}
+              evilginx2_phishlet_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/phishlets"
+              evilginx2_config_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/evilginx.yaml.j2"
+{% endif %}      
 {% endif %}
 {% endfor %}

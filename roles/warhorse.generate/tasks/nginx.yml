@@ -3,6 +3,6 @@
   template:
     mode: '0755'
     src: templates/nginx_config.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/files/nginx_config.yml.j2"
-  with_items: "{{ warhorse.vm }}"
-  when: item.nginx_generate is defined and item.nginx_generate
+    dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/nginx_config.yml.j2"
+  with_items:
+  - '{{ warhorse.vm }}'

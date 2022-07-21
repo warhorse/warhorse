@@ -1,5 +1,5 @@
 events {
-
+  worker_connections 20000;
 }
 
 http {
@@ -18,7 +18,6 @@ http {
 
   geo $allow_azure { 
     147.243.0.0/16 0;
-    47.196.170.234/32 0;
     default 1;
   }
 
@@ -47,8 +46,8 @@ http {
   server {
     server_name {% for host in vm.evilginx2.nginx_hostnames %}{{ host }}.{{ vm.evilginx2.evilginx_domain }} {% endfor %};
     listen 443 ssl;
-    ssl_certificate /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/{{ domain_name }}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/{% raw %}{{ domain_name }}{% endraw %}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{% raw %}{{ domain_name }}{% endraw %}/privkey.pem;
     ssl_session_timeout 1440m;
     ssl_session_cache shared:le_nginx_SSL:1m;
     ssl_session_tickets off;
@@ -90,10 +89,10 @@ http {
 {% endif %}
 {% if vm.gophish is defined and vm.gophish.enabled %}
   server {
-      server_name {{ vm.gophish.admin_hostname }}.{{ domain_name }};
+      server_name {{ vm.gophish.admin_hostname }}.{% raw %}{{ domain_name }}{% endraw %};
       listen 443 ssl;
-      ssl_certificate /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem;
-      ssl_certificate_key /etc/letsencrypt/live/{{ domain_name }}/privkey.pem;
+      ssl_certificate /etc/letsencrypt/live/{% raw %}{{ domain_name }}{% endraw %}/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/{% raw %}{{ domain_name }}{% endraw %}/privkey.pem;
       ssl_session_timeout 1440m;
       ssl_session_cache shared:le_nginx_SSL:1m;
       ssl_session_tickets off;
@@ -115,10 +114,10 @@ http {
       }
     }
   server {
-    server_name {{ vm.gophish.site_hostname }}.{{ domain_name }};
+    server_name {{ vm.gophish.site_hostname }}.{% raw %}{{ domain_name }}{% endraw %};
     listen 443 ssl;
-    ssl_certificate /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/{{ domain_name }}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/{% raw %}{{ domain_name }}{% endraw %}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{% raw %}{{ domain_name }}{% endraw %}/privkey.pem;
     ssl_session_timeout 1440m;
     ssl_session_cache shared:le_nginx_SSL:1m;
     ssl_session_tickets off;

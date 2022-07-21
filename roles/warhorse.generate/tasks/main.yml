@@ -3,3 +3,8 @@
 - include: inventory.yml
 - include: generate.yml
 - include: nginx.yml
+  with_items: "{{ warhorse.vm }}"
+  when: item.nginx.config_file is not defined
+- include: evilginx2.yml
+  with_items: "{{ warhorse.vm }}"
+  when: item.evilginx2.enabled

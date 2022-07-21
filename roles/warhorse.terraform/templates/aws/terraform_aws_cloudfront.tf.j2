@@ -5,8 +5,8 @@
 resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   count = {{ cdn.count|default(1) }}
   origin {
-    domain_name = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
-    origin_id   = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    domain_name = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
+    origin_id   = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
 
     custom_origin_config {
       http_port              = "80"
@@ -26,7 +26,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "cs{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    target_origin_id = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
 {% if vm.cobaltstrike.auth_header_name is defined and vm.cobaltstrike.auth_header_value is defined %}
     function_association {
       event_type   = "viewer-request"
@@ -109,8 +109,8 @@ EOF
 resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   count = {{ cdn.count|default(1) }}
   origin {
-    domain_name = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
-    origin_id   = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    domain_name = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
+    origin_id   = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
 
     custom_origin_config {
       http_port              = "80"
@@ -130,7 +130,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "nh{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    target_origin_id = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
 
     function_association {
       event_type   = "viewer-request"
@@ -213,8 +213,8 @@ EOF
 resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   count = {{ cdn.count|default(1) }}
   origin {
-    domain_name = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
-    origin_id   = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    domain_name = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
+    origin_id   = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
 
     custom_origin_config {
       http_port              = "80"
@@ -234,7 +234,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "mythic{{ loop.index }}.{{ warhorse.dns.op_domain_name }}"
+    target_origin_id = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
 {% if vm.mythic.auth_header_name is defined and vm.mythic.auth_header_value is defined %}
     function_association {
       event_type   = "viewer-request"

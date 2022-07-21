@@ -9,7 +9,7 @@ all:
           hosts:
 {% endif %}
             {{ vm.name }}:
-              nighthawk_site_hostname: 'nh{{ loop.index }}'
+              nighthawk_site_hostname: 'nh-{{ vm.name }}'
               nighthawk_vpn_hostname: 'nighthawk'
 
               redirect_url: "azure.microsoft.com"
