@@ -356,7 +356,7 @@
 {% if vm.backup is defined and vm.backup.enabled %}
                         <p>Backups are enabled and you can recover your data if needed</p>
 {% if vm.backup.archive_zip %}
-                        <p>You can also download a encypted zip file of your data <a href="http://i.imgur.com/CScmqnj.gif">HERE</a> This link will only be valid for the next 24 hours.</p>
+                        <p>You can also download a encypted zip file of your data <a href="{{ s3_backup.url }}">HERE</a> This link will only be valid for the next 24 hours.</p>
                         <p>The password for this file is defined in the Warhorse configuration.</p>
 {% endif %}
 {% endfor %}

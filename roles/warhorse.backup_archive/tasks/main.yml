@@ -30,3 +30,7 @@
     mode: geturl
     expiry: "86400"
   register: s3_backup
+
+# - name: Print URL
+#   debug:
+#     msg: "The url is {{ s3_backup.url }}"

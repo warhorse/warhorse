@@ -81,3 +81,19 @@
     with_items:
       - "terraform"
       - "inventory"
+
+{% if warhorse.notification.email is defined %}
+- name: Destroy Extras
+  gather_facts: yes
+  hosts: localhost
+  connection: ssh
+  environment: 
+    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
+  become: True
+  vars_files:
+  - ../../config/{{ warhorse.general.op_number }}.yml
+  vars: 
+    deploy: false
+  roles:
+    - { role: warhorse.notification }
+{% endif %}
