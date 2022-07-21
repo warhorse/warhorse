@@ -2,7 +2,7 @@
 - name: Generating nginx Configuration
   template:
     mode: '0755'
-    src: templates/nginx_config.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/nginx_config.yml.j2"
+    src: templates/nginx.conf.j2
+    dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/nginx.conf.j2"
   with_items:
   - '{{ warhorse.vm }}'

@@ -4,7 +4,7 @@
 - include: generate.yml
 - include: nginx.yml
   with_items: "{{ warhorse.vm }}"
-  when: item.nginx.config_file is not defined
+  when: item.nginx.config_file is not defined and item.http_proxy == "nginx"
 - include: evilginx2.yml
   with_items: "{{ warhorse.vm }}"
-  when: item.evilginx2.enabled
+  when: item.evilginx2 is defined
