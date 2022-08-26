@@ -1,0 +1,12 @@
+---
+- include: deploy.yml
+  vars:
+    state: "present"
+    name: "Deploy"
+  when: deploy
+
+- include: destroy.yml
+  vars:
+    state: "absent"
+    name: "Destroy"
+  when: not deploy

@@ -1,0 +1,53 @@
+---
+{% if warhorse.terraform.state_bucket_enabled is defined and warhorse.terraform.state_bucket_enabled is true %}
+- name: "{% raw %}{{ name }}{% endraw %} Terraform Remote State"
+  community.general.terraform:
+    project_path: '{{ terraform_path }}'
+    state: "{% raw %}{{ state }}{% endraw %}"
+    backend_config:
+      region: "{{ warhorse.terraform.state_bucket_region }}"
+      bucket: "{{ warhorse.terraform.state_bucket_name }}"
+      key: "{{ warhorse.terraform.state_bucket_key }}"
+      access_key: "{% raw %}{{ bucket_access_key }}{% endraw %}"
+      secret_key: "{% raw %}{{ bucket_secret_key }}{% endraw %}"
+      endpoint: "{{ warhorse.terraform.state_bucket_endpoint }}"
+    force_init: true
+    variables:
+{% if warhorse.terraform.digitalocean_token is defined %}
+      do_token: "{% raw %}{{ digitalocean_token }}{% endraw %}"
+{% endif %}
+{% if warhorse.terraform.linode_token is defined %}
+      linode_token: "{% raw %}{{ linode_token }}{% endraw %}"
+{% endif %}
+{% endif %}
+
+{% if warhorse.terraform.state_bucket_enabled is not defined and warhorse.terraform.cloud_enabled is not defined %}
+- name: "{% raw %}{{ name }}{% endraw %} Terraform Local State"
+  community.general.terraform:
+    project_path: '{{ terraform_path }}'
+    state: "{% raw %}{{ state }}{% endraw %}"
+    force_init: true
+    variables:
+{% if warhorse.terraform.digitalocean_token is defined %}
+      do_token: "{% raw %}{{ digitalocean_token }}{% endraw %}"
+{% endif %}
+{% if warhorse.terraform.linode_token is defined %}
+      linode_token: "{% raw %}{{ linode_token }}{% endraw %}"
+{% endif %}
+{% endif %}
+
+{% if warhorse.terraform.cloud_enabled is defined and warhorse.terraform.cloud_enabled is true %}
+- name: "{% raw %}{{ name }}{% endraw %} Terraform Cloud"
+  community.general.terraform:
+    project_path: '{{ terraform_path }}'
+    state: "{% raw %}{{ state }}{% endraw %}"
+    workspace: "{{ warhorse.terraform.cloud_workspace }}"
+    force_init: true
+    variables:
+{% if warhorse.terraform.digitalocean_token is defined %}
+      do_token: "{% raw %}{{ digitalocean_token }}{% endraw %}"
+{% endif %}
+{% if warhorse.terraform.linode_token is defined %}
+      linode_token: "{% raw %}{{ linode_token }}{% endraw %}"
+{% endif %}
+{% endif %}

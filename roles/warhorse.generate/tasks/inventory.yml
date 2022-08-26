@@ -17,12 +17,6 @@
     ANSIBLE_VAULT_PASSWORD: "{{ warhorse.general.vault_key }}"
     ANSIBLE_VAULT_PASSWORD_FILE: "./vault-env"
 
-- name: Generating dns inventory
-  template:
-    mode: '0755'
-    src: templates/dns.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/dns.yml"
-
 - name: Generating syncthing inventory
   template:
     mode: '0755'
@@ -30,14 +24,6 @@
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/syncthing.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.syncthing is defined and item.syncthing.enabled
-
-- name: Generating firewall inventory
-  template:
-    mode: '0755'
-    src: templates/firewall.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/firewall.yml"
-  with_items: "{{ warhorse.vm }}"
-  when: item.firewall is defined and item.firewall.enabled
 
 - name: Generating cobaltstrike inventory
   template:
@@ -70,7 +56,6 @@
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/mythic.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.mythic is defined and item.mythic.enabled
-
 
 - name: Generating traefik inventory
   template:
@@ -119,3 +104,10 @@
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/backup.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.backup is defined and item.backup.enabled
+
+- name: Generating notification inventory
+  template:
+    mode: '0755'
+    src: templates/notification.yml.j2
+    dest: "./OP/{{ warhorse.general.op_number }}/inventory/notification.yml"
+  when: warhorse.notification is defined

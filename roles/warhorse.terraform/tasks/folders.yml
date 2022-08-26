@@ -1,0 +1,9 @@
+---
+- name: Create Terraform Folder
+  file:
+    path: '{{ item }}'
+    state: directory
+  with_items:
+  - './OP/{{ warhorse.general.op_number }}/terraform'
+  - './OP/{{ warhorse.general.op_number }}/roles/terraform'
+  - './OP/{{ warhorse.general.op_number }}/roles/terraform/tasks'

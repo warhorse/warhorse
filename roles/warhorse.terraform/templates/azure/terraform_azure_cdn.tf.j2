@@ -1,8 +1,8 @@
 {% if warhorse.vm|regex_search("(?i).+('cdn':.+'provider':\s'azure')", multiline=True, ignorecase=True) %}
-resource "azurerm_cdn_profile" "cdn_profile_{{ op_number }}" {
-  name                = "{{ op_number }}"
-  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
-  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+resource "azurerm_cdn_profile" "cdn_profile_{{ warhorse.general.op_number }}" {
+  name                = "{{ warhorse.general.op_number }}"
+  location            = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.name
   sku                 = "Standard_Microsoft"
 }
 {% endif %}
@@ -13,9 +13,9 @@ resource "azurerm_cdn_profile" "cdn_profile_{{ op_number }}" {
 {% if cdn.provider == 'azure' and vm.cobaltstrike.auth_header_name is not defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
-  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
-  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
-  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ warhorse.general.op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.name
   origin_host_header  = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
@@ -46,9 +46,9 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 {% if cdn.provider == 'azure' and vm.cobaltstrike.auth_header_name is defined and vm.cobaltstrike.auth_header_value is defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
-  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
-  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
-  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ warhorse.general.op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.name
   origin_host_header  = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
@@ -102,9 +102,9 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 {% if cdn.provider == 'azure' and vm.mythic.auth_header_name is not defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
-  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
-  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
-  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ warhorse.general.op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.name
   origin_host_header  = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
@@ -135,9 +135,9 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 {% if cdn.provider == 'azure' and vm.mythic.auth_header_name is defined and vm.mythic.auth_header_value is defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
-  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
-  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
-  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ warhorse.general.op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.name
   origin_host_header  = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
@@ -191,9 +191,9 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 {% if cdn.provider == 'azure' and vm.nighthawk.auth_header_name is not defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
-  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
-  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
-  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ warhorse.general.op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.name
   origin_host_header  = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
@@ -224,9 +224,9 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 {% if cdn.provider == 'azure' and vm.nighthawk.auth_header_name is defined and vm.nighthawk.auth_header_value is defined %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
-  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
-  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
-  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ warhorse.general.op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.name
   origin_host_header  = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
   querystring_caching_behaviour = "BypassCaching"
 
@@ -277,9 +277,9 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 {% if cdn.provider == 'azure' %}
 resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
   name                = "{{ cdn.hostname }}"
-  profile_name        = azurerm_cdn_profile.cdn_profile_{{ op_number }}.name
-  location            = azurerm_resource_group.azure_resource_{{ op_number }}.location
-  resource_group_name = azurerm_resource_group.azure_resource_{{ op_number }}.name
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ warhorse.general.op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.name
   origin_host_header  = "{{ cdn.hostname }}.azureedge.net"
   querystring_caching_behaviour = "BypassCaching"
 

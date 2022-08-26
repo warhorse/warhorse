@@ -1,0 +1,7 @@
+{% if warhorse.notification.email is defined %}
+all:
+  vars:
+    email_host: '{{ warhorse.notification.email.host }}'
+    email_from: '{{ warhorse.notification.email.from }}'
+    email_port: '{{ warhorse.notification.email.port }}'
+{% endif %}

@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Warhorse OP {{ warhorse.general.op_number }} Complete</title>
+    <title>Warhorse OP {{ op_number }} Complete</title>
     <style>
       /* -------------------------------------
           GLOBAL RESETS
@@ -352,11 +352,11 @@
                         <center><img src="https://docs.war-horse.io/images/logo_full.png" alt="Warhorse Logo" width="150" height="250"></center>
                         <p>Hi there,</p>
                         <p>Your Warhorse Deployment is complete. You can access the server via SSH at the following hostnames</p>
-{% for vm in warhorse.vm %}
-                        <p>{{ vm.name }}.{{ warhorse.dns.op_domain_name }}</p>
+{% for hostname in groups['warhorse'] %}
+                        <p>{{ hostname }}.{{ op_domain_name }}</p>
 {% endfor %}
                         <p>The following user names been added to all host</p>
-{% for users in warhorse.users %}
+{% for users in users %}
                         <p>Username: {{ users.username }}</p>
 {% endfor %}
                         <p>For more information about this deployment please review the file /root/deployment.txt</p>

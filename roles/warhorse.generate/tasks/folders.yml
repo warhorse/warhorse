@@ -9,6 +9,7 @@
   - './OP/{{ warhorse.general.op_number }}/inventory'
   - './OP/{{ warhorse.general.op_number }}/files'
   - './OP/{{ warhorse.general.op_number }}/keys'
+  - './OP/{{ warhorse.general.op_number }}/terraform'
 
 - name: Create Folders
   file:

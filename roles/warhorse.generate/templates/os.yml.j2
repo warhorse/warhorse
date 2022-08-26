@@ -37,6 +37,9 @@ all:
 {% for keys in users.authorized_keys %}
           - "{{ keys }}"
 {% endfor %}
+{% if users.email is defined %}
+        email: '{{ users.email }}'
+{% endif %}
         home_create: {{ users.home_create | default ('yes') }}
         append: {{ users.append | default ('yes') }}
         home_mode: "{{ users.home_mode | default ('0750') }}"

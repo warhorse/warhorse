@@ -1,12 +1,4 @@
 ---
-- name: Create a terraform directorys 
-  ansible.builtin.file:
-    path: '{{ item.folder }}'
-    state: directory
-    mode: '0755'
-  with_items:
-  - folder: "{{ terraform_project_path }}/aws"
-
 - name: Generating Terraform AWS Cloudfront
   template:
     src: templates/aws/terraform_aws_cloudfront.tf.j2

@@ -24,7 +24,7 @@ all:
               cs_container_name: "cobaltstrike"
 
               cs_exp_date: '{% raw %}{{ ttl }}{% endraw %}'
-              cs_profile_location: "{% raw %}{{ lookup('env', 'PWD') }}/files/{% endraw %}{{ vm.cobaltstrike.profile}}.j2"
+              cs_profile_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/{{ vm.cobaltstrike.profile }}"
               cs_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               cs_dir: '/opt/docker/cobaltstrike'
               cs_ports:

@@ -1,26 +1,26 @@
 {% for vm in warhorse.vm %}
 {% if vm.provider == "digitalocean" and loop.first %}
 resource "digitalocean_tag" "op_number" {
-  name = "{{ op_number }}"
+  name = "{{ warhorse.general.op_number }}"
 }
 
 resource "digitalocean_tag" "ttl" {
-  name = "{{ ttl }}"
+  name = "{{ warhorse.general.ttl }}"
 }
 
 resource "digitalocean_tag" "warhorse" {
   name = "warhorse"
 }
 
-{% if user_tag is defined %}
+{% if warhorse.general.user_tag is defined %}
 resource "digitalocean_tag" "user_tag" {
-  name = "{{ user_tag }}"
+  name = "{{ warhorse.general.user_tag }}"
 }
 {% endif %}
 
 resource "digitalocean_ssh_key" "ansible_ssh_key" {
-  name       = "Warhorse SSH Key {{ op_number }}"
-  public_key = "{{ lookup('file', '{{ ansible_ssh_public_key_file }}') }}"
+  name       = "Warhorse SSH Key {{ warhorse.general.op_number }}"
+  public_key = "{{ lookup('file', './OP/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}.pub') }}"
 }
 {% endif %}
 {% if vm.provider == "digitalocean" %}
@@ -41,24 +41,52 @@ resource "digitalocean_firewall" "{{ vm.resource_name|default(warhorse.general.u
   name = "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name + '-firewall') }}"
 
   droplet_ids = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.id]
-{% for name in firewall|selectattr("name", "equalto", vm.name ) %}
-{% for rules in name.rules %}
-{% if rules.type == 'inbound' %}
   inbound_rule {
-    protocol         = "{{ rules.protocol }}"
-    port_range       = "{{ rules.port_range }}"
-    source_addresses = [{% for source in rules.source_addresses %}"{{source}}"{% endfor %}]
+    protocol         = "tcp"
+    port_range       = "22"
+    source_addresses = ["0.0.0.0/0"]
   }
-{% endif %}
-{% if rules.type == 'outbound' %}
   outbound_rule {
-    protocol         = "{{ rules.protocol }}"
-    port_range       = "{{ rules.port_range }}"
-    destination_addresses = [{% for source in rules.destination_addresses %}"{{source}}"{% endfor %}]
+    protocol         = "udp"
+    port_range       = "1-65535"
+    destination_addresses = ["0.0.0.0/0"]
+  }
+  outbound_rule {
+    protocol         = "tcp"
+    port_range       = "1-65535"
+    destination_addresses = ["0.0.0.0/0"]
+  }
+{% if vm.http_proxy is defined %}
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "80"
+    source_addresses = ["0.0.0.0/0"]
+  }
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "443"
+    source_addresses = ["0.0.0.0/0"]
   }
 {% endif %}
-{% endfor %}
-{% endfor %}
+{% if vm.tailscale.enabled is true %}
+  inbound_rule {
+    protocol         = "udp"
+    port_range       = "41641"
+    source_addresses = ["0.0.0.0/0"]
+  }
+  inbound_rule {
+    protocol         = "udp"
+    port_range       = "3478"
+    source_addresses = ["0.0.0.0/0"]
+  }
+{% endif %}
+{% if vm.cobaltstrike.dns_over_https is true %}
+  inbound_rule {
+    protocol         = "udp"
+    port_range       = "53"
+    source_addresses = ["0.0.0.0/0"]
+  }
+{% endif %}
 {% endif %}
 }
 {% endfor %}

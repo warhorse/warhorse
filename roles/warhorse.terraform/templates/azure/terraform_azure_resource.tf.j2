@@ -1,6 +1,6 @@
 {% if warhorse|regex_search("'provider': 'azure'", multiline=True, ignorecase=True) %}
-resource "azurerm_resource_group" "azure_resource_{{ op_number }}" {
-  name     = "{{ op_number }}"
+resource "azurerm_resource_group" "azure_resource_{{ warhorse.general.op_number }}" {
+  name     = "{{ warhorse.general.op_number }}"
   location = "{{ vm.region|default('East US') }}"
 }
 {% endif %}

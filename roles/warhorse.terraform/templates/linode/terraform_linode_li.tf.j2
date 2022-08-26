@@ -47,35 +47,68 @@ resource "linode_firewall" "{{ vm.resource_name|default(warhorse.general.user_ta
   linodes         = [linode_instance.{{resource.name}}.id]
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
-{% for name in firewall|selectattr("name", "equalto", vm.name ) %}
-{% for rules in name.rules %}
-{% if rules.type == 'inbound' %}
   inbound {
-    label     = "{{rules.label}}"
-    protocol  = "{{rules.protocol}}"
-    ports     = "{{rules.ports}}"
-    action    = "{{rules.action}}"
-    ipv4      = [{% for source in rules.ipv4_addresses %}"{{source}}"{% endfor %}]
-    {% if rules.ipv6 is defined %}}
-    ipv6      = [{% for source in rules.ipv6_addresses %}"{{source}}"{% endfor %}]
-    {% endif %}}
+    label     = "allow-ssh"
+    protocol  = "TCP"
+    ports     = "22"
+    action    = "ACCEPT"
+    ipv4      = ["0.0.0.0/0"]
   }
-{% endif %}
-
-{% if rules.type == 'outbound' %}
   outbound {
-    label     = "{{rules.label}}"
-    protocol  = "{{rules.protocol}}"
-    ports     = "{{rules.ports}}"
-    action    = "{{rules.action}}"
-    ipv4      = [{% for source in rules.ipv4_addresses %}"{{source}}"{% endfor %}]
-    {% if rules.ipv6 is defined %}}
-    ipv6      = [{% for source in rules.ipv6_addresses %}"{{source}}"{% endfor %}]
-    {% endif %}}
+    label     = "allow-udp-out"
+    protocol  = "UDP"
+    ports     = "1-65535"
+    action    = "ACCEPT"
+    ipv4      = ["0.0.0.0/0"]
+  }
+  outbound {
+    label     = "allow-tcp-out"
+    protocol  = "TCP"
+    ports     = "1-65535"
+    action    = "ACCEPT"
+    ipv4      = ["0.0.0.0/0"]
+  }
+{% if vm.http_proxy is defined %}
+  inbound {
+    label     = "allow-https"
+    protocol  = "TCP"
+    ports     = "443"
+    action    = "ACCEPT"
+    ipv4      = ["0.0.0.0/0"]
+  }
+  inbound {
+    label     = "allow-http"
+    protocol  = "TCP"
+    ports     = "80"
+    action    = "ACCEPT"
+    ipv4      = ["0.0.0.0/0"]
   }
 {% endif %}
-{% endfor %}
-{% endfor %}
+{% if vm.tailscale.enabled is true %}
+  inbound {
+    label     = "allow-tailscale"
+    protocol  = "UDP"
+    ports     = "41641"
+    action    = "ACCEPT"
+    ipv4      = ["0.0.0.0/0"]
+  }
+  inbound {
+    label     = "allow-tailscale"
+    protocol  = "UDP"
+    ports     = "3478"
+    action    = "ACCEPT"
+    ipv4      = ["0.0.0.0/0"]
+  }
+{% endif %}
+{% if vm.cobaltstrike.dns_over_https is true %}
+  inbound {
+    label     = "allow-dns"
+    protocol  = "UDP"
+    ports     = "53"
+    action    = "ACCEPT"
+    ipv4      = ["0.0.0.0/0"]
+  }
+{% endif %}
 {% endif %}
 }
 {% endfor %}

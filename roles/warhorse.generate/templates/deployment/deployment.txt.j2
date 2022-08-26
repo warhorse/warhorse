@@ -18,11 +18,12 @@ Virtual Machines: {{ vm.name }}
     auth_header_value: {{ vm.nighthawk.auth_header_value }}
 {% endif %}
     CDN:
-{% if aws_cdn_nighthawk_hostnames is defined %}
+{% raw %}{% if aws_cdn_nighthawk_hostnames is defined %}
       aws:
 {% for aws_cdn in aws_cdn_nighthawk_hostnames %}      - "{{ aws_cdn }}"
 {% endfor %}
 {% endif %}
+{% endraw %}
 {% for cdn in vm.nighthawk.cdn %}
 {% if cdn.provider == "azure" %}
       azure:
@@ -38,11 +39,12 @@ Virtual Machines: {{ vm.name }}
     auth_header_value: {{ vm.cobaltstrike.auth_header_value }}
 {% endif %}
     CDN:
-{% if aws_cdn_cobaltstrike_hostnames is defined %}
+{% raw %}{% if aws_cdn_cobaltstrike_hostnames is defined %}
       aws:
 {% for aws_cdn in aws_cdn_cobaltstrike_hostnames %}      - "{{ aws_cdn }}"
 {% endfor %}
 {% endif %}
+{% endraw %}
 {% for cdn in vm.cobaltstrike.cdn %}
 {% if cdn.provider == "azure" %}
       azure:

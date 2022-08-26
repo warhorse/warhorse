@@ -1,0 +1,9 @@
+---
+- name: Generating Terraform Role
+  template:
+    src: templates/role/{{ item }}.j2
+    dest: "{{ terraform_role_path }}/tasks/{{ item }}"
+  with_items:
+  - "main.yml"
+  - "deploy.yml"
+  - "destroy.yml"

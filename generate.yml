@@ -4,15 +4,4 @@
   connection: local
   roles:
     - { role: warhorse.generate }
-
-- name: Create SSH Keys
-  hosts: localhost
-  gather_facts: true
-  connection: local
-  vars: 
-    deploy: true
-  tasks:
-  - name: Create SSH Keys
-    community.crypto.openssh_keypair:
-      path: "./OP/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}"
-      size: 2048
+    - { role: warhorse.terraform }

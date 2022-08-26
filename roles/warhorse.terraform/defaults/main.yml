@@ -1,2 +1,4 @@
 ---
-terraform_project_path: './terraform'
+terraform_path: './terraform'
+terraform_project_path: './OP/{{ warhorse.general.op_number }}/terraform'
+terraform_role_path: './OP/{{ warhorse.general.op_number }}/roles/terraform'

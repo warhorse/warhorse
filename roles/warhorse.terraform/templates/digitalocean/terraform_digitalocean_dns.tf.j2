@@ -1,31 +1,70 @@
-{% for vm in warhorse.vm %}
-{% for name in dns|selectattr("name", "equalto", vm.name ) %}
-{% for entrys in name.entrys %}
-{% if entrys.provider == "digitalocean"%}
-{% if entrys.resource_name == 'tld' %}
 resource "digitalocean_domain" "domain" {
-  name       = "{{ entrys.domain_name }}"
+  name       = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+}
+{% for vm in warhorse.vm %}
+resource "digitalocean_record" "{{ vm.name }}" {
+  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  type   = "A"
+  name   = "{{ vm.name }}"
+  value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
+  depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
+}
+{% if vm.cobaltstrike.enabled is true %}
+resource "digitalocean_record" "{{ vm.name }}_cobaltstrike" {
+  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  type   = "A"
+  name   = "cs-{{ vm.name }}"
+  value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
+  depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }
 {% endif %}
-{% if entrys.dns_type is defined %}
-{% for hostnames in entrys.hostnames %}
-resource "digitalocean_record" "{{ entrys.resource_name }}_{{ hostnames }}" {
-  domain = "{{ entrys.domain_name }}"
-  type   = "{{ entrys.dns_type }}"
-  name   = "{{ hostnames }}"
-{% if entrys.dns_type == 'A' %}
-  value  = digitalocean_droplet.{{ entrys.value }}.ipv4_address
-  depends_on = [digitalocean_droplet.{{ entrys.depends_on }}]
+{% if vm.nighthawk.enabled is true %}
+resource "digitalocean_record" "{{ vm.name }}_nighthawk" {
+  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  type   = "A"
+  name   = "nh-{{ vm.name }}"
+  value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
+  depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }
 {% endif %}
-{% if entrys.dns_type == 'NS' %}
-  value  = "{{ entrys.value }}"
-  depends_on = [digitalocean_record.{{ entrys.depends_on }}]
+{% if vm.mythic.enabled is true %}
+resource "digitalocean_record" "{{ vm.name }}_mythic" {
+  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  type   = "A"
+  name   = "mythic-{{ vm.name }}"
+  value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
+  depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }
 {% endif %}
-{% endfor %}
+{% if vm.gophish.enabled is true %}
+resource "digitalocean_record" "{{ vm.name }}_gophish_site" {
+  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  type   = "A"
+  name   = "{{ vm.gophish.site_hostname }}-{{ vm.name }}"
+  value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
+  depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
+}
+resource "digitalocean_record" "{{ vm.name }}_gophish_admin" {
+  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  type   = "A"
+  name   = "{{ vm.gophish.admin_hostname }}-{{ vm.name }}"
+  value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
+  depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
+}
 {% endif %}
+{% if vm.cobaltstrike.dns_over_https is true %}
+resource "digitalocean_record" "{{ vm.name }}_ns" {
+  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  type   = "NS"
+  name   = "ns1"
+  value  = "dns.{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}."
+}
+resource "digitalocean_record" "{{ vm.name }}_ns_record" {
+  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  type   = "A"
+  name   = "dns"
+  value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
+  depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
+}
 {% endif %}
-{% endfor %}
-{% endfor %}
 {% endfor %}

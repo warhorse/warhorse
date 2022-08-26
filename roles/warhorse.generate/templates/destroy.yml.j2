@@ -6,12 +6,8 @@
   hosts: {{ vm.name }}
   connection: ssh
   become: True
-  environment: 
-    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   vars: 
     deploy: false
-  vars_files:
-    - ../../config/{{ warhorse.general.op_number }}.yml
   roles:
     - { role: warhorse.tailscale }
 {% endif %}
@@ -24,12 +20,8 @@
   hosts: {{ vm.name }}
   connection: ssh
   become: True
-  environment: 
-    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   vars: 
     deploy: false
-  vars_files:
-    - ../../config/{{ warhorse.general.op_number }}.yml
   roles:
     - { role: warhorse.backup_archive }
 {% endif %}
@@ -39,14 +31,10 @@
   hosts: localhost
   gather_facts: false
   connection: local
-  environment: 
-    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   vars: 
     deploy: false
-  vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
   roles:
-    - { role: warhorse.terraform }
+    - { role: terraform }
 
 - name: Destroy SSH Key
   hosts: localhost
@@ -54,16 +42,14 @@
   connection: local
   vars: 
     deploy: false
-  vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
   tasks:
   - name: remove keys directory 
     ansible.builtin.file:
       path: "{% raw %}{{ item }}{% endraw %}"
       state: absent
     with_items:
-      - "keys/{% raw %}id_rsa_ansible_{{ warhorse.general.op_number }}{% endraw %}"
-      - "keys/{% raw %}id_rsa_ansible_{{ warhorse.general.op_number }}.pub{% endraw %}"
+      - "keys/{% raw %}id_rsa_ansible_{{ op_number }}{% endraw %}"
+      - "keys/{% raw %}id_rsa_ansible_{{ op_number }}.pub{% endraw %}"
 
 - name: Destroy Terraform Files and Inventory files
   hosts: localhost
@@ -71,8 +57,6 @@
   connection: local
   vars: 
     deploy: false
-  vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
   tasks:
   - name: remove terrafrom & inventory directory 
     ansible.builtin.file:
@@ -87,11 +71,7 @@
   gather_facts: yes
   hosts: localhost
   connection: ssh
-  environment: 
-    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
-  vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
   vars: 
     deploy: false
   roles:

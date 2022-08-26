@@ -21,7 +21,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   is_ipv6_enabled     = false
   comment             = "Warhorse Deployment"
   default_root_object = "index.html"
-  wait_for_deployment = false
+  wait_for_deployment = true
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -125,7 +125,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   is_ipv6_enabled     = false
   comment             = "Warhorse Deployment"
   default_root_object = "index.html"
-  wait_for_deployment = false
+  wait_for_deployment = true
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -229,7 +229,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   is_ipv6_enabled     = false
   comment             = "Warhorse Deployment"
   default_root_object = "index.html"
-  wait_for_deployment = false
+  wait_for_deployment = true
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]

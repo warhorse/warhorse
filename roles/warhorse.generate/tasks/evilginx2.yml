@@ -5,7 +5,7 @@
     src: templates/evilginx2_config.yaml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/evilginx.yaml.j2"
   with_items: "{{ warhorse.vm }}"
-  when: item.evilginx2.config_file is not defined
+  when: item.evilginx2 is defined and item.evilginx2.config_file is not defined
 
 - name: Create Phishlets Folder
   file:
@@ -13,7 +13,7 @@
     state: directory
   with_items:
   - '{{ warhorse.vm }}'
-  when: item.evilginx2.phishlet_folder is not defined
+  when: item.evilginx2 is defined and item.evilginx2.phishlet_folder is not defined
 
 - name: Generating Evilginx2 Phishlets
   template:
@@ -23,4 +23,5 @@
   with_subelements: 
    - "{{ warhorse.vm }}"
    - evilginx2.phishlets
-  when: item.1.evilginx2.phishlet_folder is not defined
+   - skip_missing: True
+  when: item.0.evilginx2 is defined and item.0.evilginx2.phishlet_folder is not defined

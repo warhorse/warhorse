@@ -1,7 +1,9 @@
 ---
 - include: folders.yml
+- include: ssh.yml
 - include: inventory.yml
 - include: generate.yml
+- include: deployment.yml
 - include: nginx.yml
   with_items: "{{ warhorse.vm }}"
   when: item.nginx.config_file is not defined and item.http_proxy == "nginx"

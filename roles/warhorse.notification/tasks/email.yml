@@ -1,32 +1,32 @@
 ---
 - name: Sending an e-mail
   mail:
-    host: "{{ warhorse.notification.email.host }}"
-    from: "{{ warhorse.notification.email.from }}"
-    port: "{{ warhorse.notification.email.port }}"
+    host: "{{ email_host }}"
+    from: "{{ email_from }}"
+    port: "{{ email_port }}"
     username: "{{ notification_email_username }}"
     password: "{{ notification_email_password }}"
     to: "{{ item.email }}"
-    subject: "Warhorse OP-{{ warhorse.general.op_number }}"
+    subject: "Warhorse OP-{{ op_number }}"
     attach: "{{ req_zip.stat.path|default([]) }}"
     body: "{{ lookup('template','templates/mail_body_complete.html.j2') }}"
     subtype: html
     charset: utf8
-  with_items: "{{ warhorse.users }}"
+  with_items: "{{ users }}"
   when: deploy
 
 - name: Sending an e-mail
   mail:
-    host: "{{ warhorse.notification.email.host }}"
-    from: "{{ warhorse.notification.email.from }}"
-    port: "{{ warhorse.notification.email.port }}"
+    host: "{{ email_host }}"
+    from: "{{ email_from }}"
+    port: "{{ email_port }}"
     username: "{{ notification_email_username }}"
     password: "{{ notification_email_password }}"
     to: "{{ item.email }}"
-    subject: "Warhorse OP-{{ warhorse.general.op_number }}"
+    subject: "Warhorse OP-{{ op_number }}"
     attach: "{{ req_zip.stat.path|default([]) }}"
     body: "{{ lookup('template','templates/mail_body_destroy.html.j2') }}"
     subtype: html
     charset: utf8
-  with_items: "{{ warhorse.users }}"
+  with_items: "{{ users }}"
   when: not deploy

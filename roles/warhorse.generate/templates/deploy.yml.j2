@@ -3,14 +3,10 @@
   hosts: localhost
   gather_facts: false
   connection: local
-  environment: 
-    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   vars: 
     deploy: true
-  vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
   roles:
-    - { role: warhorse.terraform }
+    - { role: terraform }
 
 - name: Refresh Inventory
   hosts: localhost
@@ -44,11 +40,7 @@
   gather_facts: yes
   hosts: warhorse
   connection: ssh
-  environment: 
-    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
-  vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
   vars: 
     deploy: true
   roles:
@@ -73,11 +65,7 @@
   gather_facts: True
   hosts: {{ vm.name }}
   connection: ssh
-  environment: 
-    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
-  vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
   vars: 
     deploy: true
   roles:
@@ -124,15 +112,11 @@
   gather_facts: yes
   hosts: warhorse
   connection: ssh
-  environment: 
-    ANSIBLE_VAULT_PASSWORD: "{% raw %}{{ warhorse.general.vault_key }}{% endraw %}"
   become: True
-  vars_files:
-  - ../../config/{{ warhorse.general.op_number }}.yml
   vars: 
     deploy: true
   roles:
-    - { role: warhorse.deployment }
+    - { role: deployment }
 {% if warhorse.notification.email is defined %}
     - { role: warhorse.notification }
 {% endif %}
