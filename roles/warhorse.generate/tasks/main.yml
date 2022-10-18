@@ -10,3 +10,6 @@
 - include: evilginx2.yml
   with_items: "{{ warhorse.vm }}"
   when: item.evilginx2 is defined
+- include: cobaltstrike.yml
+  with_items: "{{ warhorse.vm }}"
+  when: item.cobaltstrike is defined

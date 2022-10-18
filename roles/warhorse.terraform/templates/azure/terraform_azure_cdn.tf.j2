@@ -309,4 +309,41 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
 {% endif %}
 {% endfor %}
 {% endif %}
+{% if vm.gophish.cdn is defined %}
+{% for cdn in vm.gophish.cdn %}
+{% if cdn.provider == 'azure' %}
+resource "azurerm_cdn_endpoint" "cdn_endpoint_{{ cdn.hostname }}" {
+  name                = "{{ cdn.hostname }}"
+  profile_name        = azurerm_cdn_profile.cdn_profile_{{ warhorse.general.op_number }}.name
+  location            = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.location
+  resource_group_name = azurerm_resource_group.azure_resource_{{ warhorse.general.op_number }}.name
+  origin_host_header  = "{{ vm.gophish.site_hostname }}.{{ warhorse.dns.op_domain_name }}"
+  querystring_caching_behaviour = "BypassCaching"
+
+  origin {
+    name      = "{{ cdn.hostname }}"
+    host_name = "{{ vm.gophish.site_hostname }}.{{ warhorse.dns.op_domain_name }}"
+  }
+
+  delivery_rule{
+    name = "nocache"
+    order = 1
+    
+    query_string_condition {
+      operator = "Any"
+    }
+
+    
+    url_path_condition {
+      operator = "Any"
+    }
+
+    cache_expiration_action {
+      behavior =  "BypassCache"
+    }
+  }
+}
+{% endif %}
+{% endfor %}
+{% endif %}
 {% endfor %}

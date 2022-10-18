@@ -8,7 +8,7 @@ all:
           hosts:
 {% endif %}
             {{ vm.name }}:
-              hostname: '{{ vm.hostname|default(warhorse.general.op_number + '-' + vm.name )}}'
+              hostname: '{{ vm.hostname|default(warhorse.general.op_number + '-' + vm.name)}}'
 {% endfor %}
   vars:
     op_number: '{{ warhorse.general.op_number }}'
@@ -16,10 +16,14 @@ all:
 {% if warhorse.general.owner_email is defined %}
     owner_email: '{{ warhorse.general.owner_email }}'
 {% endif %}
-    op_domain_name: '{{ warhorse.dns.op_domain_name }}'
+    op_domain_name: '{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number)}}'
     domain_name: "{% raw %}{{ op_domain_name }}{% endraw %}"
     user_tag: '{{ warhorse.general.user_tag }}'
     ttl: '{{ warhorse.general.ttl }}'
+
+{% if vm.golang is defined %}
+    golang_version: '{{ vm.golang.version|default('1.19.2') }}'
+{% endif %}
 
     extra_packages:
     - net-tools

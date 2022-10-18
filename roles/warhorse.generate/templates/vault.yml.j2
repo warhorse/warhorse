@@ -28,6 +28,9 @@ all:
                 backup_bucket_access_key: "{{ vm.backup.backup_bucket_access_key }}"
                 backup_bucket_secret_key: "{{ vm.backup.backup_bucket_secret_key }}"
 {% endif %}
+{% if vm.backup.enabled and vm.backup.archive_zip %}
+                backup_archive_password: "{{ vm.backup.archive_password|default(warhorse.general.vault_key ) }}"
+{% endif %}
 {% if loop.last %}
   vars:
 {% if warhorse.terraform.bucket_access_key is defined and warhorse.terraform.bucket_secret_key %}

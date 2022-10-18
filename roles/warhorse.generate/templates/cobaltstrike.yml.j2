@@ -24,7 +24,11 @@ all:
               cs_container_name: "cobaltstrike"
 
               cs_exp_date: '{% raw %}{{ ttl }}{% endraw %}'
-              cs_profile_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/{{ vm.cobaltstrike.profile }}"
+{% if vm.cobaltstrike.profile is defined %}
+              cs_profile_location: "{{ vm.cobaltstrike.profile }}"
+{% else %}
+              cs_profile_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/malleable.profile"
+{% endif %}
               cs_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               cs_dir: '/opt/docker/cobaltstrike'
               cs_ports:
@@ -59,8 +63,10 @@ all:
   vars:
 {% for vm in warhorse.vm|selectattr("cobaltstrike", "defined" ) %}
 {% if vm.cobaltstrike.enabled %}
+{% if vm.cobaltstrike.auth_header_value and vm.cobaltstrike.auth_header_name is defined %}
     cs_auth_header_value: "{{ vm.cobaltstrike.auth_header_value }}"
     cs_auth_header_name: "{{ vm.cobaltstrike.auth_header_name }}"
+{% endif %}
     cs_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"
 {% endif %}
 {% endfor %}

@@ -1,8 +1,12 @@
 ---
 - name: Deploy Terraform
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
   connection: local
+  tasks:
+  - name: Start
+    set_fact:
+      start_time: "{% raw %}{{ ansible_date_time.iso8601[:19] }}{% endraw %}"
   vars: 
     deploy: true
   roles:
@@ -121,3 +125,14 @@
     - { role: warhorse.notification }
 {% endif %}
 {% endif %}
+
+- name: Run Time
+  hosts: localhost
+  gather_facts: true
+  connection: local
+  tasks:
+  - name: force update of current timestamp
+    setup: filter='ansible_date_time'
+  - name: Get runtime
+    set_fact:
+      runtime: "{% raw %}{{ ((ansible_date_time.iso8601[:19] | to_datetime('%Y-%m-%dT%H:%M:%S')) - (start_time | to_datetime('%Y-%m-%dT%H:%M:%S'))).seconds }}{% endraw %}"

@@ -40,14 +40,14 @@ resource "digitalocean_record" "{{ vm.name }}_mythic" {
 resource "digitalocean_record" "{{ vm.name }}_gophish_site" {
   domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
   type   = "A"
-  name   = "{{ vm.gophish.site_hostname }}-{{ vm.name }}"
+  name   = "{{ vm.gophish.site_hostname }}"
   value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
   depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }
 resource "digitalocean_record" "{{ vm.name }}_gophish_admin" {
   domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
   type   = "A"
-  name   = "{{ vm.gophish.admin_hostname }}-{{ vm.name }}"
+  name   = "{{ vm.gophish.admin_hostname }}"
   value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
   depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }

@@ -1,0 +1,8 @@
+---
+- name: Generating Cobaltstrike Profile
+  template:
+    mode: '0755'
+    src: templates/malleable.profile.j2
+    dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/malleable.profile"
+  with_items: "{{ warhorse.vm }}"
+  when: item.cobaltstrike is defined and item.cobaltstrike.profile is not defined

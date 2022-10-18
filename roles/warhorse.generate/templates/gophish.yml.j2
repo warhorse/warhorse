@@ -9,8 +9,10 @@ all:
           hosts:
 {% endif %}
             {{ vm.name }}:
-              gophish_site_hostname: 'gophish'
+              gophish_site_hostname: '{{ vm.gophish.site_hostname }}'
+              gophish_admin_hostname: '{{ vm.gophish.admin_hostname }}'
               gophish_vpn_hostname: 'gophish'
+              gophish_trusted_origins: '{% raw %}{{ gophish_admin_hostname }}.{{ op_domain_name }}{% endraw %}'
 
               gophish_hostname: "gophish"
               gophish_container_name: "gophish"
@@ -29,14 +31,20 @@ all:
               gophish_docker_labels:
                 traefik.docker.network: "{% raw %}{{ dockernet }}{% endraw %}"
                 traefik.enable: "true"
-                traefik.http.routers.cs.rule: "{% raw %}Host(`{{ gophish_site_hostname }}.{{ op_domain_name }}`){% endraw %}"
-                traefik.http.routers.cs.middlewares: "cdn@docker"
-                traefik.http.routers.cs.tls: "true"
-                traefik.http.routers.cs.tls.certresolver: "letsencrypt"
-                traefik.http.services.cs.loadbalancer.server.scheme: "https"
-                traefik.http.services.cs.loadbalancer.server.port: "443"
-                traefik.frontend.passHostHeader: "true"
-                traefik.frontend.headers.SSLHost: "{% raw %}{{ gophish_site_hostname }}.{{ op_domain_name }}{% endraw %}"
+                traefik.http.routers.gophish.rule: "{% raw %}Host(`{{ gophish_site_hostname }}.{{ op_domain_name }}`){% endraw %}"
+                traefik.http.routers.gophish.middlewares: "cdn@docker"
+                traefik.http.routers.gophish.tls: "true"
+                traefik.http.routers.gophish.tls.certresolver: "letsencrypt"
+                traefik.http.routers.gophish.service: "gophish"
+                traefik.http.routers.gophishadmin.rule: "{% raw %}Host(`{{ gophish_admin_hostname }}.{{ op_domain_name }}`){% endraw %}"
+                traefik.http.routers.gophishadmin.middlewares: "gophish@docker"
+                traefik.http.routers.gophishadmin.tls: "true"
+                traefik.http.routers.gophishadmin.tls.certresolver: "letsencrypt"
+                traefik.http.routers.gophishadmin.service: "gophishadmin"
+                traefik.http.services.gophish.loadbalancer.server.scheme: "https"
+                traefik.http.services.gophish.loadbalancer.server.port: "443"
+                traefik.http.services.gophishadmin.loadbalancer.server.scheme: "https"
+                traefik.http.services.gophishadmin.loadbalancer.server.port: "3333"
 {% endif %}
 {% endif %}
 {% endfor %}
