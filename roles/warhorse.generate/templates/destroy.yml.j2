@@ -1,11 +1,12 @@
 ---
 {% for vm in warhorse.vm %}
-{% if vm.tailscale is defined and vm.tailscale.enabled %}
+{% if vm.tailscale is defined %}
 - name: Cleanup Tailscale
   gather_facts: True
   hosts: {{ vm.name }}
   connection: ssh
-  become: True
+  become: true
+  no_log: true
   vars: 
     deploy: false
   roles:
@@ -14,12 +15,13 @@
 {% endfor %}
 
 {% for vm in warhorse.vm %}
-{% if vm.backup is defined and vm.backup.enabled and vm.backup.archive_zip %}
+{% if vm.backup is defined and vm.backup.archive_zip %}
 - name: Backup Archive
   gather_facts: True
   hosts: {{ vm.name }}
   connection: ssh
-  become: True
+  become: true
+  no_log: true
   vars: 
     deploy: false
   roles:
@@ -31,6 +33,7 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  no_log: true
   vars: 
     deploy: false
   roles:
@@ -40,6 +43,7 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  no_log: true
   vars: 
     deploy: false
   tasks:
@@ -55,6 +59,7 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  no_log: true
   vars: 
     deploy: false
   tasks:
@@ -71,6 +76,7 @@
   gather_facts: yes
   hosts: localhost
   connection: ssh
+  no_log: true
   vars: 
     deploy: false
   roles:

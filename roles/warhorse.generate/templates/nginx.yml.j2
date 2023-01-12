@@ -8,7 +8,7 @@ all:
           hosts:
 {% endif %}
             {{ vm.name }}:
-              nginx_domain_name: "{{ warhorse.dns.op_domain_name }}"
+              nginx_domain_name: "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
               nginx_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               nginx_dns_plugin: '{{ warhorse.dns.provider }}'
 {% if vm.nginx.config_file is defined %}

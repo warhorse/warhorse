@@ -5,8 +5,8 @@
 resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   count = {{ cdn.count|default(1) }}
   origin {
-    domain_name = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
-    origin_id   = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
+    domain_name = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
+    origin_id   = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
 
     custom_origin_config {
       http_port              = "80"
@@ -26,8 +26,8 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
-{% if vm.cobaltstrike.auth_header_name is defined and vm.cobaltstrike.auth_header_value is defined %}
+    target_origin_id = "cs-{{ vm.name }}.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
+{% if vm.cobaltstrike.auth_header is defined and true %}
     function_association {
       event_type   = "viewer-request"
       function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.arn
@@ -47,13 +47,20 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   }
 
   price_class = "PriceClass_200"
-
+{% if cdn.country_allow is defined %}
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
-      locations        = [{{ cdn.country_allow |default('"US"') }}]
+      locations        = [{{ cdn.country_allow }}]
     }
   }
+{% else %}
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+{% endif %}
 
   tags = {
     OP    = "{{ warhorse.general.op_number }}"
@@ -65,7 +72,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
     cloudfront_default_certificate = true
   }
 }
-{% if vm.cobaltstrike.auth_header_name is defined and vm.cobaltstrike.auth_header_value is defined %}
+{% if vm.cobaltstrike.auth_header is defined and true %}
 resource "aws_cloudfront_function" "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   name    = "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
   runtime = "cloudfront-js-1.0"
@@ -79,11 +86,11 @@ data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.na
 function handler(event) {
     var request = event.request;
     var headers = request.headers;
-    var headerValue = '{{ vm.cobaltstrike.auth_header_value }}'
+    var headerValue = '{{ vm.cobaltstrike.auth_header_value | default(auth_header_value) }}'
     var newurl = '{{ cdn.redirect_domain |default('https://aws.com') }}'
   
-    if (headers['{{ vm.cobaltstrike.auth_header_name }}']) {
-        var authHeader = headers['{{ vm.cobaltstrike.auth_header_name }}'].value;
+    if (headers['{{ vm.cobaltstrike.auth_header_name | default(auth_header_name) }}']) {
+        var authHeader = headers['{{ vm.cobaltstrike.auth_header_name | default(auth_header_name) }}'].value;
         if (authHeader === headerValue ) {
             return request;
         } 
@@ -109,8 +116,8 @@ EOF
 resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   count = {{ cdn.count|default(1) }}
   origin {
-    domain_name = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
-    origin_id   = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
+    domain_name = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
+    origin_id   = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
 
     custom_origin_config {
       http_port              = "80"
@@ -130,12 +137,14 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
+    target_origin_id = "nh-{{ vm.name }}.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
 
+{% if vm.nighthawk.auth_header is defined and true %}
     function_association {
       event_type   = "viewer-request"
       function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.arn
     }
+{% endif %}
 
     forwarded_values {
       query_string = true
@@ -152,12 +161,20 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
 
   price_class = "PriceClass_200"
 
+{% if cdn.country_allow is defined %}
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
-      locations        = [{{ cdn.country_allow |default('"US"') }}]
+      locations        = [{{ cdn.country_allow }}]
     }
   }
+{% else %}
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+{% endif %}
 
   tags = {
     OP    = "{{ warhorse.general.op_number }}"
@@ -170,6 +187,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   }
 }
 
+{% if vm.nighthawk.auth_header is defined and true %}
 resource "aws_cloudfront_function" "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   name    = "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
   runtime = "cloudfront-js-1.0"
@@ -183,11 +201,11 @@ data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.na
 function handler(event) {
     var request = event.request;
     var headers = request.headers;
-    var headerValue = '{{ vm.nighthawk.auth_header_value }}'
+    var headerValue = '{{ vm.nighthwak.auth_header_value | default(auth_header_value) }}'
     var newurl = '{{ cdn.redirect_domain |default('https://aws.com') }}'
   
-    if (headers['{{ vm.nighthawk.auth_header_name }}']) {
-        var authHeader = headers['{{ vm.nighthawk.auth_header_name }}'].value;
+    if (headers['{{ vm.nighthawk.auth_header_name | default(auth_header_name) }}']) {
+        var authHeader = headers['{{ vm.nighthawk.auth_header_name | default(auth_header_name) }}'].value;
         if (authHeader === headerValue ) {
             return request;
         } 
@@ -203,18 +221,19 @@ function handler(event) {
 }
 EOF
 }
-
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
+
 {% if vm.mythic.cdn is defined %}
 {% for cdn in vm.mythic.cdn|selectattr("provider", "equalto", "aws" ) %}
 {% if cdn.provider == 'aws' %}
 resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   count = {{ cdn.count|default(1) }}
   origin {
-    domain_name = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
-    origin_id   = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
+    domain_name = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
+    origin_id   = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
 
     custom_origin_config {
       http_port              = "80"
@@ -234,8 +253,8 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name }}"
-{% if vm.mythic.auth_header_name is defined and vm.mythic.auth_header_value is defined %}
+    target_origin_id = "mythic-{{ vm.name }}.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
+{% if vm.mythic.auth_header is defined and true %}
     function_association {
       event_type   = "viewer-request"
       function_arn   = aws_cloudfront_function.header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}.arn
@@ -256,12 +275,20 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
 
   price_class = "PriceClass_200"
 
+{% if cdn.country_allow is defined %}
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
-      locations        = [{{ cdn.country_allow |default('"US"') }}]
+      locations        = [{{ cdn.country_allow }}]
     }
   }
+{% else %}
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+{% endif %}
 
   tags = {
     OP    = "{{ warhorse.general.op_number }}"
@@ -273,7 +300,7 @@ resource "aws_cloudfront_distribution" "cloudfront_front_{{ warhorse.general.op_
     cloudfront_default_certificate = true
   }
 }
-{% if vm.mythic.auth_header_name is defined and vm.mythic.auth_header_value is defined %}
+{% if vm.mythic.auth_header is defined and true %}
 resource "aws_cloudfront_function" "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}" {
   name    = "header_auth_{{ warhorse.general.op_number }}_{{ vm.name }}_{{ cdn.name }}"
   runtime = "cloudfront-js-1.0"
@@ -287,11 +314,11 @@ data "javascript" "aws_cloudfront_auth_{{ warhorse.general.op_number }}_{{ vm.na
 function handler(event) {
     var request = event.request;
     var headers = request.headers;
-    var headerValue = '{{ vm.mythic.auth_header_value }}'
+    var headerValue = '{{ vm.mythic.auth_header_value | default(auth_header_value) }}'
     var newurl = '{{ cdn.redirect_domain |default('https://aws.com') }}'
   
-    if (headers['{{ vm.mythic.auth_header_name }}']) {
-        var authHeader = headers['{{ vm.mythic.auth_header_name }}'].value;
+    if (headers['{{ vm.mythic.auth_header_name | default(auth_header_name) }}']) {
+        var authHeader = headers['{{ vm.mythic.auth_header_name | default(auth_header_name) }}'].value;
         if (authHeader === headerValue ) {
             return request;
         } 

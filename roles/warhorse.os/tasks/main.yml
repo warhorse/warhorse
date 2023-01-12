@@ -7,3 +7,4 @@
 - include: packages.yml
 - include: network.yml
 - include: docker.yml
+- include: sudo.yml

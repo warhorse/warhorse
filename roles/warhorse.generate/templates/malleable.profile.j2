@@ -302,8 +302,9 @@ http-get {
 set uri "/{{ warhorse.general.op_number | sha1 }}1/";
 
 client {
-{% if vm.cobaltstrike.auth_header_value and vm.cobaltstrike.auth_header_name is defined %}
+{% if vm.cobaltstrike is defined %}
     header {% raw %}"{{ cs_auth_header_name }}" "{{ cs_auth_header_value }}"{% endraw %};
+{% elif auth_header is false %}
 {% endif %}
     metadata {
         mask;
@@ -331,8 +332,9 @@ http-post {
 set uri "/{{ warhorse.general.op_number | sha1 }}2/";
 
 client {
-{% if vm.cobaltstrike.auth_header_value and vm.cobaltstrike.auth_header_name is defined %}
+{% if vm.cobaltstrike is defined %}
     header {% raw %}"{{ cs_auth_header_name }}" "{{ cs_auth_header_value }}"{% endraw %};
+{% elif auth_header is false %}
 {% endif %}
     id {
         mask;

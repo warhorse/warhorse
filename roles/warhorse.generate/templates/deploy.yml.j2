@@ -3,6 +3,7 @@
   hosts: localhost
   gather_facts: true
   connection: local
+  no_log: true
   tasks:
   - name: Start
     set_fact:
@@ -27,7 +28,8 @@
   gather_facts: yes
   hosts: warhorse
   connection: ssh
-  become: True
+  become: true
+  no_log: true
   vars: 
     deploy: true
   tasks:
@@ -44,10 +46,12 @@
   gather_facts: yes
   hosts: warhorse
   connection: ssh
-  become: True
+  become: true
+  no_log: true
   vars: 
     deploy: true
   roles:
+{% if warhorse.general.snapshots is undefined or false %}
     - { role: weareinteractive.users }
     - { role: geerlingguy.pip }
     - { role: geerlingguy.docker }
@@ -55,10 +59,13 @@
     - { role: geerlingguy.ntp }
     - { role: geerlingguy.security }
     - { role: viasite-ansible.zsh, zsh_shared: yes}
-{% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
-    - { role: artis3n.tailscale }
 {% endif %}
-{% if vm.backup is defined and vm.backup.enabled %}
+{% if warhorse.general.snapshots is defined and true %}
+    - { role: weareinteractive.users }
+    - { role: warhorse.os }
+    - { role: viasite-ansible.zsh, zsh_shared: yes}
+{% endif %}
+{% if vm.backup is defined %}
     - { role: arillso.restic }
 {% endif %}
 {% endif %}
@@ -69,11 +76,15 @@
   gather_facts: True
   hosts: {{ vm.name }}
   connection: ssh
-  become: True
+  become: true
+  no_log: true
   vars: 
     deploy: true
   roles:
-{% if vm.golang is defined and vm.golang.enabled %}
+{% if warhorse.vpn.tailscale is defined and vm.tailscale is defined %}
+    - { role: artis3n.tailscale }
+{% endif %}
+{% if vm.golang is defined %}
     - { role: gantsign.golang }
 {% endif %}
 {% if vm.http_proxy is defined and vm.http_proxy == "traefik" %}
@@ -82,31 +93,35 @@
 {% if vm.http_proxy is defined and vm.http_proxy == "nginx" %}
     - { role: warhorse.nginx_docker }
 {% endif %}
-{% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
+{% if vm.cobaltstrike is defined %}
     - { role: warhorse.cobaltstrike_docker }
 {% endif %}
-{% if vm.gophish is defined and vm.gophish.enabled %}
+{% if vm.gophish is defined %}
     - { role: warhorse.gophish_docker }
 {% endif %}
-{% if vm.mythic is defined and vm.mythic.enabled %}
+{% if vm.mythic is defined %}
     - { role: t94j0.mythic }
+    - { role: warhorse.swag_docker }
 {% endif %}
-{% if vm.neo4j is defined and vm.neo4j.enabled %}
+{% if vm.neo4j is defined %}
     - { role: warhorse.neo4j_docker }
 {% endif %}
-{% if vm.syncthing is defined and vm.syncthing.enabled %}
+{% if vm.syncthing is defined %}
     - { role: warhorse.syncthing_docker }
 {% endif %}
-{% if vm.tailscale is defined and vm.tailscale.enabled %}
+{% if vm.tailscale is defined %}
     - { role: warhorse.tailscale }
 {% endif %}
-{% if vm.dashy is defined and vm.dashy.enabled %}
+{% if vm.dashy is defined %}
     - { role: warhorse.dashy_docker }
 {% endif %}
-{% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
+{% if vm.evilginx2 is defined %}
     - { role: warhorse.evilginx2_docker }
 {% endif %}
-{% if vm.nighthawk is defined and vm.nighthawk.enabled %}
+{% if vm.mitmproxy is defined %}
+    - { role: warhorse.mitmproxy_docker }
+{% endif %}
+{% if vm.nighthawk is defined %}
     - { role: warhorse.nighthawk_docker }
 {% endif %}
 {% endfor %}
@@ -116,11 +131,22 @@
   gather_facts: yes
   hosts: warhorse
   connection: ssh
-  become: True
+  become: true
+  no_log: true
   vars: 
     deploy: true
   roles:
     - { role: deployment }
+{% else %}
+- name: Deployment Extras
+  gather_facts: yes
+  hosts: warhorse
+  connection: ssh
+  become: true
+  no_log: true
+  vars: 
+    deploy: true
+  roles:
 {% if warhorse.notification.email is defined %}
     - { role: warhorse.notification }
 {% endif %}
@@ -135,4 +161,6 @@
     setup: filter='ansible_date_time'
   - name: Get runtime
     set_fact:
-      runtime: "{% raw %}{{ ((ansible_date_time.iso8601[:19] | to_datetime('%Y-%m-%dT%H:%M:%S')) - (start_time | to_datetime('%Y-%m-%dT%H:%M:%S'))).seconds }}{% endraw %}"
+      runtime: "{% raw %}{{ ((ansible_date_time.iso8601[:19] | to_datetime('%Y-%m-%dT%H:%M:%S')) - (start_time | to_datetime('%Y-%m-%dT%H:%M:%S'))) }}{% endraw %}"
+  - debug:
+      msg: "Playbook Runtime {% raw %}{{ runtime }}{% endraw %}"

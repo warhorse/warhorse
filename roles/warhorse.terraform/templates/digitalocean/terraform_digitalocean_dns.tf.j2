@@ -1,51 +1,51 @@
 resource "digitalocean_domain" "domain" {
-  name       = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  name       = "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}"
 }
 {% for vm in warhorse.vm %}
 resource "digitalocean_record" "{{ vm.name }}" {
-  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  domain = "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}"
   type   = "A"
   name   = "{{ vm.name }}"
   value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
   depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }
-{% if vm.cobaltstrike.enabled is true %}
+{% if vm.cobaltstrike is defined %}
 resource "digitalocean_record" "{{ vm.name }}_cobaltstrike" {
-  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  domain = "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}"
   type   = "A"
   name   = "cs-{{ vm.name }}"
   value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
   depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }
 {% endif %}
-{% if vm.nighthawk.enabled is true %}
+{% if vm.nighthawk is defined %}
 resource "digitalocean_record" "{{ vm.name }}_nighthawk" {
-  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  domain = "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}"
   type   = "A"
   name   = "nh-{{ vm.name }}"
   value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
   depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }
 {% endif %}
-{% if vm.mythic.enabled is true %}
+{% if vm.mythic is defined %}
 resource "digitalocean_record" "{{ vm.name }}_mythic" {
-  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  domain = "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}"
   type   = "A"
   name   = "mythic-{{ vm.name }}"
   value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
   depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }
 {% endif %}
-{% if vm.gophish.enabled is true %}
+{% if vm.gophish is defined %}
 resource "digitalocean_record" "{{ vm.name }}_gophish_site" {
-  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  domain = "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}"
   type   = "A"
   name   = "{{ vm.gophish.site_hostname }}"
   value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
   depends_on = [digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}]
 }
 resource "digitalocean_record" "{{ vm.name }}_gophish_admin" {
-  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  domain = "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}"
   type   = "A"
   name   = "{{ vm.gophish.admin_hostname }}"
   value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address
@@ -54,13 +54,13 @@ resource "digitalocean_record" "{{ vm.name }}_gophish_admin" {
 {% endif %}
 {% if vm.cobaltstrike.dns_over_https is true %}
 resource "digitalocean_record" "{{ vm.name }}_ns" {
-  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  domain = "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}"
   type   = "NS"
   name   = "ns1"
-  value  = "dns.{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}."
+  value  = "dns.{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}."
 }
 resource "digitalocean_record" "{{ vm.name }}_ns_record" {
-  domain = "{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number + '.' + warhorse.dns.op_tld) }}"
+  domain = "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name) }}"
   type   = "A"
   name   = "dns"
   value  = digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.ipv4_address

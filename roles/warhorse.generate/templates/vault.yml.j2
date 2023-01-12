@@ -8,7 +8,7 @@ all:
           hosts:
 {% endif %}
             {{ vm.name }}:
-{% if vm.cobaltstrike is defined and vm.cobaltstrike.enabled %}
+{% if vm.cobaltstrike is defined %}
                 cs_password: "{{ vm.cobaltstrike.password }}"
                 cs_key: "{{ vm.cobaltstrike.key }}"
 {% endif %}
@@ -18,18 +18,17 @@ all:
 {% if warhorse.terraform.linode_token is defined and vm.http_proxy == "nginx" %}
                 nginx_linode_token: "{{ warhorse.terraform.linode_token }}"
 {% endif %}
-{% if vm.tailscale.tailscale_auth_key is defined and vm.tailscale.enabled %}
-                tailscale_auth_key: "{{ vm.tailscale.tailscale_auth_key }}"
+{% if warhorse.vpn.tailscale.tailscale_auth_key is defined %}
+                tailscale_authkey: "{{ warhorse.vpn.tailscale.tailscale_auth_key }}"
 {% endif %}
-{% if vm.tailscale.tailscale_api_key is defined and vm.tailscale.enabled %}
-                tailscale_api_key: "{{ vm.tailscale.tailscale_api_key }}"
+{% if warhorse.backup is defined %}
+{% if warhorse.backup.backup_bucket_access_key is defined %}
+                backup_bucket_access_key: "{{ warhorse.backup.backup_bucket_access_key }}"
+                backup_bucket_secret_key: "{{ warhorse.backup.backup_bucket_secret_key }}"
 {% endif %}
-{% if vm.backup.backup_bucket_access_key is defined and vm.backup.enabled %}
-                backup_bucket_access_key: "{{ vm.backup.backup_bucket_access_key }}"
-                backup_bucket_secret_key: "{{ vm.backup.backup_bucket_secret_key }}"
+{% if vm.backup.archive_zip %}
+                backup_archive_password: "{{ warhorse.backup.archive_password|default(warhorse.general.vault_key ) }}"
 {% endif %}
-{% if vm.backup.enabled and vm.backup.archive_zip %}
-                backup_archive_password: "{{ vm.backup.archive_password|default(warhorse.general.vault_key ) }}"
 {% endif %}
 {% if loop.last %}
   vars:

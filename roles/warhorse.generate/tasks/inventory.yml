@@ -23,7 +23,7 @@
     src: templates/syncthing.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/syncthing.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.syncthing is defined and item.syncthing.enabled
+  when: item.syncthing is defined
 
 - name: Generating cobaltstrike inventory
   template:
@@ -31,7 +31,7 @@
     src: templates/cobaltstrike.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/cobaltstrike.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.cobaltstrike is defined and item.cobaltstrike.enabled
+  when: item.cobaltstrike is defined
 
 - name: Generating nighthawk inventory
   template:
@@ -39,7 +39,7 @@
     src: templates/nighthawk.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/nighthawk.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.nighthawk is defined and item.nighthawk.enabled
+  when: item.nighthawk is defined
 
 - name: Generating gophish inventory
   template:
@@ -47,7 +47,7 @@
     src: templates/gophish.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/gophish.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.gophish is defined and item.gophish.enabled
+  when: item.gophish is defined
 
 - name: Generating mythic inventory
   template:
@@ -55,7 +55,15 @@
     src: templates/mythic.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/mythic.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.mythic is defined and item.mythic.enabled
+  when: item.mythic is defined
+
+- name: Generating swag inventory
+  template:
+    mode: '0755'
+    src: templates/swag.yml.j2
+    dest: "./OP/{{ warhorse.general.op_number }}/inventory/swag.yml"
+  with_items: "{{ warhorse.vm }}"
+  when: item.mythic is defined
 
 - name: Generating traefik inventory
   template:
@@ -71,7 +79,7 @@
     src: templates/neo4j.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/neo4j.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.neo4j is defined and item.neo4j.enabled
+  when: item.neo4j is defined
 
 - name: Generating evilginx2 inventory
   template:
@@ -79,7 +87,7 @@
     src: templates/evilginx2.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/evilginx2.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.evilginx2 is defined and item.evilginx2.enabled
+  when: item.evilginx2 is defined
 
 - name: Generating tailscale inventory
   template:
@@ -87,7 +95,7 @@
     src: templates/tailscale.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/tailscale.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.tailscale is defined and item.tailscale.enabled
+  when: item.tailscale is defined
 
 - name: Generating nginx inventory
   template:
@@ -103,7 +111,7 @@
     src: templates/backup.yml.j2
     dest: "./OP/{{ warhorse.general.op_number }}/inventory/backup.yml"
   with_items: "{{ warhorse.vm }}"
-  when: item.backup is defined and item.backup.enabled
+  when: item.backup is defined
 
 - name: Generating notification inventory
   template:

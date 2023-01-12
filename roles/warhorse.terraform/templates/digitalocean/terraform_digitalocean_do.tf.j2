@@ -18,17 +18,28 @@ resource "digitalocean_tag" "user_tag" {
 }
 {% endif %}
 
+{% if warhorse.general.snapshots is defined and true %}
+data "digitalocean_image" "warhorse-snapshot" {
+  name = "{{ warhorse.general.snapshot_name|default(vm_default_img_snapshot_name) }}"
+}
+{% endif %}
+
 resource "digitalocean_ssh_key" "ansible_ssh_key" {
   name       = "Warhorse SSH Key {{ warhorse.general.op_number }}"
   public_key = "{{ lookup('file', './OP/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}.pub') }}"
 }
 {% endif %}
+
 {% if vm.provider == "digitalocean" %}
 resource "digitalocean_droplet" "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}" {
-  image = "{{ vm.img|default('ubuntu-20-04-x64') }}"
+{% if warhorse.general.snapshots is defined and true %}
+  image = data.digitalocean_image.warhorse-snapshot.image
+{% else %}
+  image = "{{ vm.img|default(vm_default_do_img) }}"
+{% endif %}
   name = "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}"
-  region = "{{ vm.region|default('nyc1') }}"
-  size = "{{ vm.size|default('s-2vcpu-4gb') }}"
+  region = "{{ vm.region|default(vm_default_do_region) }}"
+  size = "{{ vm.size|default(vm_default_do_size) }}"
   tags = [digitalocean_tag.warhorse.id, digitalocean_tag.op_number.id, digitalocean_tag.ttl.id{% if user_tag is defined %}, digitalocean_tag.user_tag.id{% endif %}]
   user_data = "${file("cloud-init-do.yaml")}"
   ssh_keys = [
@@ -36,7 +47,7 @@ resource "digitalocean_droplet" "{{ vm.resource_name|default(warhorse.general.us
   ]
 }
 {% endif %}
-{% if vm.firewall.enabled is true and vm.provider == "digitalocean" %}
+{% if vm.firewall is defined and vm.provider == "digitalocean" %}
 resource "digitalocean_firewall" "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name + '-firewall') }}" {
   name = "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name + '-firewall') }}"
 
@@ -68,7 +79,7 @@ resource "digitalocean_firewall" "{{ vm.resource_name|default(warhorse.general.u
     source_addresses = ["0.0.0.0/0"]
   }
 {% endif %}
-{% if vm.tailscale.enabled is true %}
+{% if vm.tailscale is defined %}
   inbound_rule {
     protocol         = "udp"
     port_range       = "41641"

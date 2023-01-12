@@ -40,7 +40,7 @@ resource "linode_instance" "{{ vm.resource_name|default(warhorse.general.user_ta
   }
 }
 {% endif %}
-{% if vm.firewall.enabled is true and vm.provider == "linode" %}
+{% if vm.firewall is defined and vm.provider == "linode" %}
 resource "linode_firewall" "{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name + '-firewall') }}" {
   label           = "{{resource.name}}-firewall"
 
@@ -84,7 +84,7 @@ resource "linode_firewall" "{{ vm.resource_name|default(warhorse.general.user_ta
     ipv4      = ["0.0.0.0/0"]
   }
 {% endif %}
-{% if vm.tailscale.enabled is true %}
+{% if vm.tailscale is defined %}
   inbound {
     label     = "allow-tailscale"
     protocol  = "UDP"

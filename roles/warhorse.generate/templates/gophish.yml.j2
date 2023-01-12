@@ -1,5 +1,4 @@
 {% for vm in warhorse.vm|selectattr("gophish", "defined" ) %}
-{% if vm.gophish.enabled %}
 {% if loop.first %}
 all:
   children:
@@ -19,7 +18,7 @@ all:
 
               gophish_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
               gophish_dir: '/opt/docker/gophish'
-{% if vm.tailscale.enabled is true %}
+{% if vm.tailscale is defined %}
               gophish_ports:
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}{% endraw %}:3333:3333"
                 - "127.0.0.1:3333:3333"
@@ -45,6 +44,5 @@ all:
                 traefik.http.services.gophish.loadbalancer.server.port: "443"
                 traefik.http.services.gophishadmin.loadbalancer.server.scheme: "https"
                 traefik.http.services.gophishadmin.loadbalancer.server.port: "3333"
-{% endif %}
 {% endif %}
 {% endfor %}

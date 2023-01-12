@@ -1,0 +1,74 @@
+warhorse:
+  general:
+    op_number: "000-000"
+    user_tag: 'user'
+    ttl: '2023-12-12' #Kill Date
+    ntp_timezone: 'Etc/Universal' # Time Zone Link
+    vault_key: 'vault_key'
+    # snapshots: true
+  backup: 
+    backup_bucket_name: "backup-bucket"
+    backup_bucket_region: "us-east-1"
+    backup_bucket_endpoint: "https://nyc3.digitaloceanspaces.com"
+    backup_bucket_access_key: "access_key"
+    backup_bucket_secret_key: "secret_key"
+  vpn:
+    tailscale:
+      tailnet_name: 'tailnet.github'
+      tailscale_auth_key: "tskey-auth-0000000"
+      enable_hostnames: true
+  notification:
+    email:
+      host: "smtp.sendgrid.net"
+      from: "noreply@mydomain.com"
+      port: 587
+      username: "apikey"
+      password: "password"
+  dns:
+    provider: "digitalocean"
+    op_tld: 'mydomain.com' # Reasorce Domain
+  vm:
+    - name: "teamserver"
+      provider: "digitalocean"
+      http_proxy: "traefik" # nginx,caddy
+      traefik:
+        acme_email: noemail@mydomain.com # Lets Encypt Email address
+        dashboard: true
+        # dir: "/opt/docker/traefik" optional
+      firewall:
+      golang:
+      cobaltstrike:
+        # dir: "/opt/docker/cobaltstrike" optional
+        dns_over_https: true # Adds DNS records
+        auth_header: true
+        password: "Password"
+        key: "0000-0000-0000-0000"
+        socks_ports: 
+        - 9201
+        - 9202
+        - 9203
+        cdn:
+        - name: "azure_cobalt"
+          provider: "azure"
+          hostname: "test-002"
+          redirect_url: "azure.microsoft.com"
+        - name: "aws_cobalt"
+          provider: "aws"
+          redirect_url: "https://aws.com"
+          count: 2
+  terraform:
+    state_bucket_enabled: true
+    state_bucket_name: "tfstate-bucket"
+    state_bucket_region: "us-east-1"
+    state_bucket_endpoint: "https://nyc3.digitaloceanspaces.com"
+    bucket_access_key: "access_key"
+    bucket_secret_key: "secret_key"
+    digitalocean_token: "token"
+    aws_profile: "profile_name"
+  users:
+    - username: ralph
+      name: Ralph
+      authorized_keys:
+      - "{{ lookup('file', '/Users/ralph/.ssh/id_rsa.pub') }}"
+      shell: '/usr/bin/zsh'
+      email: ralph@mydomain.com

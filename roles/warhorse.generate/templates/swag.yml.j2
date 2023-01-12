@@ -1,0 +1,14 @@
+{% for vm in warhorse.vm|selectattr("mythic", "defined" ) %}
+{% if loop.first %}
+all:
+  children:
+    warhorse:
+      children:
+        {{ vm.provider }}:
+          hosts:
+{% endif %}
+            {{ vm.name }}:
+            swag_domain_name: "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
+            swag_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
+            swag_dns_plugin: '{{ warhorse.dns.provider }}'
+{% endfor %}

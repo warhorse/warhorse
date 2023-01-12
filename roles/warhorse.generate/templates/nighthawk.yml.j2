@@ -1,5 +1,4 @@
 {% for vm in warhorse.vm|selectattr("nighthawk", "defined" ) %}
-{% if vm.nighthawk.enabled %}
 {% if loop.first %}
 all:
   children:
@@ -22,7 +21,7 @@ all:
 
               nighthawk_username: "{{ vm.nighthawk.username }}"
               nighthawk_password: "{{ vm.nighthawk.password }}"
-              nighthawk_campaign: "{{ vm.nighthawk.campaign }}"
+              nighthawk_campaign: "{{ vm.nighthawk.campaign | default(nighthawk_campaign) }}" 
               nighthawk_zip: "{{ vm.nighthawk.zip_location }}"
 
               nighthawk_hostname: "nighthawk"
@@ -36,7 +35,7 @@ all:
                 - "127.0.0.1:{{ ports }}:{{ ports }}"
 {% endfor %}
 {% endif %}
-{% if vm.tailscale.enabled is true %}
+{% if vm.tailscale is defined %}
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:8888:8888{% endraw %}"
 {% for ports in vm.nighthawk.socks_ports %}
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:{% endraw %}{{ ports }}:{{ ports }}"
@@ -55,13 +54,12 @@ all:
                 traefik.frontend.passHostHeader: "true"
                 traefik.frontend.headers.SSLHost: "{% raw %}{{ nighthawk_site_hostname }}.{{ op_domain_name }}{% endraw %}"
 {% endif %}
-{% endif %}
 {% endfor %}
   vars:
 {% for vm in warhorse.vm|selectattr("nighthawk", "defined" ) %}
-{% if vm.nighthawk.enabled %}
-    nighthawk_auth_header_value: "{{ vm.nighthawk.auth_header_value }}"
-    nighthawk_auth_header_name: "{{ vm.nighthawk.auth_header_name }}"
+{% if vm.nighthwak.auth_header is defined and true %}
+    nighthawk_auth_header_value: "{{ vm.nighthawk.auth_header_value | default(auth_header_) }}"
+    nighthawk_auth_header_name: "{{ vm.nighthawk.auth_header_name | default(auth_header_name) }}"
 {% endif %}
 {% endfor %}
     nighthawk_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"

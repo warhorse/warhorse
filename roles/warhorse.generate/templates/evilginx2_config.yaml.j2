@@ -1,5 +1,4 @@
 {% for vm in warhorse.vm|selectattr("evilginx2", "defined" ) %}
-{% if vm.evilginx2.enabled %}
 ip: 0.0.0.0
 proxy_enabled: false
 proxy_type: http
@@ -30,5 +29,4 @@ sites_enabled:
 {% endfor %}
 verification_key: cj
 verification_token: 3ee7
-{% endif %}
 {% endfor %}

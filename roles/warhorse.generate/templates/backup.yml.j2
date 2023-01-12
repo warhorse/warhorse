@@ -7,20 +7,21 @@ all:
         {{ vm.provider }}:
           hosts:
 {% endif %}
+{% if vm.backup is defined and vm.backup %}
             {{ vm.name }}:
-              backup_folders: '{{ vm.backup.backup_folders|default( '/opt/docker /home' )}}'
+              backup_folders: '{{ warhorse.backup.backup_folders|default( '/opt/docker /home' )}}'
               restic_create_cron: 'true'
-              backup_bucket: "{{ vm.backup.backup_bucket_name }}"
-              backup_endpoint: "{{ vm.backup.backup_bucket_endpoint }}"
-              backup_region: "{{ vm.backup.backup_bucket_region }}"
+              backup_bucket: "{{ warhorse.backup.backup_bucket_name }}"
+              backup_endpoint: "{{ warhorse.backup.backup_bucket_endpoint }}"
+              backup_region: "{{ warhorse.backup.backup_bucket_region }}"
               restic_repos:
                 remote:
-                  location: 's3:{{ vm.backup.backup_bucket_endpoint | regex_replace('https://') }}/{{ vm.backup.backup_bucket_name }}/{{ warhorse.general.op_number }}/{{ vm.name }}'
-                  password: '{{ vm.backup.password|default(warhorse.general.vault_key)}}'
+                  location: 's3:{{ warhorse.backup.backup_bucket_endpoint | regex_replace('https://') }}/{{ warhorse.backup.backup_bucket_name }}/{{ warhorse.general.op_number }}/{{ vm.name }}'
+                  password: '{{ warhorse.backup.password|default(warhorse.general.vault_key)}}'
                   init: true
                   aws_access_key: '{% raw %}{{ backup_bucket_access_key }}{% endraw %}'
                   aws_secret_access_key: '{% raw %}{{ backup_bucket_secret_key }}{% endraw %}'
-                  aws_default_region: '{{ vm.backup.backup_bucket_region }}'
+                  aws_default_region: '{{ warhorse.backup.backup_bucket_region }}'
               restic_backups:
                 data:
                   name: data
@@ -32,4 +33,5 @@ all:
                   schedule_hour: '*'
                   schedule_weekday: '*'
                   schedule_month: '*'
+{% endif %}
 {% endfor %}

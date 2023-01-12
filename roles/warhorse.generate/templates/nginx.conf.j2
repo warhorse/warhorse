@@ -42,7 +42,7 @@ http {
   
   }
 {% for vm in warhorse.vm %}
-{% if vm.evilginx2 is defined and vm.evilginx2.enabled %}
+{% if vm.evilginx2 is defined %}
   server {
     server_name {% for host in vm.evilginx2.nginx_hostnames %}{{ host }}.{{ vm.evilginx2.evilginx_domain }} {% endfor %};
     listen 443 ssl;
@@ -87,7 +87,7 @@ http {
     }
   }
 {% endif %}
-{% if vm.gophish is defined and vm.gophish.enabled %}
+{% if vm.gophish is defined %}
   server {
       server_name {{ vm.gophish.admin_hostname }}.{% raw %}{{ domain_name }}{% endraw %};
       listen 443 ssl;

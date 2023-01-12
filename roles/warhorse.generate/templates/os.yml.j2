@@ -16,7 +16,7 @@ all:
 {% if warhorse.general.owner_email is defined %}
     owner_email: '{{ warhorse.general.owner_email }}'
 {% endif %}
-    op_domain_name: '{{ warhorse.dns.op_domain_name|default(warhorse.general.op_number)}}'
+    op_domain_name: '{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}'
     domain_name: "{% raw %}{{ op_domain_name }}{% endraw %}"
     user_tag: '{{ warhorse.general.user_tag }}'
     ttl: '{{ warhorse.general.ttl }}'

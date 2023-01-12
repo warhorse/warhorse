@@ -353,7 +353,7 @@
                         <p>Hi there,</p>
                         <p>Your Warhorse Deployment is now destroyed. All cloud resources that where part of this deployment have been destroyed</p>
 {% for vm in warhorse.vm %}
-{% if vm.backup is defined and vm.backup.enabled %}
+{% if vm.backup is defined %}
                         <p>Backups are enabled and you can recover your data if needed</p>
 {% if vm.backup.archive_zip %}
                         <p>You can also download a encypted zip file of your data <a href="{{ s3_backup.url }}">HERE</a> This link will only be valid for the next 24 hours.</p>

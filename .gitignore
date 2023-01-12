@@ -51,6 +51,9 @@ TODO.txt
 *.pem
 *.xxjson
 
+# Packer
+/packer
+
 # terraform
 *.tfstate
 *.tfstate.backup

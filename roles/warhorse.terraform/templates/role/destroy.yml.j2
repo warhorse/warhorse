@@ -7,7 +7,7 @@
     backend_config:
       region: "{{ warhorse.terraform.state_bucket_region }}"
       bucket: "{{ warhorse.terraform.state_bucket_name }}"
-      key: "{{ warhorse.terraform.state_bucket_key }}"
+      key: "{{ terraform_state_bucket_key }}"
       access_key: "{% raw %}{{ bucket_access_key }}{% endraw %}"
       secret_key: "{% raw %}{{ bucket_secret_key }}{% endraw %}"
       endpoint: "{{ warhorse.terraform.state_bucket_endpoint }}"

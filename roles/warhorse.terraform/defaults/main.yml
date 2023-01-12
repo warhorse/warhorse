@@ -2,3 +2,13 @@
 terraform_path: './terraform'
 terraform_project_path: './OP/{{ warhorse.general.op_number }}/terraform'
 terraform_role_path: './OP/{{ warhorse.general.op_number }}/roles/terraform'
+vm_default_do_img: 'ubuntu-20-04-x64'
+vm_default_img_snapshot_name: 'warhorse-ubuntu22.04'
+vm_default_do_region: 'nyc1'
+vm_default_do_size: 's-2vcpu-4gb'
+dns_op_domain_name: "{{ warhorse.general.op_number + '.' + warhorse.dns.op_tld }}"
+
+auth_header_value: "{{ warhorse.general.op_number | b64encode }}"
+auth_header_name: "cdnauth"
+
+terraform_state_bucket_key: "{{ warhorse.terraform.state_bucket_key|default(warhorse.general.op_number + '/terraform.tfstate') }}"

@@ -1,5 +1,5 @@
 {% for vm in warhorse.vm|selectattr("cobaltstrike", "defined" ) %}
-{% if vm.cobaltstrike.enabled %}
+{% if vm.cobaltstrike is defined %}
 {% if loop.first %}
 all:
   children:
@@ -36,7 +36,7 @@ all:
 {% for ports in vm.cobaltstrike.socks_ports %}
                 - "127.0.0.1:{{ ports }}:{{ ports }}"
 {% endfor %}
-{% if vm.tailscale.enabled is true %}
+{% if vm.tailscale is defined and warhorse.vpn.tailscale is defined %}
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:50050:50050{% endraw %}"
 {% for ports in vm.cobaltstrike.socks_ports %}
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}:{% endraw %}{{ ports }}:{{ ports }}"
@@ -62,11 +62,9 @@ all:
 {% endfor %}
   vars:
 {% for vm in warhorse.vm|selectattr("cobaltstrike", "defined" ) %}
-{% if vm.cobaltstrike.enabled %}
-{% if vm.cobaltstrike.auth_header_value and vm.cobaltstrike.auth_header_name is defined %}
-    cs_auth_header_value: "{{ vm.cobaltstrike.auth_header_value }}"
-    cs_auth_header_name: "{{ vm.cobaltstrike.auth_header_name }}"
+{% if vm.cobaltstrike.auth_header is not false %}
+    cs_auth_header_value: "{{ vm.cobaltstrike.auth_header_value | default(auth_header) }}"
+    cs_auth_header_name: "{{ vm.cobaltstrike.auth_header_name | default(auth_header_name) }}"
 {% endif %}
     cs_cdn_hostname: "{% raw %}{{ op_number | hash('md5') | regex_search('.{5}$') }}{% endraw %}"
-{% endif %}
 {% endfor %}

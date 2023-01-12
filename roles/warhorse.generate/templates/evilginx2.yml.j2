@@ -1,5 +1,4 @@
 {% for vm in warhorse.vm|selectattr("evilginx2", "defined" ) %}
-{% if vm.evilginx2.enabled %}
 {% if loop.first %}
 all:
   children:
@@ -24,5 +23,4 @@ all:
               evilginx2_phishlet_folder: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/phishlets"
               evilginx2_config_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/evilginx.yaml.j2"
 {% endif %}      
-{% endif %}
 {% endfor %}

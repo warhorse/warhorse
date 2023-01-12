@@ -1,5 +1,4 @@
 {% for vm in warhorse.vm|selectattr("neo4j", "defined" ) %}
-{% if vm.neo4j.enabled %}
 {% if loop.first %}
 all:
   children:
@@ -10,7 +9,7 @@ all:
 {% endif %}
             {{ vm.name }}:
               neo4j_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
-{% if vm.tailscale.enabled is true %}
+{% if vm.tailscale is defined %}
               neo4j_ports:
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}{% endraw %}:7474:7474"
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}{% endraw %}:7687:7687"
@@ -21,6 +20,6 @@ all:
                 - "127.0.0.1:7474:7474"
                 - "127.0.0.1:7687:7687"
 {% endif %}
-              neo4j_username: "{{ vm.neo4j.username }}"
-{% endif %}
+              neo4j_username: "{{ vm.neo4j.username | default(neo4j_username) }}"
+              neo4j_username: "{{ vm.neo4j.password | default(neo4j_password)}}"
 {% endfor %}

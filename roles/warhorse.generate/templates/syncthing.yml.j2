@@ -1,5 +1,4 @@
 {% for vm in warhorse.vm|selectattr("syncthing", "defined" ) %}
-{% if vm.syncthing.enabled %}
 {% if loop.first %}
 all:
   children:
@@ -10,7 +9,7 @@ all:
 {% endif %}
             {{ vm.name }}:
               syncthing_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
-{% if vm.tailscale.enabled is true %}
+{% if vm.tailscale is defined %}
               syncthing_ports:
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}{% endraw %}:8384:8384"
                 - "127.0.0.1:8384:8384"
@@ -39,5 +38,4 @@ all:
                 traefik.http.routers.syncthing.tls.certresolver: "letsencrypt"
                 traefik.http.services.syncthing.loadbalancer.server.scheme: "http"
                 traefik.http.services.syncthing.loadbalancer.server.port: "8384"
-{% endif %}
 {% endfor %}

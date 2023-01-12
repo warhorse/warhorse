@@ -6,6 +6,13 @@
   with_items: "{{ warhorse.vm }}"
   when: item.provider == 'digitalocean'
 
+- name: Generating Terraform Digital Ocean Project
+  template:
+    src: templates/digitalocean/terraform_digitalocean_project.tf.j2
+    dest: "{{ terraform_project_path }}/digitalocean_project.tf"
+  with_items: "{{ warhorse.vm }}"
+  when: item.provider == 'digitalocean' and warhorse.terraform.digitalocean_project is defined
+
 - name: Generating Terraform Digital Ocean DNS
   template:
     src: templates/digitalocean/terraform_digitalocean_dns.tf.j2
