@@ -1,0 +1,7 @@
+- name: Cleanup Deployments
+  hosts: localhost
+  gather_facts: true
+  connection: local
+  no_log: false
+  roles:
+    - { role: warhorse.cleanup }

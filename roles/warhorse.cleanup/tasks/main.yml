@@ -1,0 +1,9 @@
+---
+- name: List of OP folders
+  include_tasks: "{{ item }}.yml"
+  with_items:
+    - deployments
+- name: Run Terraform Destroy
+  include_tasks: "{{ item }}.yml"
+  with_items:
+    - api

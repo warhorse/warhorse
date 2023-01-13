@@ -1,0 +1,30 @@
+---
+- name: Find Host ID Tailscale
+  uri:
+    url: "{{ tailscale_api_url }}/tailnet/{{ tailnet_name }}/devices"
+    return_content: no
+    status_code: [ 200, 403 ]
+    user: "{{ tailscale_api_key }}"
+    password: ""
+    force_basic_auth: yes
+  register: tailscale_devices
+  check_mode: false
+
+# - name: json output
+#   debug: msg="{{ tailscale_devices.json | json_query(jmesquery) }}"
+#   vars:
+#     jmesquery: "devices[?hostname==`0000-001-cs`].id"
+
+- name: Remove Host ID from Tailscale
+  uri:
+    url: "{{ tailscale_api_url }}/device/{{ device_id }}"
+    return_content: no
+    status_code: [ 200, 403 ]
+    user: "{{ tailscale_api_key }}"
+    password: ""
+    method: DELETE
+    force_basic_auth: yes
+  ignore_errors: True
+  vars:
+    jmesquery: "devices[?hostname==`{{ hostname }}`]|[0].id"
+    device_id: "{{ tailscale_devices.json | json_query(jmesquery) }}"

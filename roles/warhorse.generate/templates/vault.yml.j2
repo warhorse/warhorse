@@ -46,5 +46,6 @@ all:
     notification_email_username: "{{ warhorse.notification.email.username }}"
     notification_email_password: "{{ warhorse.notification.email.password }}"
 {% endif %}
+    ssh_passphrase: "{{ warhorse.general.ssh_passphrase|default(warhorse.general.vault_key) }}"
 {% endif %}
 {% endfor %}

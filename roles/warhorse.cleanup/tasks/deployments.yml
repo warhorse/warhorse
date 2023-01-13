@@ -1,0 +1,7 @@
+- name: Find OP folders
+  find:
+    paths: "./OP"
+    patterns: "*"
+    recurse: no
+    file_type: directory
+  register: found_op

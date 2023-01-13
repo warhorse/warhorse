@@ -2,4 +2,6 @@
 - name: Create SSH Keys
   community.crypto.openssh_keypair:
     path: "./OP/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}"
-    size: 2048
+    size: 521
+    passphrase: "{{ warhorse.general.vault_key }}"
+    type: "ed25519"

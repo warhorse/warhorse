@@ -9,7 +9,7 @@ resource "digitalocean_project_resources" "{{ warhorse.terraform.digitalocean_pr
   resources = [
 {% for vm in warhorse.vm %}
 {% if vm.provider == "digitalocean" %}
-    digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.urn
+    digitalocean_droplet.{{ vm.resource_name|default(warhorse.general.user_tag + '-' + warhorse.general.op_number + '-' + vm.name) }}.urn,
 {% endif %}
 {% endfor %}
 {% if warhorse.dns.provider == "digitalocean" %}

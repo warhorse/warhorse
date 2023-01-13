@@ -81,6 +81,7 @@ roles/*
 !roles/warhorse.notification/
 !roles/warhorse.deployment/
 !roles/warhorse.backup_archive/
+!roles/warhorse.cleanup/
 config.yml
 config/
 /deploy.yml

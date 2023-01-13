@@ -13,11 +13,22 @@
   roles:
     - { role: terraform }
 
-- name: Refresh Inventory
+- name: Refresh Inventory & unlock SSH Key
   hosts: localhost
   gather_facts: false
   connection: local
   tasks:
+  - name: Unlock SSH key "{% raw %}{{ ansible_ssh_private_key_file }}{% endraw %}"
+    expect:
+      command: ssh-add "{% raw %}{{ ansible_ssh_private_key_file }}{% endraw %}"
+      responses:
+        passphrase: "{% raw %}{{ ssh_passphrase }}{% endraw %}"
+    delegate_to: 127.0.0.1
+    become: no
+    changed_when: no
+    no_log: false
+  - name: Gathering facts
+    setup:
   - meta: refresh_inventory
   - name: Wait for system to become reachable again
     wait_for_connection:
