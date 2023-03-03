@@ -21,5 +21,5 @@ all:
                 - "127.0.0.1:7687:7687"
 {% endif %}
               neo4j_username: "{{ vm.neo4j.username | default(neo4j_username) }}"
-              neo4j_username: "{{ vm.neo4j.password | default(neo4j_password)}}"
+              neo4j_password: "{{ vm.neo4j.password | default(neo4j_password)}}"
 {% endfor %}

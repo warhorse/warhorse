@@ -6,6 +6,12 @@ terraform {
       source = "digitalocean/digitalocean"
     }
 {% endif %}
+{% if warhorse|regex_search("'provider': 'cloudflare'", multiline=True, ignorecase=True) %}
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 3.0"
+    }
+{% endif %}
 {% if warhorse|regex_search("'provider': 'linode'", multiline=True, ignorecase=True) %}
     linode = {
       source = "linode/linode"
@@ -42,6 +48,11 @@ provider "linode" {
   token = var.linode_token
 }
 {% endif %}
+{% if warhorse|regex_search("'provider': 'cloudflare'", multiline=True, ignorecase=True) %}
+provider "cloudflare" {
+  api_token = var.cloudflare_token
+}
+{% endif %}
 {% if warhorse|regex_search("'provider': 'aws'", multiline=True, ignorecase=True) %}
 provider "aws" {
 {% if aws_access_key is defined and aws_secret_key is defined %}
@@ -61,8 +72,8 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
-{% if azure_subId is defined %}
-  subscription_id = "{{ azure_subId }}"
+{% if warhorse.terraform.azure_subid is defined %}
+  subscription_id = "{{ warhorse.terraform.azure_subid }}"
 {% endif %}
 }
 {% endif %}

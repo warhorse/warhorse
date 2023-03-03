@@ -1,4 +1,6 @@
 ---
+op_folder_location: './OP'
+
 ansible_playbook_project_path: './playbook'
 dns_op_domain_name: "{{ warhorse.general.op_number + '.' + warhorse.dns.op_tld }}"
 
@@ -6,7 +8,6 @@ auth_header: "{{ warhorse.general.op_number | b64encode }}"
 auth_header_name: "cdnauth"
 
 nighthawk_campaign: "{{ warhorse.general.op_number }}"
-
 
 neo4j_username: "neo4j"
 neo4j_password: "password"

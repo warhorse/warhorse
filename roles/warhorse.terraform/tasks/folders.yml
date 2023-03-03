@@ -4,6 +4,6 @@
     path: '{{ item }}'
     state: directory
   with_items:
-  - './OP/{{ warhorse.general.op_number }}/terraform'
-  - './OP/{{ warhorse.general.op_number }}/roles/terraform'
-  - './OP/{{ warhorse.general.op_number }}/roles/terraform/tasks'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}/terraform'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}/roles/terraform'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}/roles/terraform/tasks'

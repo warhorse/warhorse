@@ -19,6 +19,9 @@
 {% if warhorse.terraform.linode_token is defined %}
       linode_token: "{% raw %}{{ linode_token }}{% endraw %}"
 {% endif %}
+{% if warhorse.terraform.cloudflare_token is defined %}
+      cloudflare_token: "{% raw %}{{ cloudflare_token }}{% endraw %}"
+{% endif %}
 {% endif %}
 
 {% if warhorse.terraform.state_bucket_enabled is not defined and warhorse.terraform.cloud_enabled is not defined %}
@@ -33,6 +36,9 @@
 {% endif %}
 {% if warhorse.terraform.linode_token is defined %}
       linode_token: "{% raw %}{{ linode_token }}{% endraw %}"
+{% endif %}
+{% if warhorse.terraform.cloudflare_token is defined %}
+      cloudflare_token: "{% raw %}{{ cloudflare_token }}{% endraw %}"
 {% endif %}
 {% endif %}
 
@@ -49,5 +55,8 @@
 {% endif %}
 {% if warhorse.terraform.linode_token is defined %}
       linode_token: "{% raw %}{{ linode_token }}{% endraw %}"
+{% endif %}
+{% if warhorse.terraform.cloudflare_token is defined %}
+      cloudflare_token: "{% raw %}{{ cloudflare_token }}{% endraw %}"
 {% endif %}
 {% endif %}

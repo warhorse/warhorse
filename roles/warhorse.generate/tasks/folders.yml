@@ -4,16 +4,16 @@
     path: '{{ item }}'
     state: directory
   with_items:
-  - './OP'
-  - './OP/{{ warhorse.general.op_number }}'
-  - './OP/{{ warhorse.general.op_number }}/inventory'
-  - './OP/{{ warhorse.general.op_number }}/files'
-  - './OP/{{ warhorse.general.op_number }}/keys'
-  - './OP/{{ warhorse.general.op_number }}/terraform'
+  - '{{ op_folder_location }}'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}/files'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}/keys'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}/terraform'
 
 - name: Create Folders
   file:
-    path: './OP/{{ warhorse.general.op_number }}/files/{{ item.name }}'
+    path: '{{ op_folder_location }}/{{ warhorse.general.op_number }}/files/{{ item.name }}'
     state: directory
   with_items:
   - '{{ warhorse.vm }}'

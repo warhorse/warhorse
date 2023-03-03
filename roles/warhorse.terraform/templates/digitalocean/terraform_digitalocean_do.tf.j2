@@ -26,7 +26,7 @@ data "digitalocean_image" "warhorse-snapshot" {
 
 resource "digitalocean_ssh_key" "ansible_ssh_key" {
   name       = "Warhorse SSH Key {{ warhorse.general.op_number }}"
-  public_key = "{{ lookup('file', './OP/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}.pub') }}"
+  public_key = "{{ lookup('file', '{{ op_folder_location }}/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}.pub') }}"
 }
 {% endif %}
 

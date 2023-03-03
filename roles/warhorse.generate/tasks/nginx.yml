@@ -3,6 +3,6 @@
   template:
     mode: '0755'
     src: templates/nginx.conf.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/nginx.conf.j2"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/files/{{ item.name }}/nginx.conf.j2"
   with_items:
   - '{{ warhorse.vm }}'

@@ -18,6 +18,9 @@ all:
 {% if warhorse.terraform.linode_token is defined and vm.http_proxy == "nginx" %}
                 nginx_linode_token: "{{ warhorse.terraform.linode_token }}"
 {% endif %}
+{% if warhorse.terraform.cloudflare_token is defined and vm.http_proxy == "nginx" %}
+                nginx_cloudflare_token: "{{ warhorse.terraform.cloudflare_token }}"
+{% endif %}
 {% if warhorse.vpn.tailscale.tailscale_auth_key is defined %}
                 tailscale_authkey: "{{ warhorse.vpn.tailscale.tailscale_auth_key }}"
 {% endif %}
@@ -26,7 +29,7 @@ all:
                 backup_bucket_access_key: "{{ warhorse.backup.backup_bucket_access_key }}"
                 backup_bucket_secret_key: "{{ warhorse.backup.backup_bucket_secret_key }}"
 {% endif %}
-{% if vm.backup.archive_zip %}
+{% if vm.backup.archive_zip is defined %}
                 backup_archive_password: "{{ warhorse.backup.archive_password|default(warhorse.general.vault_key ) }}"
 {% endif %}
 {% endif %}
@@ -41,6 +44,9 @@ all:
 {% endif %}
 {% if warhorse.terraform.linode_token is defined %}
     linode_token: "{{ warhorse.terraform.linode_token }}"
+{% endif %}
+{% if warhorse.terraform.cloudflare_token is defined %}
+    cloudflare_token: "{{ warhorse.terraform.cloudflare_token }}"
 {% endif %}
 {% if warhorse.notification.email.username is defined and warhorse.notification.email.password %}
     notification_email_username: "{{ warhorse.notification.email.username }}"

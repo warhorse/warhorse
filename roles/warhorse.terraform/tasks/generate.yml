@@ -25,6 +25,9 @@
   when: warhorse | regex_search("(?i).+('provider':\s'linode')", multiline=True, ignorecase=True)
 - include: aws.yml
   when: warhorse | regex_search("(?i).+('provider':\s'aws')", multiline=True, ignorecase=True)
+- include: cloudflare.yml
+  when: warhorse | regex_search("(?i).+('provider':\s'cloudflare')", multiline=True, ignorecase=True)
+
 
 - name: Generating Terraform Outputs
   template:

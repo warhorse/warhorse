@@ -148,16 +148,6 @@
     deploy: true
   roles:
     - { role: deployment }
-{% else %}
-- name: Deployment Extras
-  gather_facts: yes
-  hosts: warhorse
-  connection: ssh
-  become: true
-  no_log: true
-  vars: 
-    deploy: true
-  roles:
 {% if warhorse.notification.email is defined %}
     - { role: warhorse.notification }
 {% endif %}

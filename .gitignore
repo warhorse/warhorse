@@ -86,3 +86,4 @@ config.yml
 config/
 /deploy.yml
 /destroy.yml
+beta

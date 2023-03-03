@@ -4,7 +4,7 @@
 users:
   - name: ansible
     ssh-authorized-keys:
-      - "{{ lookup('file', './OP/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}.pub') }}"
+      - "{{ lookup('file', '{{ op_folder_location }}/{{ warhorse.general.op_number }}/keys/id_rsa_ansible_{{ warhorse.general.op_number }}.pub') }}"
     sudo: ['ALL=(ALL) NOPASSWD:ALL']
     groups: sudo
     shell: /bin/bash

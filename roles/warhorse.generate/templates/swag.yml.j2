@@ -8,7 +8,8 @@ all:
           hosts:
 {% endif %}
             {{ vm.name }}:
-            swag_domain_name: "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
-            swag_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
-            swag_dns_plugin: '{{ warhorse.dns.provider }}'
+              swag_domain_name: "{{ warhorse.dns.op_domain_name|default(dns_op_domain_name)}}"
+              swag_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
+              swag_dns_plugin: '{{ warhorse.dns.provider }}'
+              swag_ports: []
 {% endfor %}

@@ -15,7 +15,7 @@
 {% endfor %}
 
 {% for vm in warhorse.vm %}
-{% if vm.backup is defined and vm.backup.archive_zip %}
+{% if vm.backup is defined and vm.backup.archive_zip is defined %}
 - name: Backup Archive
   gather_facts: True
   hosts: {{ vm.name }}

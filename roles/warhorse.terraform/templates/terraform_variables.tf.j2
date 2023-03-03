@@ -13,3 +13,11 @@ variable "linode_token" {
   sensitive   = true
 }
 {% endif %}
+
+{% if warhorse | regex_search("(?i).+('provider':\s'cloudflare')", multiline=True, ignorecase=True) %}
+variable "cloudflare_token" {
+  description = "Cloudflare API Key"
+  type        = string
+  sensitive   = true
+}
+{% endif %}

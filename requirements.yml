@@ -9,6 +9,7 @@ roles:
   - name: viasite-ansible.zsh
   - name: artis3n.tailscale
   - name: weareinteractive.users
+    version: 1.17.0
   - name: t94j0.mythic
 
   - name: warhorse.cobaltstrike_docker

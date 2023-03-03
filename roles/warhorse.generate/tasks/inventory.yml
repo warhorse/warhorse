@@ -3,16 +3,16 @@
   template:
     mode: '0755'
     src: templates/os.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/os.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/os.yml"
 
 - name: Generating vault
   template:
     mode: '0755'
     src: templates/vault.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/vault.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/vault.yml"
 
 - name: Encrypt vault
-  ansible.builtin.shell: ansible-vault encrypt "{{ lookup('env', 'PWD') }}"/OP/{{ warhorse.general.op_number }}/inventory/vault.yml
+  ansible.builtin.shell: ansible-vault encrypt {{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/vault.yml
   environment: 
     ANSIBLE_VAULT_PASSWORD: "{{ warhorse.general.vault_key }}"
     ANSIBLE_VAULT_PASSWORD_FILE: "./vault-env"
@@ -21,7 +21,7 @@
   template:
     mode: '0755'
     src: templates/syncthing.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/syncthing.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/syncthing.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.syncthing is defined
 
@@ -29,7 +29,7 @@
   template:
     mode: '0755'
     src: templates/cobaltstrike.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/cobaltstrike.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/cobaltstrike.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.cobaltstrike is defined
 
@@ -37,7 +37,7 @@
   template:
     mode: '0755'
     src: templates/nighthawk.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/nighthawk.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/nighthawk.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.nighthawk is defined
 
@@ -45,7 +45,7 @@
   template:
     mode: '0755'
     src: templates/gophish.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/gophish.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/gophish.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.gophish is defined
 
@@ -53,7 +53,7 @@
   template:
     mode: '0755'
     src: templates/mythic.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/mythic.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/mythic.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.mythic is defined
 
@@ -61,7 +61,7 @@
   template:
     mode: '0755'
     src: templates/swag.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/swag.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/swag.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.mythic is defined
 
@@ -69,7 +69,7 @@
   template:
     mode: '0755'
     src: templates/traefik.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/traefik.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/traefik.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.http_proxy == "traefik"
 
@@ -77,7 +77,7 @@
   template:
     mode: '0755'
     src: templates/neo4j.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/neo4j.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/neo4j.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.neo4j is defined
 
@@ -85,7 +85,7 @@
   template:
     mode: '0755'
     src: templates/evilginx2.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/evilginx2.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/evilginx2.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.evilginx2 is defined
 
@@ -93,7 +93,7 @@
   template:
     mode: '0755'
     src: templates/tailscale.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/tailscale.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/tailscale.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.tailscale is defined
 
@@ -101,7 +101,7 @@
   template:
     mode: '0755'
     src: templates/nginx.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/nginx.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/nginx.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.http_proxy == "nginx"
 
@@ -109,7 +109,7 @@
   template:
     mode: '0755'
     src: templates/backup.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/backup.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/backup.yml"
   with_items: "{{ warhorse.vm }}"
   when: item.backup is defined
 
@@ -117,5 +117,5 @@
   template:
     mode: '0755'
     src: templates/notification.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/inventory/notification.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/inventory/notification.yml"
   when: warhorse.notification is defined

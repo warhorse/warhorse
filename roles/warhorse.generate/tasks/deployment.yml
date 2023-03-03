@@ -4,19 +4,19 @@
     path: '{{ item }}'
     state: directory
   with_items:
-  - './OP/{{ warhorse.general.op_number }}/roles/deployment/tasks'
-  - './OP/{{ warhorse.general.op_number }}/roles/deployment/templates'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}/roles/deployment/tasks'
+  - '{{ op_folder_location }}/{{ warhorse.general.op_number }}/roles/deployment/templates'
 
 - name: Generating Deployment Role
   template:
     src: templates/deployment/{{ item }}.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/roles/deployment/tasks/{{ item }}"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/roles/deployment/tasks/{{ item }}"
   with_items:
   - "main.yml"
 
 - name: Generating Deployment Role txt
   template:
     src: templates/deployment/{{ item }}.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/roles/deployment/templates/{{ item }}.j2"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/roles/deployment/templates/{{ item }}.j2"
   with_items:
   - "deployment.txt"

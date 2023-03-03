@@ -1,0 +1,5 @@
+- name: Generating Terraform Cloudflare
+  template:
+    src: templates/cloudflare/terraform_cloudflare_dns.tf.j2
+    dest: "{{ terraform_project_path }}/cloudflare_dns.tf"
+  when: warhorse.dns.provider == 'cloudflare'

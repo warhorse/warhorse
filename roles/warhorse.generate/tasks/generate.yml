@@ -3,22 +3,22 @@
   template:
     mode: '0755'
     src: templates/deploy.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/deploy.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/deploy.yml"
 
 - name: Generating destroy.yml
   template:
     mode: '0755'
     src: templates/destroy.yml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/destroy.yml"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/destroy.yml"
 
 - name: Generating ansible.cfg
   template:
     mode: '0755'
     src: templates/ansible.cfg.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/ansible.cfg"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/ansible.cfg"
 
 - name: Generating vault-env
   template:
     mode: '0644'
     src: templates/vault-env.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/vault-env"
+    dest: "{{ op_folder_location }}/{{ warhorse.general.op_number }}/vault-env"
