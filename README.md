@@ -28,7 +28,7 @@ Warhorse consists of a fully-featured Ansible playbook to deploy infrastructure 
 
 ## Video Demo
 
-[![WarHorse Demo](https://img.youtube.com/vi/Vd9wW3A2f90/0.jpg)](https://youtu.be/AXXOlynBeQw)
+[![WarHorse Demo](https://img.youtube.com/vi/AXXOlynBeQw/0.jpg)](https://youtu.be/AXXOlynBeQw)
 
 ## Current Features
 
