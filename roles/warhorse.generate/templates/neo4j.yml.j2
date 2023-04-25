@@ -9,6 +9,7 @@ all:
 {% endif %}
             {{ vm.name }}:
               neo4j_docker_network: "{% raw %}{{ dockernet }}{% endraw %}"
+              neo4j_docker_version: "{{ vm.neo4j.version | default("4.4")}}"
 {% if vm.tailscale is defined %}
               neo4j_ports:
                 - "{% raw %}{{ ansible_tailscale0.ipv4.address }}{% endraw %}:7474:7474"
@@ -22,4 +23,5 @@ all:
 {% endif %}
               neo4j_username: "{{ vm.neo4j.username | default(neo4j_username) }}"
               neo4j_password: "{{ vm.neo4j.password | default(neo4j_password)}}"
+              neo4j_memory: "{{ vm.neo4j.neo4j_memory_size | default("1G")}}"
 {% endfor %}

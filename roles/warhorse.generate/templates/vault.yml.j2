@@ -24,6 +24,9 @@ all:
 {% if warhorse.vpn.tailscale.tailscale_auth_key is defined %}
                 tailscale_authkey: "{{ warhorse.vpn.tailscale.tailscale_auth_key }}"
 {% endif %}
+{% if warhorse.vpn.tailscale.tailscale_api_key is defined %}
+                tailscale_api_key: "{{ warhorse.vpn.tailscale.tailscale_api_key }}"
+{% endif %}
 {% if warhorse.backup is defined %}
 {% if warhorse.backup.backup_bucket_access_key is defined %}
                 backup_bucket_access_key: "{{ warhorse.backup.backup_bucket_access_key }}"

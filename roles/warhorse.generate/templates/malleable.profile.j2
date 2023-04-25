@@ -299,7 +299,7 @@ http-config {
 }
 http-get {
 
-set uri "/{{ warhorse.general.op_number | sha1 }}1/";
+set uri "/{{ warhorse.general.op_number | sha1 | regex_search('(?s)(?:\w){4}$')}}1/";
 
 client {
 {% if vm.cobaltstrike is defined %}
@@ -329,7 +329,7 @@ server {
 
 http-post {
 
-set uri "/{{ warhorse.general.op_number | sha1 }}2/";
+set uri "/{{ warhorse.general.op_number | sha1 | regex_search('(?s)(?:\w){4}$')}}2/";
 
 client {
 {% if vm.cobaltstrike is defined %}

@@ -1,0 +1,67 @@
+warhorse:
+  general:
+    op_number: "000-000"
+    user_tag: 'user'
+    ttl: '2023-03-20' #Kill Date
+    ntp_timezone: 'America/New_York' # Time Zone Link
+    vault_key: 'vualt_password'
+  vpn:
+    tailscale:
+      tailnet_name: "tailnet.org.github"
+      tailscale_auth_key: ""
+      tailscale_api_key: ""
+      enable_hostnames: true
+  dns:
+    provider: "digitalocean"
+    op_tld: 'mydomain.com' # Resource Domain
+  vm:
+    - name: "phish"
+      provider: "digitalocean"
+      http_proxy: "nginx"
+      gophish:
+        enabled: true
+        site_hostname: "gpredirect"
+        admin_hostname: "gpadmin"
+        white_list_ip: "0.0.0.0/0"
+      firewall:
+      tailscale:
+      golang:
+      evilginx2:
+        enabled: true
+        evilginx_domain: "azureedge.net"
+        redirect_domain: "azure.com"
+        nginx_hostnames:
+          - "sec123-www"
+          - "sec123-login"
+        o365: 
+          www_hostname: "sec123-www"
+          login_hostname: "sec123-login"
+        lures:
+          - name: dontphishme
+            path: "/dontphishme"
+            phishlet: "o365"
+            redirect_url: www.azure.com
+        phishlets: 
+          - "o365"
+          - "outlook"
+        cdn:
+        - name: "www"
+          provider: "azure"
+          hostname: "sec123-www"
+        - name: "login"
+          provider: "azure"
+          hostname: "sec123-login"
+  terraform:
+    state_bucket_enabled: true
+    state_bucket_name: "bcucketname"
+    state_bucket_region: "us-east-1"
+    state_bucket_endpoint: "https://nyc3.digitaloceanspaces.com"
+    bucket_access_key: ""
+    bucket_secret_key: ""
+    digitalocean_token: ""
+  users:
+    - username: 'username'
+      name: 'User Name'
+      authorized_keys:
+      - "{{ lookup('file', '~/.ssh/keys.pub') }}"
+      shell: '/usr/bin/zsh'
