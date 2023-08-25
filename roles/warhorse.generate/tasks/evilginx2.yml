@@ -2,8 +2,8 @@
 - name: Generating Evilginx2 Configuration
   template:
     mode: '0755'
-    src: templates/evilginx2_config.yaml.j2
-    dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/evilginx.yaml.j2"
+    src: templates/evilginx2_config.json.j2
+    dest: "./OP/{{ warhorse.general.op_number }}/files/{{ item.name }}/evilginx.json.j2"
   with_items: "{{ warhorse.vm }}"
   when: item.evilginx2 is defined and item.evilginx2.config_file is not defined
 
