@@ -1,4 +1,5 @@
 {% for vm in warhorse.vm|selectattr("evilginx2", "defined" ) %}
+{% if vm.evilginx2.enabled %}
 {% if loop.first %}
 all:
   children:
@@ -18,9 +19,10 @@ all:
               evilginx2_ports: []
 {% if vm.evilginx2.config_file is defined and vm.evilginx2.phishlet_folder is defined %}
               evilginx2_phishlet_folder: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.evilginx2.phishlet_folder }}"
-              evilginx2_config_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.evilginx2.config_file }}.yaml.j2"
+              evilginx2_config_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.evilginx2.config_file }}.json.j2"
 {% else %}
               evilginx2_phishlet_folder: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/phishlets"
-              evilginx2_config_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/evilginx.yaml.j2"
+              evilginx2_config_location: "{{ lookup('env', 'PWD') }}/OP/{{ warhorse.general.op_number }}/files/{{ vm.name }}/evilginx.json.j2"
 {% endif %}      
+{% endif %}
 {% endfor %}
